@@ -1,3 +1,6 @@
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Recorder.java
  *
@@ -9,6 +12,8 @@ public class Recorder {
     // ----------------------------------- VARIABLES ----------------------------------- //
     int replaySpeed = 5; // 0 = manual replay & 1 = slowest auto replay speed - 10 = fastest
     static boolean isRecording = false;
+    Map<Integer, RecordItem> currentRecording;
+    Map<Integer, Map<Integer, RecordItem>> allRecordings;
 
 
     // ----------------------------------- CONSTRUCTOR ----------------------------------- //
@@ -55,14 +60,36 @@ public class Recorder {
      * When called this will start recording the user's actions.
      */
     public void startRecording() {
+        System.out.println("Recorder: Recording has started. \n");
+        currentRecording = new HashMap<Integer, RecordItem>();
+        int currentSequenceNumber = 0;
 
+        // ---- Record the initial game ---- //
+        if (isRecording) {
+            RecordItem initialGame = new RecordItem(currentSequenceNumber, "0,0", "0,0", "INITIAL_GAME", "NONE", "NONE");
+            currentRecording.put(currentSequenceNumber, initialGame);
+
+            System.out.println("  Recorder: Initial game has been added:  [ " + initialGame + " ] \n");
+
+            currentSequenceNumber++;
+        }
+
+        while (isRecording) {
+            // ---- Some move made ---- //
+            RecordItem currentChange = new RecordItem(currentSequenceNumber, "0,0", "0,0", "MOVE_MADE", "NONE", "NONE");
+            currentRecording.put(currentSequenceNumber, currentChange);
+
+            System.out.println("  Recorder: Move has been added: [ " + currentChange + " ] \n");
+
+
+        }
+        System.out.println("Recorder: Recording has stopped. \n");
     }
 
     /**
      * When called this will replay the recording in step when the user presses a button.
      */
     public void stepByStepReplay() {
-
 
     }
 
@@ -85,10 +112,20 @@ public class Recorder {
 
 
     // ----------------------------------- SETTERS ----------------------------------- //
+    /**
+     * This method will set the isRecording variable.
+     *
+     * @param isRecording - the boolean value to set isRecording to.
+     */
     public void setIsRecording(boolean isRecording) {
         Recorder.isRecording = isRecording;
     }
 
+    /**
+     * This method will set the replay speed.
+     *
+     * @param speed - the speed to set the replay speed to.
+     */
     public void setReplaySpeed(int speed) {
         this.replaySpeed = speed;
     }
