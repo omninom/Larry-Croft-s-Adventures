@@ -1,4 +1,4 @@
-package java.test.nz.ac.wgtn.swen225.lc.fuzz;
+package test.nz.ac.wgtn.swen225.lc.fuzz;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class MockEnvoy implements AppEnvoy {
 
-  public void reset(){
+  public void reset() {
 
   }
 
@@ -80,8 +80,8 @@ public class MockEnvoy implements AppEnvoy {
         maxY = pos[1];
       }
     }
-    maxX = maxX - minX;
-    maxY = maxY - minY;
+    maxX = maxX - minX + 1;
+    maxY = maxY - minY + 1;
     for (int[] pos : positions) {
       pos[0] = pos[0] - minX;
       assert pos[0] >= 0;
@@ -94,8 +94,11 @@ public class MockEnvoy implements AppEnvoy {
         outArr[y][x] = '.';
       }
     }
+    int n = 0;
     for (int[] pos : positions) {
-      outArr[pos[1]][pos[0]] = '#';
+      n = n + 1;
+      n = n % 10;
+      outArr[pos[1]][pos[0]] = Character.forDigit(n, 10);
     }
     StringBuilder out = new StringBuilder();
     for (int y = 0; y < maxY; y++) {
