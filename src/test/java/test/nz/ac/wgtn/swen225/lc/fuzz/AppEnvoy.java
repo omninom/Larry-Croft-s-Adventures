@@ -6,4 +6,21 @@ package java.test.nz.ac.wgtn.swen225.lc.fuzz;
  */
 public interface AppEnvoy {
 
+  public void reset();
+
+  public void moveUp();
+
+  public void moveDown();
+
+  public void moveLeft();
+
+  public void moveRight();
+
+  public void pause();
+
+  public void unpause();
+
+  public void isStopped();
+
+  public void printSuccessMessage();
 }
