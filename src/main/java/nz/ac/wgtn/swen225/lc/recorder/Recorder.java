@@ -10,9 +10,15 @@ import java.util.Map;
 public class Recorder {
     // ----------------------------------- VARIABLES ----------------------------------- //
     int replaySpeed = 5; // 0 = manual replay & 1 = slowest auto replay speed - 10 = fastest
-    static boolean isRecording = false;
+
+    enum RecorderState { RECORDING, MANUAL_REPLAY, AUTO_REPLAY, LOAD_GAME }
+
     Map<Integer, RecordItem> currentRecording;
+
     Map<Integer, Map<Integer, RecordItem>> allRecordings;
+
+    RecorderState state = null;
+
 
     // ----------------------------------- CONSTRUCTOR ----------------------------------- //
 
@@ -20,39 +26,31 @@ public class Recorder {
      * The constructor for the Recorder class.
      */
     public Recorder() {
-        setUpRecorder();
+        // ---- set up the recorder ---- //
+        replaySpeed = 0;
+        allRecordings = new HashMap<>();
+
+        // ---- Set the state to what user selects ---- //
+        state = RecorderState.RECORDING;
+
+        while (true) {
+            if (state == RecorderState.RECORDING) {
+                startRecording();
+            }
+            if (state == RecorderState.MANUAL_REPLAY) {
+                stepByStepReplay();
+            }
+            if (state == RecorderState.AUTO_REPLAY) {
+                autoReplay();
+            }
+            if (state == RecorderState.LOAD_GAME) {
+                // ---- load the game ---- //
+                System.out.println("Recorder: Loading game. \n");
+            }
+        }
     }
 
     // ----------------------------------- METHODS ----------------------------------- //
-
-    /**
-     * This method will set up the recorder.
-     * It will set the replay speed to 0 (manual replay) and wait for the user to start recording.
-     */
-    private void setUpRecorder() {
-        // ---- set up the recorder ---- //
-        replaySpeed = 0;
-
-        // ---- wait for the user to start recording ---- //
-        //String userInput = App.getUserInput();
-        String userInput = "";
-        if (userInput.equals("START")) {
-            setIsRecording(true);
-            startRecording();
-        }
-        if (userInput.equals("LOAD_GAME")) {
-            setIsRecording(false);
-        }
-        if (userInput.equals("MANUAL_REPLAY")) {
-            setIsRecording(false);
-            stepByStepReplay();
-        }
-        if (userInput.equals("AUTO_REPLAY")) {
-            setIsRecording(false);
-            autoReplay();
-        }
-
-    }
 
     /**
      * When called this will start recording the user's actions.
@@ -63,26 +61,23 @@ public class Recorder {
         int currentSequenceNumber = 0;
 
         // ---- Record the initial game ---- //
-        if (isRecording) {
-            RecordItem initialGame = new RecordItem(currentSequenceNumber, "0,0",
-                    "0,0", "INITIAL_GAME", "NONE", "NONE");
-            currentRecording.put(currentSequenceNumber, initialGame);
+        RecordItem initialGame = new RecordItem(currentSequenceNumber, "0,0", "0,0", "NONE");
+        currentRecording.put(currentSequenceNumber, initialGame);
 
-            System.out.println("  Recorder: Initial game has been added:  [ " + initialGame + " ] \n");
+        System.out.println("  Recorder: Initial game has been added:  [ " + initialGame + " ] \n");
+        currentSequenceNumber++;
 
-            currentSequenceNumber++;
-        }
-
-        while (isRecording) {
+        while (state == RecorderState.RECORDING) {
             // ---- Some move made ---- //
-            RecordItem currentChange = new RecordItem(currentSequenceNumber, "0,0",
-                    "0,0", "MOVE_MADE", "NONE", "NONE");
+            RecordItem currentChange = new RecordItem(currentSequenceNumber, "0,0", "0,0", "NONE");
             currentRecording.put(currentSequenceNumber, currentChange);
 
             System.out.println("  Recorder: Move has been added: [ " + currentChange + " ] \n");
         }
 
+        // ---- Recording has stopped ---- //
         System.out.println("Recorder: Recording has stopped. \n");
+        allRecordings.put(allRecordings.size(), currentRecording);
     }
 
     /**
@@ -102,19 +97,52 @@ public class Recorder {
 
     // ----------------------------------- GETTERS ----------------------------------- //
 
-    public boolean getIsRecording() {
-        return isRecording;
+    /**
+     * Returns the state of the recorder.
+     *
+     * @return the state of the recorder.
+     */
+    public String getState() {
+        return state.toString();
+    }
+
+    /**
+     * Returns the current recording.
+     *
+     * @return the current recording.
+     */
+    public int getReplaySpeed() {
+        return replaySpeed;
     }
 
     // ----------------------------------- SETTERS ----------------------------------- //
 
     /**
-     * This method will set the isRecording variable.
-     *
-     * @param isRecording - the boolean value to set isRecording to.
+     * Will set the state of the recorder to be recording.
      */
-    public void setIsRecording(boolean isRecording) {
-        Recorder.isRecording = isRecording;
+    public void setRecording() {
+        state = RecorderState.RECORDING;
+    }
+
+    /**
+     * Will set the state of the recorder to be manual replay.
+     */
+    public void setManualReplay() {
+        state = RecorderState.MANUAL_REPLAY;
+    }
+
+    /**
+     * Will set the state of the recorder to be auto replay.
+     */
+    public void setAutoReplay() {
+        state = RecorderState.AUTO_REPLAY;
+    }
+
+    /**
+     * Will set the state of the recorder to be load game.
+     */
+    public void setLoadGame() {
+        state = RecorderState.LOAD_GAME;
     }
 
     /**
