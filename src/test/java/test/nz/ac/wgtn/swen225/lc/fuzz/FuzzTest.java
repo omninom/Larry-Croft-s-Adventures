@@ -1,6 +1,6 @@
 package java.test.nz.ac.wgtn.swen225.lc.fuzz;
 
-import java.awt.event.KeyEvent;
+import java.security.spec.InvalidKeySpecException;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -8,6 +8,11 @@ import org.junit.jupiter.api.Test;
  * errors.
  */
 public class FuzzTest {
+
+  //Number of random movement tests to carry out on each level.
+  private final int iterations = 100;
+  //Number of random steps to take on each level.
+  private final int steps = 100;
 
   /**
    * Tests on level 1.
@@ -18,6 +23,29 @@ public class FuzzTest {
     // TODO weighted movement testing
     // TODO pause/resume testing (in quick succession, make inputs while paused)
     // TODO setup/teardown, start from scratch repeatedly.
+    for (int i = 0; i < iterations; i++) {
+      //TODO Setup
+      AppEnvoy envoy = getNewEnvoy();
+      for (int step = 0; step < steps; step++) {
+        //TODO randomisation
+        switch ((int) Math.floor(Math.random() * 4)) {
+          case 0:
+            envoy.moveUp();
+            break;
+          case 1:
+            envoy.moveDown();
+            break;
+          case 2:
+            envoy.moveLeft();
+            break;
+          case 3:
+            envoy.moveRight();
+            break;
+          default:
+            throw new IllegalArgumentException();
+        }
+      }
+    }
   }
 
   /**
@@ -25,5 +53,15 @@ public class FuzzTest {
    */
   @Test
   public void test2() {
+    for (int i = 0; i < iterations; i++) {
+      //TODO Setup
+      for (int step = 0; step < steps; step++) {
+
+      }
+    }
+  }
+
+  private AppEnvoy getNewEnvoy() {
+    return new MockEnvoy();
   }
 }
