@@ -1,6 +1,5 @@
-package java.test.nz.ac.wgtn.swen225.lc.fuzz;
+package test.nz.ac.wgtn.swen225.lc.fuzz;
 
-import java.security.spec.InvalidKeySpecException;
 import org.junit.jupiter.api.Test;
 
 /**

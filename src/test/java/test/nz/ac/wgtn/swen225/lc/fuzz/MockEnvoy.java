@@ -1,4 +1,4 @@
-package java.test.nz.ac.wgtn.swen225.lc.fuzz;
+package test.nz.ac.wgtn.swen225.lc.fuzz;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,10 +6,9 @@ import java.util.List;
 /**
  * Mock envoy used before App is developed enough for a true envoy.
  */
-public class MockEnvoy implements AppEnvoy {
+public class MockEnvoy implements AppEnvoy{
 
-  public void reset(){
-
+  public void reset() {
   }
 
   List<int[]> positions = new ArrayList<>();
