@@ -6,15 +6,22 @@ import java.util.List;
 /**
  * Mock envoy used before App is developed enough for a true envoy.
  */
-public class MockEnvoy implements AppEnvoy{
+public class MockEnvoy implements AppEnvoy {
+
+  StringBuilder out;
+  boolean paused;
 
   public void reset() {
+    positions.clear();
+    positions.add(new int[] {0, 0});
+    out = new StringBuilder();
   }
 
   List<int[]> positions = new ArrayList<>();
 
   MockEnvoy() {
     positions.add(new int[] {0, 0});
+    out = new StringBuilder();
   }
 
   @Override
@@ -47,22 +54,23 @@ public class MockEnvoy implements AppEnvoy{
 
   @Override
   public void pause() {
-    throw new UnsupportedOperationException();
+    out.append("+P\n");
+    paused = true;
   }
 
   @Override
   public void unpause() {
-    throw new UnsupportedOperationException();
-
+    out.append("-P\n");
+    paused = false;
   }
 
   @Override
-  public void isStopped() {
-    throw new UnsupportedOperationException();
+  public boolean isStopped() {
+    return paused;
   }
 
   @Override
-  public void printSuccessMessage() {
+  public String printSuccessMessage() {
     int minX = 0;
     int minY = 0;
     int maxX = 0;
@@ -103,6 +111,6 @@ public class MockEnvoy implements AppEnvoy{
       }
       out.append('\n');
     }
-    System.out.println(out);
+    return out.toString();
   }
 }

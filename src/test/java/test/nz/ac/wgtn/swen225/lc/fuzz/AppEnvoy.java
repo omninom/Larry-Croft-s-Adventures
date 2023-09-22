@@ -20,9 +20,9 @@ public interface AppEnvoy {
 
   public void unpause();
 
-  public void isStopped();
+  public boolean isStopped();
 
-  public void printSuccessMessage();
+  public String printSuccessMessage();
 }
 
 
