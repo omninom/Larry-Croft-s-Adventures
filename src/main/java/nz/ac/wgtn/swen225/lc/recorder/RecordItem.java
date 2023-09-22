@@ -4,9 +4,7 @@
 public class RecordItem {
     int sequenceNumber;
     String prevPostion;
-    String action;
     String currPostion;
-    String direction;
     String other;
 
     /**
@@ -15,16 +13,12 @@ public class RecordItem {
      * @param sequenceNumber - the turn number that the action was taken on.
      * @param currPosition - the position of the player when the action was taken.
      * @param prevPosition - the position of the player before the action was taken.
-     * @param action - the action that the player took.
-     * @param direction - the direction the player moved in.
      * @param other - any other information that is needed to be stored.
      */
-    public RecordItem(int sequenceNumber, String currPosition, String prevPosition, String action, String direction, String other) {
+    public RecordItem(int sequenceNumber, String currPosition, String prevPosition, String other) {
         this.sequenceNumber = sequenceNumber;
         this.currPostion = currPosition;
         this.prevPostion = prevPosition;
-        this.action = action;
-        this.direction = direction;
         this.other = other;
     }
 
@@ -42,9 +36,36 @@ public class RecordItem {
      *
      * @return currPosition - the current position of the player.
      */
+    public String getCurrPosition() {
+        return currPostion;
+    }
+
+    /**
+     * Returns the previous position of the player.
+     *
+     * @return prevPosition - the previous position of the player.
+     */
+    public String getPrevPosition() {
+        return prevPostion;
+    }
+
+    /**
+     * Returns any other information that is needed to be stored.
+     *
+     * @return other - any other information that is needed to be stored.
+     */
+    public String getOther() {
+        return other;
+    }
+
+    /**
+     * Returns the current position of the player.
+     *
+     * @return currPosition - the current position of the player.
+     */
     public String toString() {
-        return "Sequence Number: " + sequenceNumber + ", Current Position: " + currPostion + ", Previous Position: " +
-                prevPostion + ", Action: " + action + ", Direction: " + direction + ", Other: " + other;
+        return "Sequence Number: " + sequenceNumber + ", Current Position: " + currPostion
+                + ", Previous Position: " + prevPostion + " Other: " + other;
     }
 
 }
