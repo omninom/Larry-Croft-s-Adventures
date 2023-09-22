@@ -12,21 +12,29 @@ public class FuzzTest {
   private final int iterations = 100;
   //Number of random steps to take on each level.
   private final int steps = 100;
+  //Number of pause/unpause cycles to execute in one wave.
+  private final int pauses = 20;
 
   /**
    * Tests on level 1.
    */
   @Test
   public void test1() {
-    // TODO random movement testing
+    // random movement testing
     // TODO weighted movement testing
-    // TODO pause/resume testing (in quick succession, make inputs while paused)
-    // TODO setup/teardown, start from scratch repeatedly.
+    // pause/resume testing (in quick succession, make inputs while paused)
+    // TODO setup/teardown, level loading and detection of success.
     for (int i = 0; i < iterations; i++) {
       //TODO Setup
       AppEnvoy envoy = getNewEnvoy();
       for (int step = 0; step < steps; step++) {
-        //TODO randomisation
+        //5% chance of pausespam test.
+        if(Math.random() < 0.5){
+          for (int j = 0; j < pauses; j++) {
+            envoy.pause();
+            envoy.unpause();
+          }
+        }
         switch ((int) Math.floor(Math.random() * 4)) {
           case 0:
             envoy.moveUp();
@@ -52,12 +60,7 @@ public class FuzzTest {
    */
   @Test
   public void test2() {
-    for (int i = 0; i < iterations; i++) {
-      //TODO Setup
-      for (int step = 0; step < steps; step++) {
-
-      }
-    }
+    test1();
   }
 
   private AppEnvoy getNewEnvoy() {
