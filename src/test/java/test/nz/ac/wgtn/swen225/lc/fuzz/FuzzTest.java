@@ -1,5 +1,6 @@
-package test.nz.ac.wgtn.swen225.lc.fuzz;
+package java.test.nz.ac.wgtn.swen225.lc.fuzz;
 
+import java.security.spec.InvalidKeySpecException;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -9,7 +10,7 @@ import org.junit.jupiter.api.Test;
 public class FuzzTest {
 
   //Number of random movement tests to carry out on each level.
-  private final int iterations = 1;
+  private final int iterations = 100;
   //Number of random steps to take on each level.
   private final int steps = 100;
 
@@ -42,12 +43,6 @@ public class FuzzTest {
             break;
           default:
             throw new IllegalArgumentException();
-        }
-        envoy.printSuccessMessage();
-        try {
-          Thread.sleep(1000);
-        } catch (InterruptedException e) {
-          throw new RuntimeException(e);
         }
       }
     }
