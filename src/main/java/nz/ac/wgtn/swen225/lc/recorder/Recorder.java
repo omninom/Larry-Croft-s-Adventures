@@ -1,5 +1,11 @@
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import org.json.JSONObject;
+
+
 
 /**
  * Recorder.java
@@ -9,15 +15,15 @@ import java.util.Map;
  */
 public class Recorder {
     // ----------------------------------- VARIABLES ----------------------------------- //
-    int replaySpeed = 5; // 0 = manual replay & 1 = slowest auto replay speed - 10 = fastest
+    int replaySpeed = 5; // 1 (slowest auto replay speed) to 10 (fastest auto replay speed)
 
     enum RecorderState { RECORDING, MANUAL_REPLAY, AUTO_REPLAY, LOAD_GAME }
 
     Map<Integer, RecordItem> currentRecording;
 
-    Map<Integer, Map<Integer, RecordItem>> allRecordings;
-
     RecorderState state = null;
+
+    Boolean gameRunning = true;
 
 
     // ----------------------------------- CONSTRUCTOR ----------------------------------- //
@@ -26,14 +32,13 @@ public class Recorder {
      * The constructor for the Recorder class.
      */
     public Recorder() {
-        // ---- set up the recorder ---- //
+        // ---- Set up the initial variables ---- //
         replaySpeed = 0;
-        allRecordings = new HashMap<>();
 
         // ---- Set the state to what user selects ---- //
         state = RecorderState.RECORDING;
 
-        while (true) {
+        while (gameRunning) {
             if (state == RecorderState.RECORDING) {
                 startRecording();
             }
@@ -44,8 +49,7 @@ public class Recorder {
                 autoReplay();
             }
             if (state == RecorderState.LOAD_GAME) {
-                // ---- load the game ---- //
-                System.out.println("Recorder: Loading game. \n");
+                loadGame();
             }
         }
     }
@@ -63,27 +67,38 @@ public class Recorder {
         // ---- Record the initial game ---- //
         RecordItem initialGame = new RecordItem(currentSequenceNumber, "0,0", "0,0", "NONE");
         currentRecording.put(currentSequenceNumber, initialGame);
-
         System.out.println("  Recorder: Initial game has been added:  [ " + initialGame + " ] \n");
         currentSequenceNumber++;
 
+        // ---- Record the rest of the game ---- //
         while (state == RecorderState.RECORDING) {
             // ---- Some move made ---- //
             RecordItem currentChange = new RecordItem(currentSequenceNumber, "0,0", "0,0", "NONE");
             currentRecording.put(currentSequenceNumber, currentChange);
 
             System.out.println("  Recorder: Move has been added: [ " + currentChange + " ] \n");
+            currentSequenceNumber++;
         }
 
-        // ---- Recording has stopped ---- //
-        System.out.println("Recorder: Recording has stopped. \n");
-        allRecordings.put(allRecordings.size(), currentRecording);
+        // ---- Stop recording and save the current game in jason format ---- //
+        System.out.println("Recorder: Recording has stopped & Saving game. \n");
+        try {
+            JSONObject jsonRecording = new JSONObject(currentRecording);
+            String jsonString = jsonRecording.toString();
+            Files.writeString(Paths.get("gameRecording.json"), jsonString);
+            System.out.println("Recorder: Game recording has been saved as gameRecording.json\n");
+        } catch (IOException e) {
+            System.out.println("Error: Unable to save game recording. " + e.getMessage());
+        }
+
     }
 
     /**
      * When called this will replay the recording in steps when the user presses a button.
      */
     public void stepByStepReplay() {
+        System.out.println("Recorder: Step by step replaying. \n");
+
 
     }
 
@@ -92,6 +107,18 @@ public class Recorder {
      * If the user has not set a speed, it will default to the slowest speed.
      */
     public void autoReplay() {
+        System.out.println("Recorder: Auto replaying. \n");
+
+
+    }
+
+    /**
+     * When called will load the game from a file.
+     */
+    public void loadGame() {
+        System.out.println("Recorder: Loading game. \n");
+
+        // ---- load the game from files ---- //
 
     }
 
@@ -152,5 +179,16 @@ public class Recorder {
      */
     public void setReplaySpeed(int speed) {
         this.replaySpeed = speed;
+    }
+
+    // ----------------------------------- MAIN ----------------------------------- //
+
+    /**
+     * The main method for the Recorder program.
+     *
+     * @param args - the arguments for the main method.
+     */
+    public static void main(String[] args) {
+        Recorder recorder = new Recorder();
     }
 }
