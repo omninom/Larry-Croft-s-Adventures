@@ -1,3 +1,5 @@
+package test.nz.ac.wgtn.swen225.lc.recorder;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
