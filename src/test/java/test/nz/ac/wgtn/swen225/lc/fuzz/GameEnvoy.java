@@ -5,7 +5,7 @@ package test.nz.ac.wgtn.swen225.lc.fuzz;
  * refactoring and allow for development of the FuzzTest module before the App module is finished.
  * TODO Introduce new methods to retrieve information for smarter testing.
  */
-public interface AppEnvoy {
+public interface GameEnvoy {
 
   public void reset();
 
