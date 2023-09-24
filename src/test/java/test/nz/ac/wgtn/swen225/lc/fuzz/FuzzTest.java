@@ -46,6 +46,7 @@ public class FuzzTest {
     for (int i = 0; i < iterations; i++) {
       //TODO Setup
       GameEnvoy envoy = getNewEnvoy(level);
+      envoy.reset();
       for (int step = 0; step < steps; step++) {
         //5% chance of pausespam test.
         if (Math.random() < 0.05) {
