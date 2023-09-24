@@ -43,7 +43,7 @@ public class FuzzTest {
     // TODO setup/teardown, level loading and detection of success.
     for (int i = 0; i < iterations; i++) {
       //TODO Setup
-      AppEnvoy envoy = getNewEnvoy(level);
+      GameEnvoy envoy = getNewEnvoy(level);
       for (int step = 0; step < steps; step++) {
         //5% chance of pausespam test.
         if (Math.random() < 0.5) {
@@ -82,7 +82,7 @@ public class FuzzTest {
    * @param level the level to load. An error should be thrown if this is an invalid level.
    * @return An AppEnvoy.
    */
-  private AppEnvoy getNewEnvoy(int level) {
+  private GameEnvoy getNewEnvoy(int level) {
     // TODO check level is real.
     return new MockEnvoy();
   }
