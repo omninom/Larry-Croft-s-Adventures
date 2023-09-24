@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Mock envoy used before App is developed enough for a true envoy.
  */
-public class MockEnvoy implements AppEnvoy {
+public class MockEnvoy implements GameEnvoy {
 
   StringBuilder out;
   boolean paused;
