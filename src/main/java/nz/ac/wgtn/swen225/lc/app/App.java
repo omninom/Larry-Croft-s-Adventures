@@ -6,67 +6,80 @@ import java.io.File;
  * The App module.
  */
 public class App {
-    public App() {
 
-    }
+  /**
+   * Constructor.
+   */
+  public App() {
 
-    /**
-     * Handles an input.
-     * @param inputType the input to handle.
-     * @return whether the input was valid.
-     */
-    public boolean handleInput(AppInput inputType) {
-        System.out.println("[APP DEBUG] Recieved input '" + inputType + "'");
+  }
 
-        // TODO: Translate / Validate input with Domain
-        // TODO: Record input
+  /**
+   * Handles an input.
+   *
+   * @param inputType the input to handle.
+   * @return whether the input was valid.
+   */
+  public boolean handleInput(AppInput inputType) {
+    System.out.println("[APP DEBUG] Recieved input '" + inputType + "'");
 
-        return true;
-    }
+    // TODO: Translate / Validate input with Domain
+    // TODO: Record input
 
-    /**
-     * Starts a new game.
-     * @param level - the level to start at.
-     */
-    public void newGame(int level) {
-        System.out.println("[APP DEBUG] New game: Level " + level);
-    }
+    return true;
+  }
 
-    /**
-     * Saves the game.
-     * @param file the file to save to.
-     * @return whether saving was successful.
-     */
-    public boolean saveGame(File file) {
-        System.out.println("[APP DEBUG] Saving game to " + file.getAbsolutePath());
+  /**
+   * Starts a new game.
+   *
+   * @param level - the level to start at.
+   */
+  public void newGame(int level) {
+    System.out.println("[APP DEBUG] New game: Level " + level);
+  }
 
-        // TODO: Call persistency module
-        return true;
-    }
+  /**
+   * Saves the game.
+   *
+   * @param file the file to save to.
+   * @return whether saving was successful.
+   */
+  public boolean saveGame(File file) {
+    System.out.println("[APP DEBUG] Saving game to " + file.getAbsolutePath());
 
-    /**
-     * Loads the game.
-     * @param file the file to load.
-     * @return whether loading was successful.
-     */
-    public boolean loadGame(File file) {
-        System.out.println("[APP DEBUG] Loading game from " + file.getAbsolutePath());
+    // TODO: Call persistency module
+    return true;
+  }
 
-        // TODO: Call persistency module
-        return true;
-    }
+  /**
+   * Loads the game.
+   *
+   * @param file the file to load.
+   * @return whether loading was successful.
+   */
+  public boolean loadGame(File file) {
+    System.out.println("[APP DEBUG] Loading game from " + file.getAbsolutePath());
 
-    /**
-     * Ends the game.
-     */
-    public void endGame() {
-        System.out.println("[APP DEBUG] Ending game");
-    }
+    // TODO: Call persistency module
+    return true;
+  }
 
-    public static void main(String[] args) {
-        App app = new App();
-        AppWindow window = new AppWindow(app);
+  /**
+   * Ends the game.
+   */
+  public void endGame() {
+    System.out.println("[APP DEBUG] Ending game");
+  }
 
-        window.setVisible(true);
-    }
+  /**
+   * Entry Point.
+   *
+   * @param args command line arguments.
+   */
+  public static void main(String[] args) {
+    App app = new App();
+    AppWindow window = new AppWindow(app);
+
+    window.setVisible(true);
+  }
 }
