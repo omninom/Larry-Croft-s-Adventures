@@ -47,7 +47,7 @@ public class FuzzTest {
       envoy.reset();
       for (int step = 0; step < steps; step++) {
         //5% chance of pausespam test.
-        if (Math.random() < 0.5) {
+        if (Math.random() < 0.05) {
           for (int j = 0; j < pauses; j++) {
             envoy.pause();
             envoy.unpause();
