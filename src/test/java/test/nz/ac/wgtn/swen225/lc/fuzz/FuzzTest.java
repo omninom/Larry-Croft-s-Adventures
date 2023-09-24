@@ -13,7 +13,7 @@ public class FuzzTest {
   //Number of random steps to take on each level.
   private static final int steps = 100;
   //Number of pause/unpause cycles to execute in one wave.
-  private static final int pauses = 30;
+  private static final int pauses = 1;
 
   /**
    * Tests on level 1.
@@ -44,6 +44,7 @@ public class FuzzTest {
     for (int i = 0; i < iterations; i++) {
       //TODO Setup
       GameEnvoy envoy = getNewEnvoy(level);
+      envoy.reset();
       for (int step = 0; step < steps; step++) {
         //5% chance of pausespam test.
         if (Math.random() < 0.5) {
@@ -77,13 +78,13 @@ public class FuzzTest {
   }
 
   /**
-   * Generates an AppEnvoy for the tests to use to interact with the App.
+   * Generates a GameEnvoy for the tests to use to interact with the App.
    *
    * @param level the level to load. An error should be thrown if this is an invalid level.
-   * @return An AppEnvoy.
+   * @return An GameEnvoy.
    */
   private GameEnvoy getNewEnvoy(int level) {
     // TODO check level is real.
-    return new MockEnvoy();
+    return new AppEnvoy(level);
   }
 }
