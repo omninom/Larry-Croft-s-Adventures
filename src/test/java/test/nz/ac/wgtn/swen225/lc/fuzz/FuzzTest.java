@@ -9,11 +9,11 @@ import org.junit.jupiter.api.Test;
 public class FuzzTest {
 
   //Number of random movement tests to carry out on each level.
-  private final int iterations = 100;
+  private static final int iterations = 100;
   //Number of random steps to take on each level.
-  private final int steps = 100;
+  private static final int steps = 100;
   //Number of pause/unpause cycles to execute in one wave.
-  private final int pauses = 30;
+  private static final int pauses = 30;
 
   /**
    * Tests on level 1.
@@ -33,11 +33,12 @@ public class FuzzTest {
 
   /**
    * Tests an arbitrary level, if it exists, otherwise throws an error.
+   *
    * @param level the index of the level we wish to test.
    */
-  public void testLevel(int level){
+  public void testLevel(int level) {
     // random movement testing
-    // TODO weighted movement testing
+    // TODO intelligent movement testing
     // pause/resume testing (in quick succession, make inputs while paused)
     // TODO setup/teardown, level loading and detection of success.
     for (int i = 0; i < iterations; i++) {
@@ -45,7 +46,7 @@ public class FuzzTest {
       AppEnvoy envoy = getNewEnvoy(level);
       for (int step = 0; step < steps; step++) {
         //5% chance of pausespam test.
-        if(Math.random() < 0.5){
+        if (Math.random() < 0.5) {
           for (int j = 0; j < pauses; j++) {
             envoy.pause();
             envoy.unpause();
@@ -67,7 +68,7 @@ public class FuzzTest {
           default:
             throw new IllegalArgumentException();
         }
-        if(envoy.isStopped()){
+        if (envoy.isStopped()) {
           envoy.printSuccessMessage();
           return;
         }
@@ -77,6 +78,7 @@ public class FuzzTest {
 
   /**
    * Generates an AppEnvoy for the tests to use to interact with the App.
+   *
    * @param level the level to load. An error should be thrown if this is an invalid level.
    * @return An AppEnvoy.
    */

@@ -11,6 +11,9 @@ public class MockEnvoy implements AppEnvoy {
   StringBuilder out;
   boolean paused;
 
+  /**
+   * Resets the Envoy. Currently unused, but just in case.
+   */
   public void reset() {
     positions.clear();
     positions.add(new int[] {0, 0});
