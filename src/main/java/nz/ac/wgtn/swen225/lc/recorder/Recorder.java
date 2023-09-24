@@ -1,9 +1,11 @@
+package nz.ac.wgtn.swen225.lc.recorder;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-import org.json.JSONObject;
+// import org.json.JSONObject;
 
 
 
@@ -79,7 +81,7 @@ public class Recorder {
             System.out.println("  Recorder: Move has been added: [ " + currentChange + " ] \n");
             currentSequenceNumber++;
         }
-
+        /*#
         // ---- Stop recording and save the current game in jason format ---- //
         System.out.println("Recorder: Recording has stopped & Saving game. \n");
         try {
@@ -90,6 +92,8 @@ public class Recorder {
         } catch (IOException e) {
             System.out.println("Error: Unable to save game recording. " + e.getMessage());
         }
+
+         */
 
     }
 
