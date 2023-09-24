@@ -1,3 +1,5 @@
+package nz.ac.wgtn.swen225.lc.recorder;
+
 /**
  * RecordItem class is used to store information about the activity of the game.
  */
