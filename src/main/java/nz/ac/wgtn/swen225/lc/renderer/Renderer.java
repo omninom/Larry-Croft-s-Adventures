@@ -1,4 +1,4 @@
-package main.java.nz.ac.wgtn.swen225.lc.renderer;
+package nz.ac.wgtn.swen225.lc.renderer;
 
 import javax.swing.*;
 import java.awt.*;
