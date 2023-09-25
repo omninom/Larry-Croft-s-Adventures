@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 /**
  * Provides fuzz testing by providing semi-random inputs to the App module in order to provoke
  * errors.
+ *
+ * @author Jebadiah Dudfield 300629357
  */
 public class FuzzTest {
 
