@@ -7,7 +7,7 @@ public class Maze {
   private int treasureRemaining;
   private Chap chap;
 
-  public Maze(int numRows, int numCols){
+  public Maze(int numRows, int numCols) {
     this.numRows = numRows;
     this.numCols = numCols;
     this.tiles = new Tile[numRows][numCols];
@@ -15,10 +15,11 @@ public class Maze {
     this.chap = new Chap(0, 0);
   }
 
-  public Chap getChap(){
+  public Chap getChap() {
     return chap;
   }
-  public Tile getTileType(int row, int col){
-        return tiles[row][col];
+
+  public Tile getTileType(int row, int col) {
+    return tiles[row][col];
   }
 }
