@@ -1,4 +1,5 @@
 package nz.ac.wgtn.swen225.lc.domain;
+import java.util.*;
 
 class Tile {
   private TileType type;
