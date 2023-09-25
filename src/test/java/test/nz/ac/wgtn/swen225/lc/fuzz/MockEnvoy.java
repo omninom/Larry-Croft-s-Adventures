@@ -5,6 +5,8 @@ import java.util.List;
 
 /**
  * Mock envoy used before App is developed enough for a true envoy.
+ *
+ * @author Jebadiah Dudfield 300629357
  */
 public class MockEnvoy implements GameEnvoy {
 
