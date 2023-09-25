@@ -14,4 +14,11 @@ public class Maze {
     this.treasureRemaining = 0;
     this.chap = new Chap(0, 0);
   }
+
+  public Chap getChap(){
+    return chap;
+  }
+  public Tile getTileType(int row, int col){
+        return tiles[row][col];
+  }
 }
