@@ -6,6 +6,11 @@ import java.util.HashMap;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * The Renderer for the game.
+ *
+ * author: Leory Xue 300607821
+ */
 public class Renderer extends JPanel {
   private static final int GRID_SIZE = 9;
   private static final Color PLAYER_COLOR = Color.RED;
@@ -27,6 +32,11 @@ public class Renderer extends JPanel {
 
   private final Maze maze;
 
+  /**
+   * Constructor for the renderer.
+   *
+   * @param maze the maze to render
+   */
   public Renderer(Maze maze) {
     this.maze = maze;
     setLayout(new GridLayout(GRID_SIZE, GRID_SIZE));
@@ -34,6 +44,9 @@ public class Renderer extends JPanel {
     drawPlayer();
   }
 
+  /**
+   * Initialize the grid.
+   */
   private void initializeGrid() {
     for (int row = 0; row < GRID_SIZE; row++) {
       for (int col = 0; col < GRID_SIZE; col++) {
@@ -45,11 +58,20 @@ public class Renderer extends JPanel {
     }
   }
 
+  /**
+   * Get the color of the tile.
+   *
+   * @param type the type of the tile
+   * @return the color of the tile
+   */
   private Color getTileColor(TileType type) {
     return TILE_COLORS.getOrDefault(type, Color.WHITE); // Default to white for unknown tile types
   }
 
-  // Update the renderer when the game state changes, e.g., after player moves
+
+  /**
+   * Update the renderer.
+   */
   public void updateRenderer() {
     // Clear the current player position
     clearPlayer();
@@ -71,6 +93,7 @@ public class Renderer extends JPanel {
     }
     repaint();
   }
+
 
   private void drawPlayer() {
     // Create a label with a circular background
@@ -97,7 +120,13 @@ public class Renderer extends JPanel {
     }
   }
 
-  // Method to get the component at a specific grid position
+  /**
+   * Get the component at the given position.
+   *
+   * @param row the row of the component
+   * @param col the column of the component
+   * @return the component at the given position
+   */
   private Component getComponentAtPosition(int row, int col) {
     int componentIndex = (row * GRID_SIZE) + col;
     if (componentIndex >= 0 && componentIndex < getComponentCount()) {
@@ -106,6 +135,7 @@ public class Renderer extends JPanel {
     return null;
   }
 
+  //testing purposes
   public static void main(String[] args) {
     SwingUtilities.invokeLater(() -> {
       Maze maze = new Maze(9, 9); // Create a Maze instance
