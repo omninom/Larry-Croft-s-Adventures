@@ -39,7 +39,7 @@ public class Renderer extends JPanel {
    */
   public Renderer(Maze maze) {
     this.maze = maze;
-    createTestMaze();
+    //createTestMaze();
     setLayout(new GridLayout(GRID_SIZE, GRID_SIZE));
     initializeGrid();
     updateRenderer();
@@ -85,6 +85,28 @@ public class Renderer extends JPanel {
     drawTile(playerX, playerY, "Chap", PLAYER_COLOR);
 
     // Repaint the grid with updated tile types/colors
+      Tile[][] tiles = maze.getTiles();
+      for (int row = 0; row < GRID_SIZE; row++) {
+          for (int col = 0; col < GRID_SIZE; col++) {
+              JPanel cell = (JPanel) getComponentAtPosition(row, col);
+              assert cell != null;
+              cell.setBackground(getTileColor(tiles[row][col].getType()));
+              if (tiles[row][col].getType() == TileType.KEY) {
+                  drawTile(row, col, "Key", getTileColor(tiles[row][col].getType()));
+              }
+              if (tiles[row][col].getType() == TileType.LOCKED_DOOR) {
+                  drawTile(row, col, "Lock", getTileColor(tiles[row][col].getType()));
+              }
+              if (tiles[row][col].getType() == TileType.INFO) {
+                  drawTile(row, col, "Info", getTileColor(tiles[row][col].getType()));
+              }
+          }
+      }
+
+
+
+
+      /* OLD CODE
     for (int row = 0; row < GRID_SIZE; row++) {
       for (int col = 0; col < GRID_SIZE; col++) {
         JPanel cell = (JPanel) getComponentAtPosition(row, col);
@@ -101,6 +123,8 @@ public class Renderer extends JPanel {
         }
       }
     }
+
+       */
 
     repaint();
   }
@@ -157,6 +181,7 @@ public class Renderer extends JPanel {
   /**
    * Create a test maze. Purely for testing purposes of the renderer.
    */
+    /*
   private void createTestMaze() {
     // Set some tiles in the maze to create a test configuration
 
@@ -217,6 +242,8 @@ public class Renderer extends JPanel {
     maze.setTile(8, 4, TileType.WALL);
     maze.setTile(8, 7, TileType.WALL);
   }
+
+     */
 
   //testing purposes
   public static void main(String[] args) {
