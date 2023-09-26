@@ -15,7 +15,7 @@ import java.io.File;
 public class App {
 
   private final Domain domain;
-  //private final Recorder recorder;
+  private final Recorder recorder;
 
   // TODO: Move to DOMAIN!!!
   private final Maze maze;
@@ -25,7 +25,7 @@ public class App {
    */
   public App() {
     this.domain = new Domain();
-    //this.recorder = new Recorder();
+    this.recorder = new Recorder();
 
     this.maze = new Maze(9, 9);
   }
@@ -74,7 +74,7 @@ public class App {
         break;
     }
 
-    //recorder.sendToRecording("Player | 0,0 | 0,0 | " + inputType);  // TODO: Actually store the positions?
+    recorder.sendToRecording("Player | 0,0 | 0,0 | " + inputType);  // TODO: Actually store the positions?
 
     return true;
   }
@@ -88,8 +88,7 @@ public class App {
     System.out.println("[APP DEBUG] New game: Level " + level);
 
     // TODO: Move this somewhere else
-    //recorder.sendToRecording(Integer.toString(level));
-    //recorder.setRecording();
+    recorder.setRecording(Integer.toString(level));
   }
 
   /**
@@ -123,7 +122,6 @@ public class App {
    */
   public void endGame() {
     System.out.println("[APP DEBUG] Ending game");
-    //recorder.setWaiting();
   }
 
   /**
