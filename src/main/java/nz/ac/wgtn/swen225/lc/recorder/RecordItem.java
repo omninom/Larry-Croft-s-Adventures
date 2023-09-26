@@ -7,7 +7,7 @@ package nz.ac.wgtn.swen225.lc.recorder;
  *
  * <p>RecordItem class is used to store information about the activity of the game.
  *
- * @author Neeraj Patel (300604056).
+ * @Author: Neeraj Patel (300604056).
  */
 public class RecordItem {
   // ----------------------------------- VARIABLES ----------------------------------- //

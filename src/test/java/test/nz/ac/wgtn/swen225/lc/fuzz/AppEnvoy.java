@@ -5,11 +5,8 @@ import nz.ac.wgtn.swen225.lc.app.AppInput;
 
 /**
  * The real-deal Envoy that deals with App.
-<<<<<<< HEAD
  *
  * @author Jebadiah Dudfield 300629357
-=======
->>>>>>> 521aba9 (Switched in new AppEnvoy class)
  */
 public class AppEnvoy implements GameEnvoy {
 
