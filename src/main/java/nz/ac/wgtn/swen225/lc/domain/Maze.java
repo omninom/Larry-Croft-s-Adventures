@@ -104,17 +104,23 @@ public class Maze {
   }
 
   public boolean isValidMove(int row, int col){
-    switch (tiles[row][col].getType()) {
-      case WALL:
-        return false;
-      case LOCKED_DOOR:
-        LockedDoorTile test = (LockedDoorTile) tiles[row][col];
-        return test.isLocked();
-      case EXIT_LOCK:
-        ExitLockTile test2 = (ExitLockTile) tiles[row][col];
-        return test2.canPass();
-      default:
-        return true;
+    if(row > numRows || row < 0){
+      return false;
+    }else if(col > numCols || col < 0){
+      return false;
+    }else{
+      switch (tiles[row][col].getType()) {
+        case WALL:
+          return false;
+        case LOCKED_DOOR:
+          LockedDoorTile test = (LockedDoorTile) tiles[row][col];
+          return test.isLocked();
+        case EXIT_LOCK:
+          ExitLockTile test2 = (ExitLockTile) tiles[row][col];
+          return test2.canPass();
+        default:
+          return true;
+      }
     }
   }
 
