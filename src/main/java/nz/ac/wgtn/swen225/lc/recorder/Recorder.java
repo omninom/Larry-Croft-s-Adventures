@@ -1,3 +1,4 @@
+
 package nz.ac.wgtn.swen225.lc.recorder;
 
 import java.io.IOException;
@@ -11,8 +12,10 @@ import java.util.Map;
 /**
  * Recorder.java
  *
- * <p>This class is a class for the Recorder program.
- * It will create a new instance of the Recorder at the start of the program.
+ * <p>Recorder class is used to record the game and replay it.
+ * It will record the game and save it to a JSON file.
+ *
+ * @Author: Neeraj Patel (300604056).
  */
 public class Recorder {
   // ----------------------------------- VARIABLES ----------------------------------- //

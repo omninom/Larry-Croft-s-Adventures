@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Test;
  * - autoReplay()
  * - setIsRecording()
  * - getIsRecording()
+ *
+ * @Author: Neeraj Patel (300604056).
  */
 public class RecorderTests {
   /**
