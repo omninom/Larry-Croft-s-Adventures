@@ -16,16 +16,15 @@ import java.util.Map;
  */
 public class Recorder {
   // ----------------------------------- VARIABLES ----------------------------------- //
-  int replaySpeed = 5; // 1 (slowest auto replay speed) to 10 (fastest auto replay speed)
+  int replaySpeed; // 1 (slowest auto replay speed) to 10 (fastest auto replay speed)
 
-  enum RecorderState { RECORDING, MANUAL_REPLAY, AUTO_REPLAY, LOAD_GAME }
+  enum RecorderState { RECORDING, MANUAL_REPLAY, AUTO_REPLAY, LOAD_GAME, WAITING }
 
   Map<Integer, RecordItem> currentRecording;
 
-  RecorderState state = null;
+  RecorderState state;
 
-  Boolean gameRunning = true;
-
+  String data;
 
   // ----------------------------------- CONSTRUCTOR ----------------------------------- //
 
@@ -34,12 +33,10 @@ public class Recorder {
    */
   public Recorder() {
     // ---- Set up the initial variables ---- //
+    state = RecorderState.WAITING;
     replaySpeed = 0;
 
-    // ---- Set the state to what user selects ---- //
-    state = RecorderState.RECORDING;
-
-    while (gameRunning) {
+    while (true) {
       if (state == RecorderState.RECORDING) {
         startRecording();
       }
@@ -52,6 +49,9 @@ public class Recorder {
       if (state == RecorderState.LOAD_GAME) {
         loadGame();
       }
+      if (state == RecorderState.WAITING) {
+        // ---- Do nothing ---- //
+      }
     }
   }
 
@@ -61,27 +61,37 @@ public class Recorder {
    * When called this will start recording the user's actions.
    */
   public void startRecording() {
+    // ---- Setup recording ---- //
     System.out.println("Recorder: Recording has started. \n");
     currentRecording = new HashMap<>();
     int currentSequenceNumber = 0;
 
     // ---- Record the initial game ---- //
-    RecordItem initialGame = new RecordItem(currentSequenceNumber, "0,0", "0,0", "NONE");
-    currentRecording.put(currentSequenceNumber, initialGame);
-    System.out.println("  Recorder: Initial game has been added:  [ " + initialGame + " ] \n");
+    RecordItem currentChange = new RecordItem(currentSequenceNumber, data, null, null, null);
+    currentRecording.put(currentSequenceNumber, currentChange);
+    System.out.println("  Recorder: Level has been added: [ " + currentChange + " ] \n");
     currentSequenceNumber++;
+    data = null;
 
     // ---- Record the rest of the game ---- //
-    while (state == RecorderState.RECORDING) {
-      // ---- Some move made ---- //
-      RecordItem currentChange = new RecordItem(currentSequenceNumber, "0,0", "0,0", "NONE");
-      currentRecording.put(currentSequenceNumber, currentChange);
+    while (state == RecorderState.RECORDING && data != null) {
+      String[] dataArray = data.split("\\|");
+      String actor = dataArray[0];
+      String currPos = dataArray[1];
+      String prevPos = dataArray[2];
+      String other = dataArray[3];
 
-      System.out.println("  Recorder: Move has been added: [ " + currentChange + " ] \n");
+      RecordItem newItem = new RecordItem(currentSequenceNumber, actor, currPos, prevPos, other);
+      currentRecording.put(currentSequenceNumber, newItem);
+
+      System.out.println("  Recorder: Move has been added: [ " + newItem + " ] \n");
       currentSequenceNumber++;
+      data = null;
     }
-    /*#
+
     // ---- Stop recording and save the current game in jason format ---- //
+
+    /*#
     System.out.println("Recorder: Recording has stopped & Saving game. \n");
     try {
         JSONObject jsonRecording = new JSONObject(currentRecording);
@@ -169,11 +179,19 @@ public class Recorder {
   }
 
   /**
+   * Will set the state of the recorder to be waiting.
+   */
+  public void setWaiting() {
+    state = RecorderState.WAITING;
+  }
+
+  /**
    * Will set the state of the recorder to be load game.
    */
   public void setLoadGame() {
     state = RecorderState.LOAD_GAME;
   }
+
 
   /**
    * This method will set the replay speed.
@@ -184,6 +202,16 @@ public class Recorder {
     this.replaySpeed = speed;
   }
 
+  // ----------------------------------- HELPER METHODS ----------------------------------- //
+
+  /**
+   * This method will send data to the current recording to the game.
+   */
+  public void sendToRecording(String data) {
+    this.data = data;
+  }
+
+
   // ----------------------------------- MAIN ----------------------------------- //
 
   /**
@@ -192,6 +220,20 @@ public class Recorder {
    * @param args - the arguments for the main method.
    */
   public static void main(String[] args) {
+
+    // ---- Create a new instance of the Recorder ---- //
     Recorder recorder = new Recorder();
+
+    // ---- Start recording after game is started---- //
+    recorder.sendToRecording("1"); // Send the current game level to the recorder
+    recorder.setRecording();
+
+    // ---- Record the rest of the game and send when player inputs something---- //
+    recorder.sendToRecording("Player| 0,0 | 0,0"); // (actor | currPos | prevPos | other)
+
+    // ---- Stop recording after game is finished ---- //
+    recorder.setWaiting();
   }
+
+
 }
