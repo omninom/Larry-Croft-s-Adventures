@@ -15,12 +15,12 @@ public class AppEnvoy implements GameEnvoy {
 
   AppEnvoy(int level) {
     this.level = level;
-    app = new App();
-    app.newGame(level);
+    reset();
   }
 
   @Override
   public void reset() {
+    app = new App();
     app.newGame(level);
   }
 
@@ -64,6 +64,6 @@ public class AppEnvoy implements GameEnvoy {
 
   @Override
   public String printSuccessMessage() {
-    return null;
+    return "Not Implemented Yet";
   }
 }
