@@ -39,6 +39,15 @@ public class App {
   }
 
   /**
+   * Gets the maze.
+   *
+   * @return the Maze object.
+   */
+  public Maze getMaze() {
+    return maze;
+  }
+
+  /**
    * Handles an input.
    *
    * @param inputType the input to handle.
