@@ -9,6 +9,8 @@ import java.io.File;
 
 /**
  * The App module.
+ * 
+ * @author Jack Gallagher (300615528)
  */
 public class App {
 

@@ -9,6 +9,8 @@ import nz.ac.wgtn.swen225.lc.renderer.Renderer;
 
 /**
  * The main window.
+ *
+ * @author Jack Gallagher (300615528)
  */
 class AppWindow extends JFrame {
   private final App app;
