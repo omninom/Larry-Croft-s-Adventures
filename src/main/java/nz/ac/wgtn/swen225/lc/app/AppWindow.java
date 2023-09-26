@@ -5,6 +5,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.*;
+
+import nz.ac.wgtn.swen225.lc.domain.Maze;
 import nz.ac.wgtn.swen225.lc.renderer.Renderer;
 
 /**
@@ -16,9 +18,12 @@ class AppWindow extends JFrame {
   private final App app;
   private final Renderer renderer;
 
+  private final Maze maze;
+
   public AppWindow(App app) {
     this.app = app;
-    this.renderer = new Renderer();
+    this.maze = new Maze(9, 9);
+    this.renderer = new Renderer(maze);
 
     // Set up the window
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
