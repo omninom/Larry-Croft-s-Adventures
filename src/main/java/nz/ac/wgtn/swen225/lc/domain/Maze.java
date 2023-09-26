@@ -104,7 +104,6 @@ public class Maze {
   }
 
   public boolean isValidMove(int row, int col){
-
     switch (tiles[row][col].getType()) {
       case WALL:
         return false;
@@ -119,4 +118,11 @@ public class Maze {
     }
   }
 
+  public void generateMaze(){
+    for (int i = 0; i < numRows; i++){
+      for (int j = 0; j < numRows; j++){
+        tiles[i][j] = new FreeTile();
+      }
+    }
+  }
 }
