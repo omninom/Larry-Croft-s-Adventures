@@ -1,6 +1,13 @@
 package nz.ac.wgtn.swen225.lc.domain;
 import java.util.*;
 
+/**
+ * Tile.java
+ *
+ * Handles all the different Tile classes
+ *
+ * @Author: Riley West (300608942).
+ */
 class Tile {
   private TileType type;
 
