@@ -12,14 +12,19 @@ public class Maze {
     this.numCols = numCols;
     this.tiles = new Tile[numRows][numCols];
     this.treasureRemaining = 0;
-    this.chap = new Chap(0, 0);
+    this.chap = new Chap(4, 4);
   }
 
   public Chap getChap() {
     return chap;
   }
 
-  public Tile getTileType(int row, int col) {
-    return tiles[row][col];
+  public TileType getTileType(int row, int col) {
+    return tiles[row][col].getType();
   }
+
+  public void setTile(int row, int col, TileType tileType) {
+    tiles[row][col] = new Tile(tileType);
+  }
+
 }

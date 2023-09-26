@@ -19,14 +19,14 @@ public class Renderer extends JPanel {
   private static final HashMap<TileType, Color> TILE_COLORS = new HashMap<>();    // Map of tile types to colors
 
   static {
-    TILE_COLORS.put(TileType.WALL, Color.BLACK);
+    TILE_COLORS.put(TileType.WALL, Color.GRAY);
     TILE_COLORS.put(TileType.FREE, Color.WHITE);
-    TILE_COLORS.put(TileType.KEY, Color.YELLOW);
+    TILE_COLORS.put(TileType.KEY, Color.BLACK);
     TILE_COLORS.put(TileType.LOCKED_DOOR, Color.GRAY);
-    TILE_COLORS.put(TileType.INFO, Color.BLUE);
+    TILE_COLORS.put(TileType.INFO, Color.MAGENTA);
     TILE_COLORS.put(TileType.TREASURE, Color.ORANGE);
     TILE_COLORS.put(TileType.EXIT_LOCK, Color.PINK);
-    TILE_COLORS.put(TileType.EXIT, Color.GREEN);
+    TILE_COLORS.put(TileType.EXIT, Color.BLUE);
 
   }
 
@@ -39,9 +39,10 @@ public class Renderer extends JPanel {
    */
   public Renderer(Maze maze) {
     this.maze = maze;
+    createTestMaze();
     setLayout(new GridLayout(GRID_SIZE, GRID_SIZE));
     initializeGrid();
-    drawPlayer();
+    updateRenderer();
   }
 
   /**
@@ -51,7 +52,7 @@ public class Renderer extends JPanel {
     for (int row = 0; row < GRID_SIZE; row++) {
       for (int col = 0; col < GRID_SIZE; col++) {
         JPanel cell = new JPanel();
-        cell.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.GRAY));
+        cell.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK));
         cell.setLayout(new BorderLayout()); // Use BorderLayout for each cell
         add(cell);
       }
@@ -81,32 +82,50 @@ public class Renderer extends JPanel {
     playerY = maze.getChap().getPosition().y;
 
     // Draw the player at the new position
-    drawPlayer();
+    drawTile(playerX, playerY, "Chap", PLAYER_COLOR);
 
     // Repaint the grid with updated tile types/colors
-    for (int i = 0; i < GRID_SIZE; i++) {
-      for (int j = 0; j < GRID_SIZE; j++) {
-        JPanel cell = (JPanel) getComponentAtPosition(i, j);
+    for (int row = 0; row < GRID_SIZE; row++) {
+      for (int col = 0; col < GRID_SIZE; col++) {
+        JPanel cell = (JPanel) getComponentAtPosition(row, col);
         assert cell != null;
-        //cell.setBackground(getTileColor(maze.getTileType(i, j)));
+        cell.setBackground(getTileColor(maze.getTileType(row, col)));
+        if (maze.getTileType(row, col) == TileType.KEY) {
+          drawTile(row, col, "Key", getTileColor(maze.getTileType(row, col)));
+        }
+        if (maze.getTileType(row, col) == TileType.LOCKED_DOOR) {
+          drawTile(row, col, "Lock", getTileColor(maze.getTileType(row, col)));
+        }
+        if (maze.getTileType(row, col) == TileType.INFO) {
+          drawTile(row, col, "Info", getTileColor(maze.getTileType(row, col)));
+        }
       }
     }
+
     repaint();
   }
 
 
-  private void drawPlayer() {
-    // Create a label with a circular background
-    JLabel playerLabel = new JLabel("P");
+  /**
+   * Draw a tile at the given position.
+   *
+   * @param row   the row of the tile
+   * @param col   the column of the tile
+   * @param label the label of the tile
+   * @param color the color of the tile
+   */
+  private void drawTile(int row, int col, String label, Color color) {
+    // Create a label with a background
+    JLabel playerLabel = new JLabel(label);
     playerLabel.setHorizontalAlignment(SwingConstants.CENTER);
     playerLabel.setVerticalAlignment(SwingConstants.CENTER);
     playerLabel.setForeground(Color.WHITE);
     playerLabel.setOpaque(true);
-    playerLabel.setBackground(PLAYER_COLOR);
+    playerLabel.setBackground(color);
     playerLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Padding
 
     // Get the panel at the player's position
-    JPanel cell = (JPanel) getComponentAtPosition(playerY, playerX);
+    JPanel cell = (JPanel) getComponentAtPosition(row, col);
     assert cell != null;
     cell.add(playerLabel, BorderLayout.CENTER);
   }
@@ -116,7 +135,6 @@ public class Renderer extends JPanel {
     JPanel cell = (JPanel) getComponentAtPosition(playerY, playerX);
     if (cell != null) {
       cell.removeAll();
-      //cell.setBackground(getTileColor(maze.getTileType(playerY, playerX)));
     }
   }
 
@@ -133,6 +151,71 @@ public class Renderer extends JPanel {
       return getComponent(componentIndex);
     }
     return null;
+  }
+
+
+  /**
+   * Create a test maze. Purely for testing purposes of the renderer.
+   */
+  private void createTestMaze() {
+    // Set some tiles in the maze to create a test configuration
+    //set all tiles to free tiles
+
+    for (int i = 0; i < GRID_SIZE; i++) {
+      for (int j = 0; j < GRID_SIZE; j++) {
+        maze.setTile(i, j, TileType.FREE);
+      }
+    }
+    //maze.setTile(0, 0, TileType.FREE);
+    maze.setTile(0, 1, TileType.TREASURE);
+    //maze.setTile(0, 2, TileType.FREE);
+    maze.setTile(0, 3, TileType.WALL);
+    maze.setTile(0, 4, TileType.EXIT);
+    maze.setTile(0, 5, TileType.WALL);
+    //maze.setTile(0, 6, TileType.FREE);
+    maze.setTile(0, 7, TileType.TREASURE);
+    //maze.setTile(0, 8, TileType.FREE);
+    maze.setTile(1, 0, TileType.WALL);
+    maze.setTile(1, 1, TileType.WALL);
+    maze.setTile(1, 2, TileType.LOCKED_DOOR);  //GREEN LOCK
+    maze.setTile(1, 3, TileType.WALL);
+    maze.setTile(1, 4, TileType.EXIT_LOCK);
+    maze.setTile(1, 5, TileType.WALL);
+    maze.setTile(1, 6, TileType.LOCKED_DOOR);  //GREEN LOCK
+    maze.setTile(1, 7, TileType.WALL);
+    maze.setTile(1, 8, TileType.WALL);
+    maze.setTile(2, 1, TileType.LOCKED_DOOR);   //CYAN LOCK
+    maze.setTile(2, 7, TileType.LOCKED_DOOR);    //RED LOCK
+    maze.setTile(3, 1, TileType.WALL);
+    maze.setTile(3, 2, TileType.KEY);      //CYAN KEY
+    maze.setTile(3, 4, TileType.INFO);
+    maze.setTile(3, 6, TileType.KEY);     //RED KEY
+    maze.setTile(3, 7, TileType.WALL);
+    maze.setTile(4, 0, TileType.WALL);
+    maze.setTile(4, 1, TileType.WALL);
+    maze.setTile(4, 2, TileType.TREASURE);
+    maze.setTile(4, 6, TileType.TREASURE);
+    maze.setTile(4, 7, TileType.WALL);
+    maze.setTile(4, 8, TileType.WALL);
+    maze.setTile(5, 1, TileType.WALL);
+    maze.setTile(5, 2, TileType.KEY);    //CYAN KEY
+    maze.setTile(5, 6, TileType.KEY);   //RED KEY
+    maze.setTile(5, 7, TileType.WALL);
+    maze.setTile(6, 1, TileType.LOCKED_DOOR);    //RED LOCK
+    maze.setTile(6, 4, TileType.TREASURE);
+    maze.setTile(6, 7, TileType.LOCKED_DOOR);   //CYAN LOCK
+    maze.setTile(7, 0, TileType.WALL);
+    maze.setTile(7, 1, TileType.WALL);
+    maze.setTile(7, 2, TileType.WALL);
+    maze.setTile(7, 3, TileType.LOCKED_DOOR);   //YELLOW LOCK
+    maze.setTile(7, 4, TileType.WALL);
+    maze.setTile(7, 5, TileType.LOCKED_DOOR);   //YELLOW LOCK
+    maze.setTile(7, 6, TileType.WALL);
+    maze.setTile(7, 7, TileType.WALL);
+    maze.setTile(7, 8, TileType.WALL);
+    maze.setTile(8, 1, TileType.WALL);
+    maze.setTile(8, 4, TileType.WALL);
+    maze.setTile(8, 7, TileType.WALL);
   }
 
   //testing purposes
