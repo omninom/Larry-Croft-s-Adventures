@@ -11,17 +11,16 @@ import nz.ac.wgtn.swen225.lc.renderer.Renderer;
 
 /**
  * The main window.
+ *
+ * @author Jack Gallagher (300615528)
  */
 class AppWindow extends JFrame {
   private final App app;
   private final Renderer renderer;
 
-  private final Maze maze;
-
   public AppWindow(App app) {
     this.app = app;
-    this.maze = new Maze(9, 9);
-    this.renderer = new Renderer(maze);
+    this.renderer = new Renderer(app.getMaze());
 
     // Set up the window
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -59,6 +58,9 @@ class AppWindow extends JFrame {
           default:
             break;
         }
+
+        // TODO: Move this
+        renderer.updateRenderer();
       }
     };
   }
