@@ -8,7 +8,7 @@ import java.util.*;
  *
  * @Author: Riley West (300608942).
  */
-class Tile {
+public class Tile {
   private TileType type;
 
   public Tile(TileType type) {
