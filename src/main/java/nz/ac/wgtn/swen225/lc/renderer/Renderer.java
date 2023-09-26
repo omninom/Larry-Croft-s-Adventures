@@ -159,8 +159,8 @@ public class Renderer extends JPanel {
    */
   private void createTestMaze() {
     // Set some tiles in the maze to create a test configuration
-    //set all tiles to free tiles
 
+    //set all tiles to free tiles
     for (int i = 0; i < GRID_SIZE; i++) {
       for (int j = 0; j < GRID_SIZE; j++) {
         maze.setTile(i, j, TileType.FREE);
