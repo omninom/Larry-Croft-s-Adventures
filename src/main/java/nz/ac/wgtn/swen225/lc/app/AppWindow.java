@@ -58,6 +58,9 @@ class AppWindow extends JFrame {
           default:
             break;
         }
+
+        // TODO: Move this
+        renderer.updateRenderer();
       }
     };
   }

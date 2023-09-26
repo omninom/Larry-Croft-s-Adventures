@@ -28,6 +28,7 @@ public class App {
     this.recorder = new Recorder();
 
     this.maze = new Maze(9, 9);
+    maze.generateMaze();
   }
 
   /**
