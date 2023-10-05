@@ -2,6 +2,7 @@ package test.nz.ac.wgtn.swen225.lc.recorder;
 
 import nz.ac.wgtn.swen225.lc.recorder.Recorder;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -10,7 +11,7 @@ import org.junit.jupiter.api.Test;
  * It will test the following methods:
  * TODO add methods to test
  *
- * @author Neeraj Patel (300604056).
+ * @Author: Neeraj Patel (300604056).
  */
 public class RecorderTests {
   /**
@@ -21,7 +22,6 @@ public class RecorderTests {
     Assertions.assertTrue(true);
   }
 
-
   /**
    * Test the initialisation and states of startRecording() method.
    */
@@ -30,8 +30,10 @@ public class RecorderTests {
     Recorder test = new Recorder();
     String level = "1";
 
+    // --- Test that the initial state is WAITING --- //
     Assertions.assertEquals("WAITING", test.getState());
 
+    // --- Test that the state is RECORDING after startRecording() is called --- //
     test.setRecording(level);
     Assertions.assertEquals("RECORDING", test.getState());
   }
@@ -40,30 +42,59 @@ public class RecorderTests {
    * Test the adding elements of addToRecording() method.
    */
   @Test
-  void test_addToRecording() {
+  void test_addToRecording_01() {
     Recorder test = new Recorder();
     String level = "1";
     int sequenceNumber = 0;
 
+    // --- Add elements to the recording --- //
     test.setRecording(level);
-
     test.addToRecording("PLAYER | MOVE_LEFT");
     test.addToRecording("ACTOR | MOVE_LEFT");
     test.addToRecording("ACTOR | MOVE_RIGHT");
     test.addToRecording("PLAYER | MOVE_RIGHT");
 
+    // --- Test that the elements have been added to the recording --- //
     if (test.getCurrentRecording().size() != 5) {
       Assertions.fail("The size of the current recording is not 4");
     }
+
+    // --- Test that the elements have been added to the recording in the correct order --- //
     for (int i = 0; i < test.getCurrentRecording().size(); i++) {
       Assertions.assertEquals(sequenceNumber,
               test.getCurrentRecording().get(i).getSequenceNumber());
       sequenceNumber++;
     }
-
   }
 
+  /**
+   * Test the adding elements of addToRecording() method.
+   */
+  @Test
+  void test_addToRecording_02() {
+    Recorder test = new Recorder();
+    test.setRecording("1");
 
+    // --- Add data to the recording --- //
+    test.addToRecording("PLAYER | MOVE_LEFT");
+    test.addToRecording("ACTOR | MOVE_RIGHT");
+
+    Assertions.assertEquals(3, test.getCurrentRecording().size());
+
+    /*#
+    // --- Check the sequence numbers are correct --- //
+    Assertions.assertEquals(0, test.getCurrentRecording().get(0).sequenceNumber);
+    Assertions.assertEquals(1, test.getCurrentRecording().get(1).sequenceNumber);
+
+    // --- Check that the data was recorded correctly --- //
+    Assertions.assertEquals("PLAYER", test.getCurrentRecording().get(1).actor);
+    Assertions.assertEquals("MOVE_LEFT", test.getCurrentRecording().get(1).other);
+
+    Assertions.assertEquals("ACTOR", test.getCurrentRecording().get(2).actor);
+    Assertions.assertEquals("MOVE_RIGHT", test.getCurrentRecording().get(2).other);
+
+     */
+  }
 
   /**
    * Test that the stepByStepReplay() method is working as expected.
@@ -72,6 +103,9 @@ public class RecorderTests {
   @Test
   void test_stepByStepReplay() {
     // TODO: Implement
+
+    Recorder test = new Recorder();
+
   }
 
   /**
@@ -81,6 +115,9 @@ public class RecorderTests {
   @Test
   void test_autoReplay() {
     // TODO: Implement
+
+    Recorder test = new Recorder();
+
   }
 
   /**
@@ -90,15 +127,9 @@ public class RecorderTests {
   @Test
   void test_loadGame() {
     // TODO: Implement
-  }
 
-  /**
-   * Test that the setIsRecording() method is working as expected.
-   * This will test that the setIsRecording() method is working as expected.
-   */
-  @Test
-  void test_setIsRecording() {
-    // TODO: Implement
+    Recorder test = new Recorder();
+
   }
 
   /**
@@ -107,12 +138,11 @@ public class RecorderTests {
    */
   @Test
   void test_getIsRecording() {
-    // TODO: Implement
+    Recorder test = new Recorder();
+
+
+
   }
-
-
-
-
 
 }
 
