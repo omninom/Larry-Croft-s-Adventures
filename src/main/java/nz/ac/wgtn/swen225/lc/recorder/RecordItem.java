@@ -1,5 +1,3 @@
-// @Author:  Neeraj Patel (300604056)
-
 package nz.ac.wgtn.swen225.lc.recorder;
 
 /**
@@ -7,30 +5,24 @@ package nz.ac.wgtn.swen225.lc.recorder;
  *
  * <p>RecordItem class is used to store information about the activity of the game.
  *
- * @Author: Neeraj Patel (300604056).
+ * @author Neeraj Patel (300604056).
  */
 public class RecordItem {
   // ----------------------------------- VARIABLES ----------------------------------- //
   int sequenceNumber; // the turn number that the action was taken on
   String actor; // the actor that took the action
-  String currPostion; // the position of the player when the action was taken
-  String prevPostion; // the position of the player before the action was taken
   String other; // any other information that is needed to be stored
 
   /**
    * Constructor for RecordItem class.
    *
    * @param seqNumber - the sequence number of the action.
-   * @param actor - the actor that took the action.
-   * @param currPos - the current position of the player.
-   * @param prevPos - the previous position of the player.
-   * @param other - any other information that is needed to be stored.
+   * @param actor     - the actor that took the action.
+   * @param other     - any other information that is needed to be stored.
    */
-  public RecordItem(int seqNumber, String actor, String currPos, String prevPos, String other) {
+  public RecordItem(int seqNumber, String actor, String other) {
     this.sequenceNumber = seqNumber;
     this.actor = actor;
-    this.currPostion = currPos;
-    this.prevPostion = prevPos;
     this.other = other;
   }
 
@@ -52,23 +44,6 @@ public class RecordItem {
     return actor;
   }
 
-  /**
-   * Returns the current position of the player.
-   *
-   * @return currPosition - the current position of the player.
-   */
-  public String getCurrPosition() {
-    return currPostion;
-  }
-
-  /**
-   * Returns the previous position of the player.
-   *
-   * @return prevPosition - the previous position of the player.
-   */
-  public String getPrevPosition() {
-    return prevPostion;
-  }
 
   /**
    * Returns any other information that is needed to be stored.
@@ -80,13 +55,22 @@ public class RecordItem {
   }
 
   /**
-   * Returns the current position of the player.
+   * Returns a string representation of the RecordItem.
    *
-   * @return currPosition - the current position of the player.
+   * @return string - a string representation of the RecordItem.
    */
+  @Override
   public String toString() {
-    return "Sequence Number: " + sequenceNumber + ", Current Position: " + currPostion
-            + ", Previous Position: " + prevPostion + " Other: " + other;
+    return "RecordItem["
+            + "sequenceNumber="
+            + sequenceNumber
+            + ", actor='"
+            + actor
+            + '\''
+            + ", other='"
+            + other
+            + '\''
+            + ']';
   }
 
 }
