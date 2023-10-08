@@ -75,8 +75,7 @@ public class App {
         break;
     }
 
-    recorder.sendToRecording("Player | 0,0 | 0,0 | " + inputType);  // TODO: Actually store the positions?
-
+    recorder.addToRecording("ACTOR" + "|" + inputType);
     return true;
   }
 
