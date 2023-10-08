@@ -1,9 +1,14 @@
 package nz.ac.wgtn.swen225.lc.recorder;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
+import javax.swing.JFileChooser;
+//import org.json.JSONException;
+//import org.json.JSONObject;
 
 /**
  * Recorder.java
@@ -15,15 +20,15 @@ import java.util.Map;
  */
 public class Recorder {
   // ----------------------------------- VARIABLES ----------------------------------- //
-  static int replaySpeed; // 1 (slowest auto replay speed) to 10 (fastest auto replay speed)
+  private static int replaySpeed; // 1 (slowest auto replay speed) to 10 (fastest auto replay speed)
 
-  enum RecorderState { RECORDING, MANUAL_REPLAY, AUTO_REPLAY, WAITING }
+  private enum RecorderState { RECORDING, MANUAL_REPLAY, AUTO_REPLAY, WAITING }
 
-  Map<Integer, RecordItem> currentRecording;
+  private Map<Integer, RecordItem> currentRecording;
 
-  static int currentSequenceNumber = 0;
+  private static int currentSequenceNumber = 0;
 
-  static RecorderState state;
+  private static RecorderState state;
 
 
   // ----------------------------------- CONSTRUCTOR ----------------------------------- //
@@ -48,14 +53,14 @@ public class Recorder {
    */
   private void startRecording(String level) {
     // ---- Setup recording ---- //
-    System.out.println("[DEBUG] Recorder: Recording has started. \n");
+    System.out.println("[DEBUG] Recorder: Recording has started.");
     currentRecording = new HashMap<>();
     currentSequenceNumber = 0;
 
     // ---- Record the initial game ---- //
     RecordItem currentChange = new RecordItem(currentSequenceNumber, "START", level);
     currentRecording.put(currentSequenceNumber, currentChange);
-    System.out.println("[DEBUG] Recorder: Level has been added: [ " + currentChange + " ] \n");
+    System.out.println("[DEBUG] Recorder: Level has been added: [ " + currentChange + " ] ");
     currentSequenceNumber++;
   }
 
@@ -66,12 +71,6 @@ public class Recorder {
    * @param data - the data to added to the recording.
    */
   public void addToRecording(String data) {
-    // ---- Check if recording is happening ---- //
-    if (state != RecorderState.RECORDING) {
-      System.out.println("[DEBUG] Recorder: Not recording. \n");
-      return;
-    }
-
     // ---- Split the data up ---- //
     String[] dataArray = data.split("\\|");
     String actor = dataArray[0].trim();
@@ -90,9 +89,7 @@ public class Recorder {
 
     // ---- Record Player movement ---- //
     RecordItem newItem = new RecordItem(currentSequenceNumber, actor, remainingData.get(0));
-    System.out.println("[DEBUG] Recorder: Player has been added: [ " + newItem + " ] \n");
-
-    // ---- Save to current recording ---- //
+    System.out.println("[DEBUG] Recorder: Player has been added: [ " + newItem + " ]");
     currentRecording.put(currentSequenceNumber, newItem);
     currentSequenceNumber++;
   }
@@ -100,48 +97,83 @@ public class Recorder {
   /**
    * When called this will end the recording and save the recording to a file.*/
   private void endRecording() {
-    // ---- Stop recording and save the current game in jason format ---- //
-    /*#
-    System.out.println("Recorder: Recording has stopped & Saving game. \n");
-    try {
-      JSONObject jsonRecording = new JSONObject(currentRecording);
-      String jsonString = jsonRecording.toString();
-      Files.writeString(Paths.get("gameRecording.json"), jsonString);
-    } catch (IOException e) {
-      System.out.println("Error: Unable to save game recording. " + e.getMessage());
+    // ---- Ask user the location and file name ---- //
+    JFileChooser fileFinder = new JFileChooser();
+    fileFinder.setDialogTitle("Select file to save recording to:");
+
+    // ---- Validate the file ---- //
+    int userAction = fileFinder.showSaveDialog(null);
+    if (userAction == JFileChooser.APPROVE_OPTION) {
+      String filePath = fileFinder.getSelectedFile().getAbsolutePath();
+
+      // ---- Save the current game in JSON format ---- //
+      System.out.println("[DEBUG] Recorder: saved json (cr size: " + currentRecording.size() + ")");
+      /*#
+      try {
+        JSONObject gameJson = new JSONObject(currentRecording);
+        Files.writeString(Paths.get(filePath), gameJson.toString());
+      } catch (IOException e) {
+        System.out.println("Error: Saving Json file: " + e.getMessage());
+      }
+
+       */
     }
-
-     */
-
   }
-
 
 
   /**
    * When called will load the game from a file.
    */
   private void loadGame() {
-    System.out.println("[DEBUG] Recorder: Loading game. \n");
-    // ---- load the game from json file ---- //
-    HashMap<Integer, RecordItem> loadedRecording = new HashMap<>();
+    System.out.println("[DEBUG] Recorder: Loading game.");
 
-    // open file finder
+    // ---- Ask user for the file to load ---- //
+    JFileChooser fileChooser = new JFileChooser();
+    fileChooser.setDialogTitle("Select file to load recording from:");
+    int userAction = fileChooser.showOpenDialog(null);
+    currentRecording = new HashMap<>();
 
-    // parse json file
+    // ---- Validate the file ---- //
+    /*#
+    if (userAction == JFileChooser.APPROVE_OPTION) {
+      try {
+        // ---- Read the json file ---- //
 
+        String filePath = fileChooser.getSelectedFile().getAbsolutePath();
+        String jsonData = Files.readString(Paths.get(filePath));
+        JSONObject json = new JSONObject(jsonData);
 
+        for (String key : json.keySet()) {
+          int sequenceNumber = Integer.parseInt(key);
+          JSONObject recordData = json.getJSONObject(key);
+          String other = recordData.getString("other");
+          String actor = recordData.getString("actor");
 
-    currentRecording = loadedRecording;
+          if (actor.equals("END")) {
+            break;
+          }
+
+          RecordItem newRecordItem = new RecordItem(sequenceNumber, actor, other);
+          currentRecording.put(sequenceNumber, newRecordItem);
+        }
+        System.out.println("[DEBUG] Recorder: Game loaded successfully.");
+      } catch (IOException | JSONException e) {
+        System.out.println("Error: Loading Json file: " + e.getMessage());
+      }
+
+    }
+     */
   }
 
   /**
    * When called this will replay the recording in steps when the user presses a button.
    */
-  public void stepByStepReplay() {
-    System.out.println("[DEBUG] Recorder: Step by step replaying. \n");
-
+  private void stepByStepReplay() {
+    // ---- Load the game ---- //
     loadGame();
 
+    // ---- Replay the game ---- //
+    System.out.println("[DEBUG] Recorder: Step by step replaying.");
 
 
   }
@@ -151,11 +183,31 @@ public class Recorder {
    * If the user has not set a speed, it will default to the slowest speed.
    */
   private void autoReplay() {
-    System.out.println("[DEBUG] Recorder: Auto replaying. \n");
-
+    // ---- Load the game ---- //
     loadGame();
 
+    // ---- Replay the game ---- //
+    System.out.println("[DEBUG] Recorder: Auto replaying.");
+    int currentSequenceNumber = 0;
+    while (currentSequenceNumber < currentRecording.size()) {
+      RecordItem currentRecord = currentRecording.get(currentSequenceNumber);
+      System.out.println("[DEBUG] Recorder: " + currentRecord);
 
+      // -- Wait before doing next move -- //
+      try {
+        Thread.sleep(400L * replaySpeed);
+      } catch (InterruptedException e) {
+        System.out.println("Error: " + e.getMessage());
+      }
+
+      // -- Check the type of item -- //
+      if (currentRecord.actor.equals("START")) {
+        // todo: tell app to load level
+      } else {
+        // todo: tell app to move actor
+      }
+      currentSequenceNumber++;
+    }
   }
 
 
@@ -180,12 +232,13 @@ public class Recorder {
   }
 
 
-
-
   // ----------------------------------- SETTERS ----------------------------------- //
 
   /**
    * Will set the state of the recorder to be recording.
+   *
+   *
+   * @param level - the level that the user is currently playing.
    */
   public void setRecording(String level) {
     state = RecorderState.RECORDING;
@@ -218,7 +271,7 @@ public class Recorder {
   }
 
 
-  // todo delete ----------------------------------- MAIN ----------------------------------- //
+  // todo delete once ---------------------------- MAIN ---------------------------- //
 
   /**
    * The main method for the Recorder program.
@@ -243,7 +296,8 @@ public class Recorder {
     recorder.addToRecording("END");
 
     // ---- Auto replay game ---- //
-    //recorder.setAutoReplay();
+    recorder.setReplaySpeed(5);
+    recorder.setAutoReplay();
 
     // ---- Manual replay game ---- //
     //recorder.setManualReplay();
