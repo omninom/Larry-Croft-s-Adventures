@@ -1,0 +1,39 @@
+image: gradle:jdk17
+
+variables:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+
+stages:
+  - build
+  - test
+  - package
+
+build:
+  stage: build
+  tags: [docker]
+  script:
+    - gradle $GRADLE_OPTS build -x test
+  artifacts:
+    paths:
+      - build/
+
+test:
+  stage: test
+  tags: [docker]
+  script:
+    - gradle $GRADLE_OPTS test
+  artifacts:
+    reports:
+      junit: build/test-results/**/TEST-*.xml
+
+package:
+  stage: package
+  tags: [docker]
+  rules:
+    - if: $CI_COMMIT_TAG # Run this job when a tag is created
+      #when: manual
+  script:
+    - gradle $GRADLE_OPTS jar
+  artifacts:
+    paths:
+      - build/libs/*.jar
