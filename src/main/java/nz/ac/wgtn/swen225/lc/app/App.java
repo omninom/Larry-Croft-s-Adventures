@@ -75,8 +75,8 @@ public class App {
         break;
     }
 
-    recorder.addToRecording("ACTOR" + "|" + inputType);
-    // e.g. recorder.addToRecording("PLAYER | MOVE_LEFT"); Send [currentPlayer | move]
+    recorder.addToRecording("CHAP" + "|" + inputType);
+    // e.g. recorder.addToRecording("CHAP | MOVE_LEFT"); Send [currentPlayer | move]
 
     return true;
   }
