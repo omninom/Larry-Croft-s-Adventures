@@ -4,68 +4,57 @@ import nz.ac.wgtn.swen225.lc.domain.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
 public class Renderer extends JPanel {
   private static final int GRID_SIZE = 9;
-  private static final Color PLAYER_COLOR = Color.RED;
-  private static final HashMap<TileType, Color> TILE_COLORS = new HashMap<>();
+  private static final BufferedImage chapSprite = Sprite.chap.sprite;
+  private static final HashMap<TileType, Sprite> TILE_SPRITES = new HashMap<>();
 
   static {
-    TILE_COLORS.put(TileType.WALL, Color.GRAY);
-    TILE_COLORS.put(TileType.FREE, Color.WHITE);
-    TILE_COLORS.put(TileType.KEY, Color.BLACK);
-    TILE_COLORS.put(TileType.LOCKED_DOOR, Color.GRAY);
-    TILE_COLORS.put(TileType.INFO, Color.MAGENTA);
-    TILE_COLORS.put(TileType.TREASURE, Color.ORANGE);
-    TILE_COLORS.put(TileType.EXIT_LOCK, Color.PINK);
-    TILE_COLORS.put(TileType.EXIT, Color.BLUE);
+    TILE_SPRITES.put(TileType.WALL, Sprite.wallTile);
+    TILE_SPRITES.put(TileType.FREE, Sprite.freeTile1);
+    TILE_SPRITES.put(TileType.LOCKED_DOOR, Sprite.redLock);
+    TILE_SPRITES.put(TileType.TREASURE, Sprite.treasure);
+    TILE_SPRITES.put(TileType.INFO, Sprite.info);
+    TILE_SPRITES.put(TileType.KEY, Sprite.redKey);
+    TILE_SPRITES.put(TileType.EXIT, Sprite.exit);
+    TILE_SPRITES.put(TileType.EXIT_LOCK, Sprite.exitLock);
   }
 
   private final Maze maze;
 
   public Renderer(Maze maze) {
     this.maze = maze;
-    setLayout(new GridLayout(GRID_SIZE, GRID_SIZE));
-    initializeGrid();
-    updateRenderer();
+    setPreferredSize(new Dimension(GRID_SIZE * 50, GRID_SIZE * 50)); // Adjust the size as needed
   }
 
-  private void initializeGrid() {
+  @Override
+  protected void paintComponent(Graphics g) {
+    super.paintComponent(g);
+
+    int cellWidth = getWidth() / GRID_SIZE;
+    int cellHeight = getHeight() / GRID_SIZE;
+
     for (int row = 0; row < GRID_SIZE; row++) {
       for (int col = 0; col < GRID_SIZE; col++) {
-        JPanel cell = new JPanel();
-        cell.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        add(cell);
+        Tile tile = maze.getTiles()[row][col];
+        Sprite sprite = TILE_SPRITES.get(tile.getType());
+
+        if (sprite != null) {
+          BufferedImage spriteImage = sprite.sprite;
+          g.drawImage(spriteImage, col * cellWidth, row * cellHeight, cellWidth, cellHeight, this);
+        }
+
+        if (maze.getChap().getPosition().equals(new Point(row, col))) {
+          g.drawImage(chapSprite, col * cellWidth, row * cellHeight, cellWidth, cellHeight, this);
+        }
       }
     }
   }
 
   public void updateRenderer() {
-    removeAll(); // Clear the existing grid
-
-    for (int row = 0; row < GRID_SIZE; row++) {
-      for (int col = 0; col < GRID_SIZE; col++) {
-        JPanel cell = new JPanel();
-        cell.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        Tile tile = maze.getTiles()[row][col];
-        cell.setBackground(TILE_COLORS.get(tile.getType()));
-
-        if (maze.getChap().getPosition().equals(new Point(row, col))) {
-          cell.setBackground(PLAYER_COLOR);
-          JLabel chapLabel = new JLabel("Chap");
-          chapLabel.setForeground(Color.WHITE);
-          chapLabel.setHorizontalAlignment(JLabel.CENTER);
-          chapLabel.setVerticalAlignment(JLabel.CENTER);
-          cell.add(chapLabel);
-        }
-        add(cell);
-      }
-    }
-
-    revalidate(); // Refresh the panel
     repaint();
   }
-
-
 }
