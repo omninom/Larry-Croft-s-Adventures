@@ -9,23 +9,23 @@ package test.nz.ac.wgtn.swen225.lc.fuzz;
  */
 public interface GameEnvoy {
 
-  public void reset();
+  boolean reset();
 
-  public void moveUp();
+  boolean moveUp();
 
-  public void moveDown();
+  boolean moveDown();
 
-  public void moveLeft();
+  boolean moveLeft();
 
-  public void moveRight();
+  boolean moveRight();
 
-  public void pause();
+  boolean pause();
 
-  public void unpause();
+  boolean unpause();
 
-  public boolean isStopped();
+  boolean isStopped();
 
-  public String printSuccessMessage();
+  String printSuccessMessage();
 }
 
 

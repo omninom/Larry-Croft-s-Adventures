@@ -23,41 +23,39 @@ public class AppEnvoy implements GameEnvoy {
   }
 
   @Override
-  public void reset() {
+   public boolean reset() {
     app.newGame(level);
+    return true;
   }
 
   @Override
-  public void moveUp() {
-    app.handleInput(AppInput.MOVE_UP);
+   public boolean moveUp() {
+    return app.handleInput(AppInput.MOVE_UP);
   }
 
   @Override
-  public void moveDown() {
-    app.handleInput(AppInput.MOVE_DOWN);
-
+   public boolean moveDown() {
+    return app.handleInput(AppInput.MOVE_DOWN);
   }
 
   @Override
-  public void moveLeft() {
-    app.handleInput(AppInput.MOVE_LEFT);
-
+   public boolean moveLeft() {
+    return app.handleInput(AppInput.MOVE_LEFT);
   }
 
   @Override
-  public void moveRight() {
-    app.handleInput(AppInput.MOVE_RIGHT);
-
+   public boolean moveRight() {
+    return app.handleInput(AppInput.MOVE_RIGHT);
   }
 
   @Override
-  public void pause() {
-    app.handleInput(AppInput.PAUSE);
+   public boolean pause() {
+    return app.handleInput(AppInput.PAUSE);
   }
 
   @Override
-  public void unpause() {
-    app.handleInput(AppInput.UNPAUSE);
+   public boolean unpause() {
+    return app.handleInput(AppInput.UNPAUSE);
   }
 
   @Override

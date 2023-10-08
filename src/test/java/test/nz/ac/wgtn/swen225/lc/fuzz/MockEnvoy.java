@@ -16,10 +16,11 @@ public class MockEnvoy implements GameEnvoy {
   /**
    * Resets the Envoy. Currently unused, but just in case.
    */
-  public void reset() {
+  public boolean reset() {
     positions.clear();
     positions.add(new int[] {0, 0});
     out = new StringBuilder();
+    return true;
   }
 
   List<int[]> positions = new ArrayList<>();
@@ -30,43 +31,49 @@ public class MockEnvoy implements GameEnvoy {
   }
 
   @Override
-  public void moveUp() {
+   public boolean moveUp() {
     int[] oldP = positions.get(positions.size() - 1);
     int[] newP = {oldP[0], oldP[1] - 1};
     positions.add(newP);
+    return true;
   }
 
   @Override
-  public void moveDown() {
+   public boolean moveDown() {
     int[] oldP = positions.get(positions.size() - 1);
     int[] newP = {oldP[0], oldP[1] + 1};
     positions.add(newP);
+    return true;
   }
 
   @Override
-  public void moveLeft() {
+   public boolean moveLeft() {
     int[] oldP = positions.get(positions.size() - 1);
     int[] newP = {oldP[0] - 1, oldP[1]};
     positions.add(newP);
+    return true;
   }
 
   @Override
-  public void moveRight() {
+   public boolean moveRight() {
     int[] oldP = positions.get(positions.size() - 1);
     int[] newP = {oldP[0] + 1, oldP[1]};
     positions.add(newP);
+    return true;
   }
 
   @Override
-  public void pause() {
+   public boolean pause() {
     out.append("+P\n");
     paused = true;
+    return true;
   }
 
   @Override
-  public void unpause() {
+   public boolean unpause() {
     out.append("-P\n");
     paused = false;
+    return true;
   }
 
   @Override
