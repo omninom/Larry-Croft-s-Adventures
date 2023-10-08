@@ -1,4 +1,6 @@
 package nz.ac.wgtn.swen225.lc.domain;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.awt.Point;
 import java.util.*;
 
@@ -20,6 +22,14 @@ public class Chap {
     this.position = new Point(initialRow, initialCol);
     this.keys = new ArrayList<>();
     this.alive = true;
+  }
+
+  @JsonCreator
+  public Chap(@JsonProperty("position") Point position, @JsonProperty("keys") ArrayList<Tile> keys, @JsonProperty("alive") boolean alive) {
+    // Initialize fields with arguments
+    this.position = position;
+    this.keys = keys;
+    this.alive = alive;
   }
 
   public Point getPosition(){
