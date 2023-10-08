@@ -23,12 +23,12 @@ public class PersistencyTest {
   }
 
   // FIXME: Tests will currently fail due to level not being available in the test environment
-//  @Test
-//  public void loadMaze() {
-//    FileHandler f = new FileHandler();
-//    Maze m = f.loadMaze("level1.json");
-//  }
-//
+  @Test
+  public void loadMaze() {
+    FileHandler f = new FileHandler();
+    Maze m = f.loadMaze("level1.json");
+  }
+
 //  @Test
 //  public void saveAndLoadMaze() {
 //    FileHandler f = new FileHandler();

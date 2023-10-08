@@ -1,9 +1,11 @@
 package nz.ac.wgtn.swen225.lc.persistency;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import nz.ac.wgtn.swen225.lc.domain.*;
 
 /**
@@ -38,12 +40,12 @@ public class FileHandler {
    * @return Maze level
    */
   public Maze loadMaze(String fileName) {
-    File file = new File(fileName);
     Maze maze;
 
-    ObjectMapper mapper = new ObjectMapper();
-    try {
-      maze = mapper.readValue(file, Maze.class);
+    try (InputStream inputStream = getClass().getResourceAsStream(String.format("/levels/%s", fileName))) {
+      ObjectMapper mapper = new ObjectMapper();
+      mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+      maze = mapper.readValue(inputStream, Maze.class);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
