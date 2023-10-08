@@ -1,4 +1,6 @@
 package nz.ac.wgtn.swen225.lc.domain;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.*;
 
 /**
@@ -11,7 +13,8 @@ import java.util.*;
 public class Tile {
   private TileType type;
 
-  public Tile(TileType type) {
+  @JsonCreator
+  public Tile(@JsonProperty("type") TileType type) {
     this.type = type;
   }
 
