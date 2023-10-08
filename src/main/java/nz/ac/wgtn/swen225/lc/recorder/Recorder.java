@@ -40,6 +40,7 @@ public class Recorder {
    */
   public Recorder() {
     state = RecorderState.WAITING;
+    currentRecording = new HashMap<>();
     replaySpeed = 5;
   }
 
