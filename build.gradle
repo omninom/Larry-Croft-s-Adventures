@@ -40,8 +40,9 @@ jar {
         attributes 'Main-Class': application.mainClass
     }
 
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from sourceSets.main.allSource
     from javadoc.destinationDir
 }
 
-jar.dependsOn(javadoc)
+//jar.dependsOn(javadoc)

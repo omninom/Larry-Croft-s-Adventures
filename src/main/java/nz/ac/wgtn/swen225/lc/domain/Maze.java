@@ -14,6 +14,11 @@ public class Maze {
   private int treasureRemaining;
   private Chap chap;
 
+  /**
+   * Default constructor for deserialising by Jackson.
+   */
+  public Maze() {}
+
   public Maze(int numRows, int numCols){
     this.numRows = numRows;
     this.numCols = numCols;
