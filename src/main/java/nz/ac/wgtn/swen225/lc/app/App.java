@@ -76,6 +76,8 @@ public class App {
     }
 
     recorder.addToRecording("ACTOR" + "|" + inputType);
+    // e.g. recorder.addToRecording("PLAYER | MOVE_LEFT"); Send [currentPlayer | move]
+
     return true;
   }
 
@@ -122,6 +124,7 @@ public class App {
    */
   public void endGame() {
     System.out.println("[APP DEBUG] Ending game");
+    recorder.addToRecording("END"); // Lets recorder know when to stop
   }
 
   /**
