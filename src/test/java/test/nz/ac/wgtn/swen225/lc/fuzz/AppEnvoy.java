@@ -5,8 +5,11 @@ import nz.ac.wgtn.swen225.lc.app.AppInput;
 
 /**
  * The real-deal Envoy that deals with App.
+<<<<<<< HEAD
  *
  * @author Jebadiah Dudfield 300629357
+=======
+>>>>>>> 521aba9 (Switched in new AppEnvoy class)
  */
 public class AppEnvoy implements GameEnvoy {
 
@@ -15,12 +18,12 @@ public class AppEnvoy implements GameEnvoy {
 
   AppEnvoy(int level) {
     this.level = level;
-    reset();
+    app = new App();
+    app.newGame(level);
   }
 
   @Override
   public void reset() {
-    app = new App();
     app.newGame(level);
   }
 
@@ -64,6 +67,6 @@ public class AppEnvoy implements GameEnvoy {
 
   @Override
   public String printSuccessMessage() {
-    return "Not Implemented Yet";
+    return null;
   }
 }
