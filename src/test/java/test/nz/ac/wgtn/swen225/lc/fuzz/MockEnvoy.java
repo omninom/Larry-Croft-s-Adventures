@@ -16,14 +16,13 @@ public class MockEnvoy implements GameEnvoy {
   /**
    * Resets the Envoy. Currently unused, but just in case.
    */
-  public boolean reset() {
+  public void reset() {
     positions.clear();
     positions.add(new int[] {0, 0});
     out = new StringBuilder();
-    return true;
   }
 
-  List<int[]> positions = new ArrayList<>();
+  final List<int[]> positions = new ArrayList<>();
 
   MockEnvoy() {
     positions.add(new int[] {0, 0});
@@ -63,17 +62,15 @@ public class MockEnvoy implements GameEnvoy {
   }
 
   @Override
-   public boolean pause() {
+   public void pause() {
     out.append("+P\n");
     paused = true;
-    return true;
   }
 
   @Override
-   public boolean unpause() {
+   public void unpause() {
     out.append("-P\n");
     paused = false;
-    return true;
   }
 
   @Override

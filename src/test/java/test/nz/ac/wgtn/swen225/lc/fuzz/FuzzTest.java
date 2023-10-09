@@ -80,7 +80,7 @@ public class FuzzTest {
    * If we are unable to move in a direction, we will not try to move in that direction again
    * until we have made a successful move OR tried all directions without success.
    */
-  private class FuzzMovementManager {
+  private static class FuzzMovementManager {
 
     final GameEnvoy envoy;
     /*

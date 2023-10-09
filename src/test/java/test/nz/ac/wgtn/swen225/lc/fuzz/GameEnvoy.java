@@ -11,10 +11,8 @@ public interface GameEnvoy {
 
   /**
    * Resets the envoy to its "start state".
-   *
-   * @return whether the reset was successful.
    */
-  boolean reset();
+  void reset();
 
   /**
    * Called to test upwards movement.
@@ -51,18 +49,14 @@ public interface GameEnvoy {
 
   /**
    * Called to test pausing.
-   *
-   * @return whether the pause was successful.
    */
-  boolean pause();
+  void pause();
 
 
   /**
    * Called to test unpausing.
-   *
-   * @return whether the unpause was successful.
    */
-  boolean unpause();
+  void unpause();
 
 
 
