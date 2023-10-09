@@ -13,8 +13,8 @@ import nz.ac.wgtn.swen225.lc.app.AppInput;
  */
 public class AppEnvoy implements GameEnvoy {
 
-  App app;
-  final int level;
+  private final App app;
+  private final int level;
 
   AppEnvoy(int level) {
     this.level = level;
@@ -23,50 +23,42 @@ public class AppEnvoy implements GameEnvoy {
   }
 
   @Override
-  public void reset() {
+   public void reset() {
     app.newGame(level);
   }
 
   @Override
-  public void moveUp() {
-    app.handleInput(AppInput.MOVE_UP);
+   public boolean moveUp() {
+    return app.handleInput(AppInput.MOVE_UP);
   }
 
   @Override
-  public void moveDown() {
-    app.handleInput(AppInput.MOVE_DOWN);
-
+   public boolean moveDown() {
+    return app.handleInput(AppInput.MOVE_DOWN);
   }
 
   @Override
-  public void moveLeft() {
-    app.handleInput(AppInput.MOVE_LEFT);
-
+   public boolean moveLeft() {
+    return app.handleInput(AppInput.MOVE_LEFT);
   }
 
   @Override
-  public void moveRight() {
-    app.handleInput(AppInput.MOVE_RIGHT);
-
+   public boolean moveRight() {
+    return app.handleInput(AppInput.MOVE_RIGHT);
   }
 
   @Override
-  public void pause() {
+   public void pause() {
     app.handleInput(AppInput.PAUSE);
   }
 
   @Override
-  public void unpause() {
+   public void unpause() {
     app.handleInput(AppInput.UNPAUSE);
   }
 
   @Override
   public boolean isStopped() {
     return false;
-  }
-
-  @Override
-  public String printSuccessMessage() {
-    return null;
   }
 }
