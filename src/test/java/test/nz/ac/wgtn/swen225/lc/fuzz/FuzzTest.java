@@ -1,6 +1,5 @@
 package test.nz.ac.wgtn.swen225.lc.fuzz;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
