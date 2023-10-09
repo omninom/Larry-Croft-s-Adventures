@@ -1,5 +1,6 @@
 package test.nz.ac.wgtn.swen225.lc.fuzz;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -40,13 +41,13 @@ public class FuzzTest {
    */
   public void testLevel(int level) {
     // random movement testing
-    // TODO intelligent movement testing
     // pause/resume testing (in quick succession, make inputs while paused)
     // TODO setup/teardown, level loading and detection of success.
     for (int i = 0; i < iterations; i++) {
       //TODO Setup
       GameEnvoy envoy = getNewEnvoy(level);
       envoy.reset();
+      FuzzMovementManager fuzzMovementManager = new FuzzMovementManager(envoy);
       for (int step = 0; step < steps; step++) {
         //5% chance of pausespam test.
         if (Math.random() < 0.05) {
@@ -55,22 +56,7 @@ public class FuzzTest {
             envoy.unpause();
           }
         }
-        switch ((int) Math.floor(Math.random() * 4)) {
-          case 0:
-            envoy.moveUp();
-            break;
-          case 1:
-            envoy.moveDown();
-            break;
-          case 2:
-            envoy.moveLeft();
-            break;
-          case 3:
-            envoy.moveRight();
-            break;
-          default:
-            throw new IllegalArgumentException();
-        }
+        fuzzMovementManager.generateMove();
         if (envoy.isStopped()) {
           return;
         }
@@ -88,4 +74,68 @@ public class FuzzTest {
     // TODO check level is real.
     return new AppEnvoy(level);
   }
+
+  /**
+   * Used for intelligent movement purposes.
+   * If we are unable to move in a direction, we will not try to move in that direction again
+   * until we have made a successful move OR tried all directions without success.
+   */
+  private class FuzzMovementManager {
+
+    final GameEnvoy envoy;
+    /*
+    0 = up, 1 = right, 2 = down, 3 = left
+    Consistent with above
+    */
+    boolean[] directionPotentials = {true, true, true, true};
+
+    private FuzzMovementManager(GameEnvoy envoy) {
+      this.envoy = envoy;
+    }
+
+    public void generateMove() {
+      int unattemptedDirections = 0;
+      for (boolean b : directionPotentials) {
+        if (b) {
+          unattemptedDirections++;
+        }
+      }
+      if (unattemptedDirections == 0) {
+        //If we've tried every direction, start trying them all again.
+        unattemptedDirections = 4;
+        directionPotentials = new boolean[] {true, true, true, true};
+      }
+      int[] options = new int[unattemptedDirections];
+      int optIndex = 0;
+      for (int i = 0; i < 4; i++) {
+        if (directionPotentials[i]) {
+          options[optIndex] = i;
+          optIndex++;
+        }
+      }
+
+      int randDirIndex = (int) Math.floor(Math.random() * (4 - unattemptedDirections));
+
+      int moveDir = options[randDirIndex];
+
+      Assertions.assertFalse(directionPotentials[moveDir]);
+
+      boolean success = switch (moveDir) {
+        case 0 -> envoy.moveUp();
+        case 1 -> envoy.moveDown();
+        case 2 -> envoy.moveLeft();
+        case 3 -> envoy.moveRight();
+        default -> throw new IllegalArgumentException();
+      };
+
+      if (success) {
+        //Move successful, clear vars.
+        directionPotentials = new boolean[] {true, true, true, true};
+      } else {
+        //Move unsuccessful, mark and return.
+        directionPotentials[randDirIndex] = true;
+      }
+    }
+  }
+
 }
