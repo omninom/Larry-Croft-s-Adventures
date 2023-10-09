@@ -9,23 +9,63 @@ package test.nz.ac.wgtn.swen225.lc.fuzz;
  */
 public interface GameEnvoy {
 
-  public void reset();
+  /**
+   * Resets the envoy to its "start state".
+   */
+  void reset();
 
-  public void moveUp();
+  /**
+   * Called to test upwards movement.
+   *
+   * @return whether the move was successful.
+   */
+  boolean moveUp();
 
-  public void moveDown();
 
-  public void moveLeft();
+  /**
+   * Called to test downwards movement.
+   *
+   * @return whether the move was successful.
+   */
+  boolean moveDown();
 
-  public void moveRight();
 
-  public void pause();
+  /**
+   * Called to test leftwards movement.
+   *
+   * @return whether the move was successful.
+   */
+  boolean moveLeft();
 
-  public void unpause();
 
-  public boolean isStopped();
 
-  public String printSuccessMessage();
+  /**
+   * Called to test rightwards movement.
+   *
+   * @return whether the move was successful.
+   */
+  boolean moveRight();
+
+
+  /**
+   * Called to test pausing.
+   */
+  void pause();
+
+
+  /**
+   * Called to test unpausing.
+   */
+  void unpause();
+
+
+
+  /**
+   * Returns whether the game simulation has stopped.
+   *
+   * @return whether the pause was successful.
+   */
+  boolean isStopped();
 }
 
 
