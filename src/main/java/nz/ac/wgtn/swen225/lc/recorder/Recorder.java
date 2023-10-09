@@ -19,7 +19,7 @@ import org.json.JSONObject;
  */
 public class Recorder {
   // ----------------------------------- VARIABLES ----------------------------------- //
-  private static int replaySpeed; // 1 (slowest auto replay speed) to 10 (fastest auto replay speed)
+  private int replaySpeed; // 1 (slowest auto replay speed) to 10 (fastest auto replay speed)
 
   private enum RecorderState { RECORDING, MANUAL_REPLAY, AUTO_REPLAY, WAITING }
 
@@ -27,9 +27,9 @@ public class Recorder {
 
   private Map<Integer, RecordItem> loadedRecording;
 
-  private static int currentSequenceNumber = 0;
+  private int currentSequenceNumber = 0;
 
-  private static RecorderState state;
+  private RecorderState state;
 
 
   // ----------------------------------- CONSTRUCTOR ----------------------------------- //
