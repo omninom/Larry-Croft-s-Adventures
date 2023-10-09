@@ -24,8 +24,6 @@ public interface GameEnvoy {
   boolean unpause();
 
   boolean isStopped();
-
-  String printSuccessMessage();
 }
 
 

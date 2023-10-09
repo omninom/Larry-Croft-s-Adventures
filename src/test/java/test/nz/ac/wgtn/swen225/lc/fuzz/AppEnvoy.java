@@ -62,9 +62,4 @@ public class AppEnvoy implements GameEnvoy {
   public boolean isStopped() {
     return false;
   }
-
-  @Override
-  public String printSuccessMessage() {
-    return null;
-  }
 }

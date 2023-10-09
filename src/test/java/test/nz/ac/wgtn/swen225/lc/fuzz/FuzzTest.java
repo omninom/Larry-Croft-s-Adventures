@@ -72,7 +72,6 @@ public class FuzzTest {
             throw new IllegalArgumentException();
         }
         if (envoy.isStopped()) {
-          envoy.printSuccessMessage();
           return;
         }
       }
