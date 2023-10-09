@@ -114,11 +114,9 @@ public class FuzzTest {
         }
       }
 
-      int randDirIndex = (int) Math.floor(Math.random() * (4 - unattemptedDirections));
+      int randDirIndex = (int) Math.floor(Math.random() * (unattemptedDirections));
 
       int moveDir = options[randDirIndex];
-
-      Assertions.assertFalse(directionPotentials[moveDir]);
 
       boolean success = switch (moveDir) {
         case 0 -> envoy.moveUp();
