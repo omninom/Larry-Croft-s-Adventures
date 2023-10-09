@@ -1,12 +1,16 @@
 package nz.ac.wgtn.swen225.lc.renderer;
 
-import nz.ac.wgtn.swen225.lc.domain.*;
-
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
+import javax.swing.*;
+import nz.ac.wgtn.swen225.lc.domain.*;
 
+/**
+ * Renderer.java
+ * Handles the rendering of the game.
+ * @author Leory Xue (300607821)
+ */
 public class Renderer extends JPanel {
   private static final int GRID_SIZE = 9;
   private static final HashMap<Direction, Sprite> CHAP_SPRITES = new HashMap<>();
@@ -51,7 +55,6 @@ public class Renderer extends JPanel {
           BufferedImage spriteImage = sprite.sprite;
           g.drawImage(spriteImage, col * cellWidth, row * cellHeight, cellWidth, cellHeight, this);
         }
-
 
         if (maze.getChap().getPosition().equals(new Point(row, col))) {
           //determine which sprite to use
