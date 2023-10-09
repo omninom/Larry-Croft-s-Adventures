@@ -3,7 +3,7 @@ package nz.ac.wgtn.swen225.lc.renderer;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
-import javax.swing.*;
+import javax.swing.JPanel;
 import nz.ac.wgtn.swen225.lc.domain.*;
 
 /**
@@ -34,8 +34,12 @@ public class Renderer extends JPanel {
 
   private final Maze maze;
 
+  //sound effect
+  private Sound sound = new Sound();
+
   public Renderer(Maze maze) {
     this.maze = maze;
+    sound.playBackgroundMusic();
     setPreferredSize(new Dimension(GRID_SIZE * 50, GRID_SIZE * 50)); // Adjust the size as needed
   }
 
