@@ -3,8 +3,18 @@ package nz.ac.wgtn.swen225.lc.renderer;
 import java.awt.image.BufferedImage;
 
 
+
+/**
+ * Sprite.java
+ * Enum for different sprites
+ *
+ * @author Leory Xue (300607821)
+ */
 public enum Sprite {
-    chap,
+    chapL,
+    chapR,
+    chapU,
+    chapD,
     wallTile,
     freeTile1,
     redKey,
@@ -17,7 +27,7 @@ public enum Sprite {
     yellowLock,
     treasure,
     info,
-  exitLock,
+    exitLock,
     exit;
 
   /**
@@ -32,8 +42,7 @@ public enum Sprite {
     sprite = loadImage(this.name());
   }
 
-
-  static private BufferedImage loadImage(String name) {
+  private static BufferedImage loadImage(String name) {
     String filename = "resources/" + name + ".png";
     try {
       return javax.imageio.ImageIO.read(Sprite.class.getResource("/sprites/" + name + ".png"));
@@ -41,6 +50,4 @@ public enum Sprite {
       throw new RuntimeException("Unable to load image: " + filename);
     }
   }
-
-
 }

@@ -1,15 +1,19 @@
 package nz.ac.wgtn.swen225.lc.renderer;
 
-import nz.ac.wgtn.swen225.lc.domain.*;
-
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
+import javax.swing.*;
+import nz.ac.wgtn.swen225.lc.domain.*;
 
+/**
+ * Renderer.java
+ * Handles the rendering of the game.
+ * @author Leory Xue (300607821)
+ */
 public class Renderer extends JPanel {
   private static final int GRID_SIZE = 9;
-  private static final BufferedImage chapSprite = Sprite.chap.sprite;
+  private static final HashMap<Direction, Sprite> CHAP_SPRITES = new HashMap<>();
   private static final HashMap<TileType, Sprite> TILE_SPRITES = new HashMap<>();
 
   static {
@@ -21,6 +25,11 @@ public class Renderer extends JPanel {
     TILE_SPRITES.put(TileType.KEY, Sprite.redKey);
     TILE_SPRITES.put(TileType.EXIT, Sprite.exit);
     TILE_SPRITES.put(TileType.EXIT_LOCK, Sprite.exitLock);
+
+    CHAP_SPRITES.put(Direction.UP, Sprite.chapU);
+    CHAP_SPRITES.put(Direction.DOWN, Sprite.chapD);
+    CHAP_SPRITES.put(Direction.LEFT, Sprite.chapL);
+    CHAP_SPRITES.put(Direction.RIGHT, Sprite.chapR);
   }
 
   private final Maze maze;
@@ -48,7 +57,10 @@ public class Renderer extends JPanel {
         }
 
         if (maze.getChap().getPosition().equals(new Point(row, col))) {
-          g.drawImage(chapSprite, col * cellWidth, row * cellHeight, cellWidth, cellHeight, this);
+          //determine which sprite to use
+          Direction chapDirection = maze.getChap().getDirection();
+          Sprite chapSprite = CHAP_SPRITES.get(chapDirection);
+          g.drawImage(chapSprite.sprite, col * cellWidth, row * cellHeight, cellWidth, cellHeight, this);
         }
       }
     }
