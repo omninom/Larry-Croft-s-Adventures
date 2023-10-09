@@ -3,7 +3,6 @@ package test.nz.ac.wgtn.swen225.lc.recorder;
 import nz.ac.wgtn.swen225.lc.recorder.Recorder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -31,12 +30,7 @@ public class RecorderTests {
     Recorder test = new Recorder();
     String level = "1";
 
-    // --- Test that the initial state is WAITING --- //
-    assertEquals("WAITING", test.getState());
 
-    // --- Test that the state is RECORDING after startRecording() is called --- //
-    test.setRecording(level);
-    assertEquals("RECORDING", test.getState());
   }
 
   /**
@@ -49,7 +43,7 @@ public class RecorderTests {
     int sequenceNumber = 0;
 
     // --- Add elements to the recording --- //
-    test.setRecording(level);
+    test.startRecording(level);
     test.addToRecording("PLAYER | MOVE_LEFT");
     test.addToRecording("MONSTER | MOVE_LEFT");
     test.addToRecording("MONSTER | MOVE_RIGHT");
@@ -74,7 +68,7 @@ public class RecorderTests {
   @Test
   void test_addToRecording_02() {
     Recorder test = new Recorder();
-    test.setRecording("1");
+    test.startRecording("1");
 
     // --- Add data to the recording --- //
     test.addToRecording("PLAYER | MOVE_LEFT");

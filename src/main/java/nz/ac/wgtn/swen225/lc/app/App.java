@@ -90,7 +90,7 @@ public class App {
     System.out.println("[APP DEBUG] New game: Level " + level);
 
     // TODO: Move this somewhere else
-    recorder.setRecording(Integer.toString(level));
+    recorder.startRecording(Integer.toString(level));
   }
 
   /**
