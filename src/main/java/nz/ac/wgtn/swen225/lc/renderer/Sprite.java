@@ -4,7 +4,10 @@ import java.awt.image.BufferedImage;
 
 
 public enum Sprite {
-    chap,
+    chapL,
+    chapR,
+    chapU,
+    chapD,
     wallTile,
     freeTile1,
     redKey,
@@ -17,7 +20,7 @@ public enum Sprite {
     yellowLock,
     treasure,
     info,
-  exitLock,
+    exitLock,
     exit;
 
   /**
