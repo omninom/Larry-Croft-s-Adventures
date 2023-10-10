@@ -17,6 +17,8 @@ public class Chap {
   //Chap's current position.
   private Point position;
 
+  private Direction direction;
+
   //The keys that Chap is holding.
   private ArrayList<Tile> keys;
   private int treasure;
@@ -32,6 +34,7 @@ public class Chap {
     this.position = new Point(initialRow, initialCol);
     this.keys = new ArrayList<>();
     this.alive = true;
+    this.direction = Direction.DOWN;
   }
 
   /**
@@ -40,14 +43,16 @@ public class Chap {
    * @param position Chap's saved position.
    * @param keys     Chap's saved keys.
    * @param alive    Whether Chap is alive.
+   * @param direction Which direction Chap is facing in.
    */
   @JsonCreator
   public Chap(@JsonProperty("position") Point position, @JsonProperty("keys") ArrayList<Tile> keys,
-              @JsonProperty("alive") boolean alive) {
+              @JsonProperty("alive") boolean alive, @JsonProperty("direction") Direction direction) {
     // Initialize fields with arguments
     this.position = position;
     this.keys = keys;
     this.alive = alive;
+    this.direction = direction;
   }
 
   /**
@@ -119,12 +124,20 @@ public class Chap {
   }
 
   /**
+   * Setter for direction.
+   *
+   * @param direction Chap's new direction.
+   */
+  public void setDirection(Direction direction) {
+    this.direction = direction;
+  }
+
+  /**
    * Getter for direction.
-   * TODO implement proper direction.
    *
    * @return Chap's current direction.
    */
   public Direction getDirection() {
-    return Direction.DOWN;
+    return direction;
   }
 }
