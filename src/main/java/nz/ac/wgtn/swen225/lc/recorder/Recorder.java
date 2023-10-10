@@ -6,8 +6,8 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
+import javax.swing.*;
+
 import nz.ac.wgtn.swen225.lc.app.App;
 import nz.ac.wgtn.swen225.lc.app.AppInput;
 import org.json.JSONException;
@@ -120,7 +120,7 @@ public class Recorder {
   /**
    * When called will load the game from a json file.
    */
-  private void loadGame() {
+  private void loadRecording() {
     System.out.println("[RECORDER DEBUG] Recorder: Loading game.");
 
     // ---- Ask user for the file to load ---- //
@@ -161,7 +161,7 @@ public class Recorder {
     // ---- Verify selected file ---- //
     if (loadedRecording.isEmpty()) {
       System.out.println("Error: No recording loaded.");
-      loadGame();
+      loadRecording();
     }
   }
 
@@ -170,7 +170,7 @@ public class Recorder {
    */
   public void manualReplay() {
     // ---- Load the game ---- //
-    loadGame();
+    loadRecording();
 
     // ---- Display the loaded game ---- //
     int currentSequenceNumber = 0;
@@ -204,7 +204,7 @@ public class Recorder {
    */
   public void autoReplay() {
     // ---- Load the game ---- //
-    loadGame();
+    loadRecording();
 
     // ---- Ask user for replay speed ---- //
     askReplaySpeed();

@@ -9,9 +9,9 @@ package nz.ac.wgtn.swen225.lc.recorder;
  */
 public class RecordItem {
   // ----------------------------------- VARIABLES ----------------------------------- //
-  int sequenceNumber; // the turn number that the action was taken on
-  String actor; // the actor that took the action
-  String move; // movement information about the actor
+  int sequenceNumber;
+  String actor;
+  String move;
 
   /**
    * Constructor for RecordItem class.

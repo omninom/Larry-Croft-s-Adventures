@@ -8,7 +8,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * This is a collection of tests for the Recorder class.
  * It will test the methods in the Recorder class to ensure that they are working as expected.
- * It will test the following methods:
+ * <p>
+ *  The remaining method will be tested manually. Including:
+ *     * - endRecording()
+ *     * - loadRecording()
+ *     * - autoReplay()
+ *     * - manualReplay()
+ *     * - askReplaySpeed()
  *
  * @author Neeraj Patel (300604056).
  */
@@ -81,47 +87,6 @@ public class RecorderTests {
 
     assertEquals("ACTOR", test.getCurrentRecording().get(2).getActor());
     assertEquals("MOVE_RIGHT", test.getCurrentRecording().get(2).getMove());
-  }
-
-  /**
-   * Test that the endRecording() method is working as expected.
-   */
-  @Test
-  void test_endRecording() {
-    // TODO: Implement
-
-
-  }
-
-
-  /**
-   * Test that the loadGame() method is working as expected.
-   */
-  @Test
-  void test_loadGame() {
-    // TODO: Implement
-
-    Recorder test = new Recorder();
-
-  }
-
-  /**
-   * Test that the stepByStepReplay() method is working as expected.
-   */
-  @Test
-  void test_stepByStepReplay() {
-    // TODO: Implement
-
-    Recorder test = new Recorder();
-
-  }
-
-  /**
-   * Test that the autoReplay() method is working as expected.
-   */
-  @Test
-  void test_autoReplay() {
-    // TODO: Implement
   }
 
 }
