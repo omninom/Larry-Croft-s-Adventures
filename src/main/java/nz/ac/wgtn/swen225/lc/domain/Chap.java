@@ -20,7 +20,7 @@ public class Chap {
   private Direction direction;
 
   //The keys that Chap is holding.
-  private ArrayList<Tile> keys;
+  private ArrayList<TileType> keys;
   private int treasure;
   private boolean alive;
 
@@ -40,14 +40,16 @@ public class Chap {
   /**
    * JSON Constructor for the Chap class.
    *
-   * @param position Chap's saved position.
-   * @param keys     Chap's saved keys.
-   * @param alive    Whether Chap is alive.
+   * @param position  Chap's saved position.
+   * @param keys      Chap's saved keys.
+   * @param alive     Whether Chap is alive.
    * @param direction Which direction Chap is facing in.
    */
   @JsonCreator
-  public Chap(@JsonProperty("position") Point position, @JsonProperty("keys") ArrayList<Tile> keys,
-              @JsonProperty("alive") boolean alive, @JsonProperty("direction") Direction direction) {
+  public Chap(@JsonProperty("position") Point position,
+              @JsonProperty("keys") ArrayList<TileType> keys,
+              @JsonProperty("alive") boolean alive,
+              @JsonProperty("direction") Direction direction) {
     // Initialize fields with arguments
     this.position = position;
     this.keys = keys;
@@ -80,27 +82,42 @@ public class Chap {
    *
    * @return Chap's currently-held keys.
    */
-  public ArrayList<Tile> getKeys() {
+  public ArrayList<TileType> getKeys() {
     return keys;
   }
 
   /**
    * Adds a key to Chap's list of held keys.
-   * TODO check typing here, why is it a Tile? should it be more specific?
+   * TODO check typing here
    *
    * @param key the new key for Chap to hold.
    */
-  public void addKey(Tile key) {
+  public void addKey(TileType key) {
     keys.add(key);
   }
 
   /**
+   * Checks whether Chap has at least one of a type of key.
+   *
+   * @param key the key type we're looking for.
+   * @return true if keys contains a TileType that's the same as key, false otherwise
+   */
+  public boolean hasKey(TileType key) {
+    for (TileType held : keys) {
+      if (held == key) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
    * Removes a key from Chap's list of held keys.
-   * TODO check typing here, why is it a Tile? should it be more specific?
+   * TODO check typing here
    *
    * @param key the new key for Chap to hold.
    */
-  public void removeKey(Tile key) {
+  public void removeKey(TileType key) {
     keys.remove(key);
   }
 

@@ -19,10 +19,12 @@ public class Renderer extends JPanel {
   static {
     TILE_SPRITES.put(TileType.WALL, Sprite.wallTile);
     TILE_SPRITES.put(TileType.FREE, Sprite.freeTile1);
-    TILE_SPRITES.put(TileType.LOCKED_DOOR, Sprite.redLock);
+    TILE_SPRITES.put(TileType.RED_DOOR, Sprite.redLock);
+    TILE_SPRITES.put(TileType.BLUE_DOOR, Sprite.blueLock);
     TILE_SPRITES.put(TileType.TREASURE, Sprite.treasure);
     TILE_SPRITES.put(TileType.INFO, Sprite.info);
-    TILE_SPRITES.put(TileType.KEY, Sprite.redKey);
+    TILE_SPRITES.put(TileType.RED_KEY, Sprite.redKey);
+    TILE_SPRITES.put(TileType.RED_KEY, Sprite.blueKey);
     TILE_SPRITES.put(TileType.EXIT, Sprite.exit);
     TILE_SPRITES.put(TileType.EXIT_LOCK, Sprite.exitLock);
 
@@ -52,8 +54,8 @@ public class Renderer extends JPanel {
 
     for (int row = 0; row < GRID_SIZE; row++) {
       for (int col = 0; col < GRID_SIZE; col++) {
-        Tile tile = domain.getTiles()[row][col];
-        Sprite sprite = TILE_SPRITES.get(tile.getType());
+        TileType tile = domain.getTiles()[row][col];
+        Sprite sprite = TILE_SPRITES.get(tile);
 
         if (sprite != null) {
           BufferedImage spriteImage = sprite.sprite;
