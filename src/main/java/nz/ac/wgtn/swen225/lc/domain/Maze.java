@@ -2,7 +2,9 @@ package nz.ac.wgtn.swen225.lc.domain;
 
 /**
  * Handles the generation of the level and most of the logic for the game.
+ * Should ONLY be handled directly by Domain and Persistency.
  * TODO: export a lot of this to Domain. Maze != game logic.
+ * TODO: run spotbugs, do a bunch of immutability.
  *
  * @author Riley West (300608942).
  * @author Jebadiah (300629357).
@@ -53,15 +55,6 @@ public class Maze {
    */
   public Tile[][] getTiles() {
     return tiles;
-  }
-
-  /**
-   * Getter method for chap object.
-   *
-   * @return chap object
-   */
-  public Chap getChap() {
-    return chap;
   }
 
   /**
@@ -118,51 +111,14 @@ public class Maze {
   //OTHER METHODS
 
   /**
-   * Attempts to move chap in the given Direction. Silently fails if it's an invalid move.
-   * TODO move this to dedicated game logic class.
-   * TODO throw errors if the move is invalid.
-   *
-   * @param dir the Direction of movement.
-   */
-  public void moveChap(Direction dir) {
-    int newRow = this.chap.getPosition().x;
-    int newCol = this.chap.getPosition().y;
-
-    switch (dir) {
-      case UP:
-        newRow--;
-        break;
-      case DOWN:
-        newRow++;
-        break;
-      case LEFT:
-        newCol--;
-        break;
-      case RIGHT:
-        newCol++;
-        break;
-      default:
-        //In normal cases, should not trigger, as only these 4 enums exist.
-        throw new IllegalArgumentException("Unknown direction.");
-    }
-
-    if (isValidMove(newRow, newCol)) {
-      this.chap.setPosition(newRow, newCol);
-    }
-  }
-
-  /**
-   * Utility method for checking whether Chap can move to a particular tile.
-   * TODO either add logic in here that references Chap's position or rename the tile
-   * To something like "IsOccupiableTile", to better reflect what it does.
-   * Currently, it doesn't check if the tile is adjacent to Chap.
-   * TODO Investigate locked doors and exit lock code
+   * Utility method for checking whether a particular tile is passable to actors.
+   * TODO Implement locked doors and exit locks.
    *
    * @param row row of the tile to check.
    * @param col row of the tile to check.
    * @return whether Chap can move to this tile.
    */
-  public boolean isValidMove(int row, int col) {
+  public boolean isTilePassable(int row, int col) {
     if (row >= numRows || row < 0) {
       return false;
     } else if (col >= numCols || col < 0) {
@@ -185,11 +141,10 @@ public class Maze {
 
   /**
    * Utility method to fill the grid with blank tiles.
-   * TODO fix bug in this method where it loops over numRows instead of numCols once
    */
   public void generateMaze() {
     for (int i = 0; i < numRows; i++) {
-      for (int j = 0; j < numRows; j++) {
+      for (int j = 0; j < numCols; j++) {
         tiles[i][j] = new FreeTile();
       }
     }
