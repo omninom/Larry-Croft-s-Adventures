@@ -43,7 +43,7 @@ public class Domain {
       throw new IllegalStateException("Chap has failed.");
     }
     if (won) {
-      throw new IllegalStateException("Chap has failed.");
+      throw new IllegalStateException("Chap has won.");
     }
     int newRow = this.chap.getPosition().x;
     int newCol = this.chap.getPosition().y;
@@ -79,7 +79,7 @@ public class Domain {
    *
    * @return 2d Array of the mazes Tile objects.
    */
-  public Tile[][] getTiles() {
+  public TileType[][] getTiles() {
     return maze.getTiles();
   }
 

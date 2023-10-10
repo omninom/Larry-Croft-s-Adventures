@@ -10,7 +10,7 @@ package nz.ac.wgtn.swen225.lc.domain;
  * @author Jebadiah (300629357).
  */
 public class Maze {
-  private Tile[][] tiles;
+  private TileType[][] tiles;
   private int numRows;
   private int numCols;
 
@@ -30,7 +30,7 @@ public class Maze {
   public Maze(int numRows, int numCols) {
     this.numRows = numRows;
     this.numCols = numCols;
-    this.tiles = new Tile[numRows][numCols];
+    this.tiles = new TileType[numRows][numCols];
   }
 
   //GETTER METHODS
@@ -40,7 +40,7 @@ public class Maze {
    *
    * @return 2d Array of the maze
    */
-  public Tile[][] getTiles() {
+  public TileType[][] getTiles() {
     return tiles;
   }
 
@@ -70,18 +70,19 @@ public class Maze {
    *
    * @param tiles new tile grid array.
    */
-  public void setTiles(Tile[][] tiles) {
+  public void setTiles(TileType[][] tiles) {
     this.tiles = tiles;
   }
 
   /**
    * Setter for a single tile of the maze.
+   * TODO precondition code for valid position.
    *
    * @param row  row to place tile on.
    * @param col  column to place tile at.
    * @param tile Tile to place.
    */
-  public void setTile(int row, int col, Tile tile) {
+  public void setTile(int row, int col, TileType tile) {
     this.tiles[row][col] = tile;
   }
 
@@ -102,15 +103,9 @@ public class Maze {
     } else if (col >= numCols || col < 0) {
       return false;
     } else {
-      switch (tiles[row][col].getType()) {
-        case WALL:
+      switch (tiles[row][col]) {
+        case WALL, LOCKED_DOOR, EXIT_LOCK:
           return false;
-        case LOCKED_DOOR:
-          LockedDoorTile test = (LockedDoorTile) tiles[row][col];
-          return test.isLocked();
-        case EXIT_LOCK:
-          ExitLockTile test2 = (ExitLockTile) tiles[row][col];
-          return test2.canPass();
         default:
           return true;
       }
@@ -123,7 +118,7 @@ public class Maze {
   public void generateMaze() {
     for (int i = 0; i < numRows; i++) {
       for (int j = 0; j < numCols; j++) {
-        tiles[i][j] = new FreeTile();
+        tiles[i][j] = TileType.FREE;
       }
     }
   }

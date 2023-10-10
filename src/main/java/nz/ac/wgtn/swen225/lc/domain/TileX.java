@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author Riley West (300608942).
  * @author Jebadiah (300629357).
  */
-public class Tile {
+public class TileX {
   private TileType type;
 
   /**
@@ -20,7 +20,7 @@ public class Tile {
    * @param type the TileType of this Tile.
    */
   @JsonCreator
-  public Tile(@JsonProperty("type") TileType type) {
+  public TileX(@JsonProperty("type") TileType type) {
     this.type = type;
   }
 
@@ -35,20 +35,20 @@ public class Tile {
 
 }
 
-class WallTile extends Tile {
+class WallTile extends TileX {
   public WallTile() {
     super(TileType.WALL);
   }
 }
 
-class FreeTile extends Tile {
+class FreeTile extends TileX {
   public FreeTile() {
     super(TileType.FREE);
   }
 }
 
 // Key Tile
-class KeyTile extends Tile {
+class KeyTile extends TileX {
   private String color;
 
   public KeyTile(String color) {
@@ -61,7 +61,7 @@ class KeyTile extends Tile {
   }
 }
 
-class LockedDoorTile extends Tile {
+class LockedDoorTile extends TileX {
   private String requiredKeyColor;
   private boolean isLocked;
 
@@ -84,7 +84,7 @@ class LockedDoorTile extends Tile {
   }
 }
 
-class InfoTile extends Tile {
+class InfoTile extends TileX {
   private String helpText;
 
   public InfoTile(String helpText) {
@@ -97,7 +97,7 @@ class InfoTile extends Tile {
   }
 }
 
-class TreasureTile extends Tile {
+class TreasureTile extends TileX {
   private int treasureValue;
 
   public TreasureTile(int treasureValue) {
@@ -110,7 +110,7 @@ class TreasureTile extends Tile {
   }
 }
 
-class ExitLockTile extends Tile {
+class ExitLockTile extends TileX {
   private boolean canPass;
 
   public ExitLockTile() {
@@ -127,7 +127,7 @@ class ExitLockTile extends Tile {
   }
 }
 
-class ExitTile extends Tile {
+class ExitTile extends TileX {
   public ExitTile() {
     super(TileType.EXIT);
   }
