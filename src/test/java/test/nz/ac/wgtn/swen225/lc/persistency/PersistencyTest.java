@@ -2,7 +2,7 @@ package test.nz.ac.wgtn.swen225.lc.persistency;
 
 import java.util.Arrays;
 import nz.ac.wgtn.swen225.lc.domain.Maze;
-import nz.ac.wgtn.swen225.lc.domain.Tile;
+import nz.ac.wgtn.swen225.lc.domain.TileType;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -53,11 +53,11 @@ public class PersistencyTest {
 //    assertTrue(m.equals(l), "Loaded maze does not match saved maze.");
 
     // Check tiles in loaded maze match original
-    Tile[][] mTiles = m.getTiles();
-    Tile[][] lTiles = l.getTiles();
+    TileType[][] mTiles = m.getTiles();
+    TileType[][] lTiles = l.getTiles();
     for (int i = 0; i < mTiles.length; i++) {
       for (int j = 0; j < mTiles[i].length; j++) {
-        assertTrue(mTiles[i][j].getType() == lTiles[i][j].getType(), "Loaded maze does not match saved maze.");
+        assertTrue(mTiles[i][j] == lTiles[i][j], "Loaded maze does not match saved maze.");
       }
     }
 

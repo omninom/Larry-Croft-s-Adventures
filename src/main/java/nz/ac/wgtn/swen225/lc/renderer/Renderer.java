@@ -19,10 +19,12 @@ public class Renderer extends JPanel {
   static {
     TILE_SPRITES.put(TileType.WALL, Sprite.wallTile);
     TILE_SPRITES.put(TileType.FREE, Sprite.freeTile1);
-    TILE_SPRITES.put(TileType.LOCKED_DOOR, Sprite.redLock);
+    TILE_SPRITES.put(TileType.RED_DOOR, Sprite.redLock);
+    TILE_SPRITES.put(TileType.BLUE_DOOR, Sprite.blueLock);
     TILE_SPRITES.put(TileType.TREASURE, Sprite.treasure);
     TILE_SPRITES.put(TileType.INFO, Sprite.info);
-    TILE_SPRITES.put(TileType.KEY, Sprite.redKey);
+    TILE_SPRITES.put(TileType.RED_KEY, Sprite.redKey);
+    TILE_SPRITES.put(TileType.RED_KEY, Sprite.blueKey);
     TILE_SPRITES.put(TileType.EXIT, Sprite.exit);
     TILE_SPRITES.put(TileType.EXIT_LOCK, Sprite.exitLock);
 
