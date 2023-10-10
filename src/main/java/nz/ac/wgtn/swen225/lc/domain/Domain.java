@@ -53,6 +53,8 @@ public class Domain {
         //In normal cases, should not trigger, as only these 4 enums exist.
         throw new IllegalArgumentException("Unknown direction.");
     }
+    //Regardless of whether Chap is actually supposed to move, his facing should change.
+    this.chap.setDirection(dir);
     if (maze.isTilePassable(newRow, newCol)) {
       this.chap.setPosition(newRow, newCol);
     }else{
