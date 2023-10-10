@@ -89,30 +89,6 @@ public class Maze {
   //OTHER METHODS
 
   /**
-   * Utility method for checking whether a particular tile is passable to actors.
-   * TODO Implement locked doors and exit locks.
-   * TODO move this to Domain too.
-   *
-   * @param row row of the tile to check.
-   * @param col row of the tile to check.
-   * @return whether Chap can move to this tile.
-   */
-  public boolean isTilePassable(int row, int col) {
-    if (row >= numRows || row < 0) {
-      return false;
-    } else if (col >= numCols || col < 0) {
-      return false;
-    } else {
-      switch (tiles[row][col]) {
-        case WALL, LOCKED_DOOR, EXIT_LOCK:
-          return false;
-        default:
-          return true;
-      }
-    }
-  }
-
-  /**
    * Utility method to fill the grid with blank tiles.
    */
   public void generateMaze() {

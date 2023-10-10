@@ -14,14 +14,21 @@ public enum TileType {
    */
   FREE,
   /**
-   * Tile with a key in it.
+   * Tile with a blue key in it.
    */
-  KEY,
+  BLUE_KEY,
   /**
-   * Initially-locked door.
-   * TODO Rename?
+   * Tile with a red key in it.
    */
-  LOCKED_DOOR,
+  RED_KEY,
+  /**
+   * Locked blue door.
+   */
+  BLUE_DOOR,
+  /**
+   * Locked red door.
+   */
+  RED_DOOR,
   /**
    * Tile that displays information when Chap steps on it.
    */

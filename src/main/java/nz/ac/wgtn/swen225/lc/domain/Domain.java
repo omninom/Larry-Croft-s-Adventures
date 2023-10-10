@@ -1,5 +1,8 @@
 package nz.ac.wgtn.swen225.lc.domain;
 
+import java.awt.Point;
+import javax.swing.text.Position;
+
 /**
  * The Domain Module's public interface (for lack of a better word), through which it exposes
  * certain values.
@@ -47,7 +50,6 @@ public class Domain {
     }
     int newRow = this.chap.getPosition().x;
     int newCol = this.chap.getPosition().y;
-
     switch (dir) {
       case UP:
         newRow--;
@@ -67,11 +69,55 @@ public class Domain {
     }
     //Regardless of whether Chap is actually supposed to move, his facing should change.
     this.chap.setDirection(dir);
-    if (maze.isTilePassable(newRow, newCol)) {
-      this.chap.setPosition(newRow, newCol);
-    } else {
-      throw new IllegalArgumentException("Impassable wall.");
+    TileType targetTile;
+    try {
+      targetTile = maze.getTiles()[newRow][newCol];
+    } catch (ArrayIndexOutOfBoundsException e) {
+      throw new IllegalArgumentException("Can't move out of bounds.");
     }
+    switch (targetTile) {
+      case FREE:
+        break;
+      case INFO:
+        break;
+      case WALL:
+        throw new IllegalArgumentException("Impassable wall.");
+      case RED_KEY:
+      case BLUE_KEY:
+        chap.addKey(targetTile);
+        maze.setTile(newRow, newCol, TileType.FREE);
+        break;
+      case RED_DOOR:
+        if (chap.hasKey(TileType.RED_KEY)) {
+          maze.setTile(newRow, newCol, TileType.FREE);
+        } else {
+          throw new IllegalArgumentException("Can't unlock this red door.");
+        }
+        break;
+      case BLUE_DOOR:
+        if (chap.hasKey(TileType.BLUE_KEY)) {
+          maze.setTile(newRow, newCol, TileType.FREE);
+        } else {
+          throw new IllegalArgumentException("Can't unlock this blue door.");
+        }
+        break;
+      case TREASURE:
+        treasureRemaining--;
+        maze.setTile(newRow, newCol, TileType.FREE);
+        break;
+      case EXIT_LOCK:
+        if (treasureRemaining >= 0) {
+          throw new IllegalArgumentException("Can't unlock this red door.");
+        }
+        maze.setTile(newRow, newCol, TileType.FREE);
+        break;
+      case EXIT:
+        this.won = true;
+        break;
+      default:
+        throw new IllegalArgumentException("Unhandled TileType in movement");
+    }
+    this.chap.setPosition(newRow, newCol);
   }
 
   /**
@@ -90,6 +136,16 @@ public class Domain {
    */
   public Chap getChap() {
     return chap;
+  }
+
+  /**
+   * Getter for checking if Info should be displayed.
+   *
+   * @return true if Chap is on a tile of type INFO, false otherwise.
+   */
+  public boolean isOnInfo() {
+    Point chapPos = chap.getPosition();
+    return maze.getTiles()[chapPos.y][chapPos.x] == TileType.INFO;
   }
 
 

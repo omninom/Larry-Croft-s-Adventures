@@ -97,6 +97,21 @@ public class Chap {
   }
 
   /**
+   * Checks whether Chap has at least one of a type of key.
+   *
+   * @param key the key type we're looking for.
+   * @return true if keys contains a TileType that's the same as key, false otherwise
+   */
+  public boolean hasKey(TileType key) {
+    for (TileType held : keys) {
+      if (held == key) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
    * Removes a key from Chap's list of held keys.
    * TODO check typing here
    *
