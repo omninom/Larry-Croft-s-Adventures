@@ -163,9 +163,9 @@ public class Maze {
    * @return whether Chap can move to this tile.
    */
   public boolean isValidMove(int row, int col) {
-    if (row > numRows || row < 0) {
+    if (row >= numRows || row < 0) {
       return false;
-    } else if (col > numCols || col < 0) {
+    } else if (col >= numCols || col < 0) {
       return false;
     } else {
       switch (tiles[row][col].getType()) {
