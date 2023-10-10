@@ -1,23 +1,34 @@
 package nz.ac.wgtn.swen225.lc.domain;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.*;
 
 /**
- * Tile.java
+ * Handles all the different Tile classes.
+ * TODO: Consider Static method for building a tile object based on TileType
+ * TODO: Review Tile system.
  *
- * Handles all the different Tile classes
- *
- * @Author: Riley West (300608942).
+ * @author Riley West (300608942).
+ * @author Jebadiah (300629357).
  */
 public class Tile {
   private TileType type;
 
+  /**
+   * JSON-supporting general type constructor.
+   *
+   * @param type the TileType of this Tile.
+   */
   @JsonCreator
   public Tile(@JsonProperty("type") TileType type) {
     this.type = type;
   }
 
+  /**
+   * Getter for the type of this Tile.
+   *
+   * @return this Tile's TileType.
+   */
   public TileType getType() {
     return type;
   }

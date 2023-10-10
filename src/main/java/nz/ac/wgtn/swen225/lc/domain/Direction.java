@@ -1,16 +1,27 @@
 package nz.ac.wgtn.swen225.lc.domain;
 
 /**
- * Direction.java
+ * Enum for different directions.
  *
- * Enum for different directions
- *
- * @Author: Riley West (300608942).
+ * @author Riley West (300608942).
+ * @author Jebadiah (300629357).
  */
 
 public enum Direction {
+  /**
+   * Up.
+   */
   UP,
+  /**
+   * Down.
+   */
   DOWN,
+  /**
+   * Left.
+   */
   LEFT,
+  /**
+   * Right.
+   */
   RIGHT
 }
