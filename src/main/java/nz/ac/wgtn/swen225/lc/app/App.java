@@ -1,17 +1,36 @@
 package nz.ac.wgtn.swen225.lc.app;
 
+import nz.ac.wgtn.swen225.lc.domain.Direction;
+import nz.ac.wgtn.swen225.lc.domain.Domain;
+import nz.ac.wgtn.swen225.lc.recorder.Recorder;
+
 import java.io.File;
 
 /**
  * The App module.
+ *
+ * @author Jack Gallagher (300615528)
  */
 public class App {
+
+  private final Domain domain;
+  private final Recorder recorder;
 
   /**
    * Constructor.
    */
   public App() {
+    this.domain = new Domain();
+    this.recorder = new Recorder();
+  }
 
+  /**
+   * Gets the domain.
+   *
+   * @return the Domain object.
+   */
+  public Domain getDomain() {
+    return domain;
   }
 
   /**
@@ -24,7 +43,29 @@ public class App {
     System.out.println("[APP DEBUG] Recieved input '" + inputType + "'");
 
     // TODO: Translate / Validate input with Domain
-    // TODO: Record input
+    try {
+      switch (inputType) {
+        case MOVE_UP:
+          domain.moveChap(Direction.UP);
+          break;
+        case MOVE_DOWN:
+          domain.moveChap(Direction.DOWN);
+          break;
+        case MOVE_LEFT:
+          domain.moveChap(Direction.LEFT);
+          break;
+        case MOVE_RIGHT:
+          domain.moveChap(Direction.RIGHT);
+          break;
+        default:
+          break;
+      }
+    } catch (IllegalArgumentException e){
+      return false;
+    }
+
+    recorder.addToRecording("CHAP" + "|" + inputType);
+    // e.g. recorder.addToRecording("CHAP | MOVE_LEFT"); Send [currentPlayer | move]
 
     return true;
   }
@@ -36,6 +77,9 @@ public class App {
    */
   public void newGame(int level) {
     System.out.println("[APP DEBUG] New game: Level " + level);
+
+    // TODO: Move this somewhere else
+    recorder.startRecording(Integer.toString(level));
   }
 
   /**
@@ -69,6 +113,7 @@ public class App {
    */
   public void endGame() {
     System.out.println("[APP DEBUG] Ending game");
+    recorder.addToRecording("END"); // Lets recorder know when to stop
   }
 
   /**

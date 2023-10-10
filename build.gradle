@@ -20,6 +20,9 @@ dependencies {
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:30.1.1-jre'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+
+    // This dependency is used by the recorder.
+    implementation 'org.json:json:20230618'
 }
 
 application {
@@ -37,8 +40,9 @@ jar {
         attributes 'Main-Class': application.mainClass
     }
 
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from sourceSets.main.allSource
     from javadoc.destinationDir
 }
 
-jar.dependsOn(javadoc)
+//jar.dependsOn(javadoc)
