@@ -15,7 +15,7 @@ public class Sound {
 
   private void loadBackgroundMusic() {
     try {
-      URL musicUrl = Sound.class.getResource("/sound/bgm.wav");
+      URL musicUrl = Sound.class.getResource("/sound/bgm.mp3");
       assert musicUrl != null;
       AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(musicUrl);
       backgroundMusicClip = AudioSystem.getClip();
