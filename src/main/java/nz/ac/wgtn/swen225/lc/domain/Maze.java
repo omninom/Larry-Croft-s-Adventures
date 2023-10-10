@@ -13,8 +13,6 @@ public class Maze {
   private Tile[][] tiles;
   private int numRows;
   private int numCols;
-  private int treasureRemaining;
-  private Chap chap;
 
   /**
    * Default constructor for deserialising by Jackson.
@@ -33,20 +31,9 @@ public class Maze {
     this.numRows = numRows;
     this.numCols = numCols;
     this.tiles = new Tile[numRows][numCols];
-    this.treasureRemaining = 0;
-    this.chap = new Chap(0, 0);
   }
 
   //GETTER METHODS
-
-  /**
-   * Getter method for the amount of remaining chips.
-   *
-   * @return Amount of Chips Remaining
-   */
-  public int remainingTreasure() {
-    return treasureRemaining;
-  }
 
   /**
    * Getter method for the maze tiles.
@@ -78,16 +65,6 @@ public class Maze {
   // SETTER METHODS
 
   /**
-   * Setter for treasure count.
-   * TODO check if this should be removed.
-   *
-   * @param treasureRemaining new amount of remaining treasure.
-   */
-  public void setTreasureRemaining(int treasureRemaining) {
-    this.treasureRemaining = treasureRemaining;
-  }
-
-  /**
    * Setter for the tiles of the maze grid.
    * TODO Validating of passed array, shouldn't we change the variables for maze size?
    *
@@ -113,6 +90,7 @@ public class Maze {
   /**
    * Utility method for checking whether a particular tile is passable to actors.
    * TODO Implement locked doors and exit locks.
+   * TODO move this to Domain too.
    *
    * @param row row of the tile to check.
    * @param col row of the tile to check.

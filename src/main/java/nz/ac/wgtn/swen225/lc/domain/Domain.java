@@ -13,6 +13,9 @@ public class Domain {
 
   private Maze maze;
   private Chap chap;
+  private int treasureRemaining;
+  private boolean won;
+  private boolean failed;
 
   /**
    * Default Constructor. Creates an empty maze and puts chap in the top left position.
@@ -22,6 +25,9 @@ public class Domain {
     this.maze = new Maze(9, 9);
     maze.generateMaze();
     chap = new Chap(0, 0);
+    this.treasureRemaining = 0;
+    won = false;
+    failed = false;
   }
 
   /**
@@ -33,6 +39,12 @@ public class Domain {
    * @throws IllegalArgumentException if move is invalid.
    */
   public void moveChap(Direction dir) {
+    if (failed) {
+      throw new IllegalStateException("Chap has failed.");
+    }
+    if (won) {
+      throw new IllegalStateException("Chap has failed.");
+    }
     int newRow = this.chap.getPosition().x;
     int newCol = this.chap.getPosition().y;
 
@@ -57,7 +69,7 @@ public class Domain {
     this.chap.setDirection(dir);
     if (maze.isTilePassable(newRow, newCol)) {
       this.chap.setPosition(newRow, newCol);
-    }else{
+    } else {
       throw new IllegalArgumentException("Impassable wall.");
     }
   }
@@ -78,5 +90,24 @@ public class Domain {
    */
   public Chap getChap() {
     return chap;
+  }
+
+
+  /**
+   * Returns whether or not chap has won by reaching the exit.
+   *
+   * @return true if chap has won, false otherwise
+   */
+  public boolean getWon() {
+    return won;
+  }
+
+  /**
+   * Returns whether or not chap has failed: been eaten, etc.
+   *
+   * @return true if Chap has failed, false otherwise.
+   */
+  public boolean getFailed() {
+    return failed;
   }
 }
