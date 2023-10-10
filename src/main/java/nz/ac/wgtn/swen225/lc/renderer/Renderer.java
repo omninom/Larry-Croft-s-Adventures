@@ -52,8 +52,8 @@ public class Renderer extends JPanel {
 
     for (int row = 0; row < GRID_SIZE; row++) {
       for (int col = 0; col < GRID_SIZE; col++) {
-        Tile tile = domain.getTiles()[row][col];
-        Sprite sprite = TILE_SPRITES.get(tile.getType());
+        TileType tile = domain.getTiles()[row][col];
+        Sprite sprite = TILE_SPRITES.get(tile);
 
         if (sprite != null) {
           BufferedImage spriteImage = sprite.sprite;
