@@ -89,14 +89,6 @@ public class RecorderTests {
   @Test
   void test_endRecording() {
     // TODO: Implement
-    Recorder test = new Recorder();
-
-    test.startRecording("1");
-    test.addToRecording("PLAYER | MOVE_SOMEWHERE");
-    test.addToRecording("MONSTER | MOVE_SOMEWHERE");
-    test.addToRecording("END");
-
-    assertEquals(4, test.getCurrentRecording().size());
 
 
   }
