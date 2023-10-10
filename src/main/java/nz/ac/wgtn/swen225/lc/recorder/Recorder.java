@@ -186,7 +186,7 @@ public class Recorder {
     // ---- Wait for user input  ---- //
     try {
       while (currentSequenceNumber < loadedRecording.size()) {
-        System.out.println("Press the enter key to step through the replay.");
+        System.out.println("Press the 'enter' key to step through the replay.");
         System.in.read();  // Wait for user input
 
         // -- Do next move when button pressed-- //
@@ -318,7 +318,6 @@ public class Recorder {
     Recorder recorder = new Recorder();
 
     // ---- Start recording game ---- //
-    /*#
     recorder.startRecording("1"); // Send [level number]
 
     // ---- Record player and actor movements ---- //
@@ -329,8 +328,6 @@ public class Recorder {
 
     // ---- Stop recording the game and save json file---- //
     recorder.addToRecording("END");
-
-     */
 
     // ---- Auto replay game ---- //
     System.out.println(" \n ---------- Auto Replay ----------");
