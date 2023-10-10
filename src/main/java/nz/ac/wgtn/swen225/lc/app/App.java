@@ -2,14 +2,13 @@ package nz.ac.wgtn.swen225.lc.app;
 
 import nz.ac.wgtn.swen225.lc.domain.Direction;
 import nz.ac.wgtn.swen225.lc.domain.Domain;
-import nz.ac.wgtn.swen225.lc.domain.Maze;
 import nz.ac.wgtn.swen225.lc.recorder.Recorder;
 
 import java.io.File;
 
 /**
  * The App module.
- * 
+ *
  * @author Jack Gallagher (300615528)
  */
 public class App {
@@ -17,35 +16,21 @@ public class App {
   private final Domain domain;
   private final Recorder recorder;
 
-  // TODO: Move to DOMAIN!!!
-  private final Maze maze;
-
   /**
    * Constructor.
    */
   public App() {
     this.domain = new Domain();
     this.recorder = new Recorder();
-
-    this.maze = new Maze(9, 9);
-    maze.generateMaze();
   }
 
   /**
    * Gets the domain.
+   *
    * @return the Domain object.
    */
   public Domain getDomain() {
     return domain;
-  }
-
-  /**
-   * Gets the maze.
-   *
-   * @return the Maze object.
-   */
-  public Maze getMaze() {
-    return maze;
   }
 
   /**
@@ -58,21 +43,25 @@ public class App {
     System.out.println("[APP DEBUG] Recieved input '" + inputType + "'");
 
     // TODO: Translate / Validate input with Domain
-    switch (inputType) {
-      case MOVE_UP:
-        maze.moveChap(Direction.UP);
-        break;
-      case MOVE_DOWN:
-        maze.moveChap(Direction.DOWN);
-        break;
-      case MOVE_LEFT:
-        maze.moveChap(Direction.LEFT);
-        break;
-      case MOVE_RIGHT:
-        maze.moveChap(Direction.RIGHT);
-        break;
-      default:
-        break;
+    try {
+      switch (inputType) {
+        case MOVE_UP:
+          domain.moveChap(Direction.UP);
+          break;
+        case MOVE_DOWN:
+          domain.moveChap(Direction.DOWN);
+          break;
+        case MOVE_LEFT:
+          domain.moveChap(Direction.LEFT);
+          break;
+        case MOVE_RIGHT:
+          domain.moveChap(Direction.RIGHT);
+          break;
+        default:
+          break;
+      }
+    } catch (IllegalArgumentException e){
+      return false;
     }
 
     recorder.addToRecording("CHAP" + "|" + inputType.toString());

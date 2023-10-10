@@ -32,13 +32,13 @@ public class Renderer extends JPanel {
     CHAP_SPRITES.put(Direction.RIGHT, Sprite.chapR);
   }
 
-  private final Maze maze;
+  private final Domain domain;
 
   //sound effect
   private Sound sound = new Sound();
 
-  public Renderer(Maze maze) {
-    this.maze = maze;
+  public Renderer(Domain domain) {
+    this.domain = domain;
     sound.playBackgroundMusic();
     setPreferredSize(new Dimension(GRID_SIZE * 50, GRID_SIZE * 50)); // Adjust the size as needed
   }
@@ -52,7 +52,7 @@ public class Renderer extends JPanel {
 
     for (int row = 0; row < GRID_SIZE; row++) {
       for (int col = 0; col < GRID_SIZE; col++) {
-        Tile tile = maze.getTiles()[row][col];
+        Tile tile = domain.getTiles()[row][col];
         Sprite sprite = TILE_SPRITES.get(tile.getType());
 
         if (sprite != null) {
@@ -60,9 +60,9 @@ public class Renderer extends JPanel {
           g.drawImage(spriteImage, col * cellWidth, row * cellHeight, cellWidth, cellHeight, this);
         }
 
-        if (maze.getChap().getPosition().equals(new Point(row, col))) {
+        if (domain.getChap().getPosition().equals(new Point(row, col))) {
           //determine which sprite to use
-          Direction chapDirection = maze.getChap().getDirection();
+          Direction chapDirection = domain.getChap().getDirection();
           Sprite chapSprite = CHAP_SPRITES.get(chapDirection);
           g.drawImage(chapSprite.sprite, col * cellWidth, row * cellHeight, cellWidth, cellHeight, this);
         }
