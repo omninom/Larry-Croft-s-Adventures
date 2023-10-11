@@ -186,12 +186,25 @@ public class Domain {
     return failed;
   }
 
+  //FUNCTIONS FOR JUNIT TESTS
   public void setFailed(boolean set){
     this.failed = set;
   }
 
   public void setWon(boolean set){
     this.won = set;
+  }
+
+  public Maze getMaze(){
+    return this.maze;
+  }
+
+  public void setMaze(Maze m){
+    this.maze = m;
+  }
+
+  public int getTreasureRemaining(){
+    return this.treasureRemaining;
   }
 
 }
