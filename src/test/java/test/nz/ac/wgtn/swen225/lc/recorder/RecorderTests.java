@@ -1,5 +1,6 @@
 package test.nz.ac.wgtn.swen225.lc.recorder;
 
+import nz.ac.wgtn.swen225.lc.app.App;
 import nz.ac.wgtn.swen225.lc.recorder.Recorder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,7 @@ public class RecorderTests {
    */
   @Test
   void test_startRecording() {
-    Recorder test = new Recorder();
+    Recorder test = new Recorder(new App());
 
     test.startRecording("1");
     System.out.println(test.getCurrentRecording().get(0));
@@ -39,7 +40,7 @@ public class RecorderTests {
    */
   @Test
   void test_addToRecording_01() {
-    Recorder test = new Recorder();
+    Recorder test = new Recorder(new App());
     String level = "1";
     int sequenceNumber = 0;
 
@@ -68,7 +69,7 @@ public class RecorderTests {
    */
   @Test
   void test_addToRecording_02() {
-    Recorder test = new Recorder();
+    Recorder test = new Recorder(new App());
     test.startRecording("1");
 
     // --- Add data to the recording --- //

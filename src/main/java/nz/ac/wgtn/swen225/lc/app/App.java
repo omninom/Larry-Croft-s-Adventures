@@ -21,7 +21,7 @@ public class App {
    */
   public App() {
     this.domain = new Domain();
-    this.recorder = new Recorder();
+    recorder = new Recorder(this);
   }
 
   /**
@@ -66,6 +66,7 @@ public class App {
 
     recorder.addToRecording("CHAP" + "|" + inputType);
     // e.g. recorder.addToRecording("CHAP | MOVE_LEFT"); Send [currentPlayer | move]
+
 
     return true;
   }
