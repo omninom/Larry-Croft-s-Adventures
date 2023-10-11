@@ -99,6 +99,8 @@ public class Renderer extends JPanel implements DomainObserver {
       case LOCKED_DOOR:
         sound.playLockedSound();
         break;
+      case LEVEL_RESET:
+        break;
     }
   }
 }
