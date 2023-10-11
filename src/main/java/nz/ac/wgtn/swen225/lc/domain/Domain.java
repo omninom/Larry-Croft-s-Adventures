@@ -243,6 +243,15 @@ public class Domain {
   }
 
   /**
+   * Getter method for enemies.
+   *
+   * @return unmodifiable list of enemies
+   */
+  public List<EnemyActor> getEnemyActorList() {
+    return enemyActorList;
+  }
+
+  /**
    * Getter for checking if Info should be displayed.
    *
    * @return true if Chap is on a tile of type INFO, false otherwise.
