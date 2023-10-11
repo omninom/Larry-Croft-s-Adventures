@@ -57,7 +57,7 @@ public class MazeCreationTests {
     Chap ourChap;
     ourChap = new Chap(0, 1);
     List<EnemyActor> enemies;
-    enemies= new ArrayList<>();
+    enemies = new ArrayList<>();
     Domain d;
     d = new Domain();
 
