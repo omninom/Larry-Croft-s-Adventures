@@ -46,10 +46,11 @@ public class Domain {
    * @param mazeTiles TileType grid for new level
    * @param chap      Chap object for new level
    * @param enemies   List of EnemyActor objects for new level
+   * @param chapInventory   List of keys that Chap starts holding
    * @param infoText  info string for new level.
    */
   public void buildNewLevel(TileType[][] mazeTiles, Chap chap, List<EnemyActor> enemies,
-                            String infoText) {
+                            List<TileType> chapInventory, String infoText) {
 
     //Validation
     //Validating maze size and gathering treasure count info.
@@ -64,12 +65,12 @@ public class Domain {
       throw new IllegalArgumentException("Maze must have at least one column.");
     }
     int treasureCount = 0;
-    for (int r = 0; r < rows; r++) {
-      if (mazeTiles[r].length != cols) {
+    for (TileType[] mazeTile : mazeTiles) {
+      if (mazeTile.length != cols) {
         throw new IllegalArgumentException("Maze rows must be of the same size");
       }
       for (int c = 0; c < cols; c++) {
-        if (mazeTiles[r][c] == TileType.TREASURE) {
+        if (mazeTile[c] == TileType.TREASURE) {
           treasureCount++;
         }
       }
@@ -85,6 +86,12 @@ public class Domain {
     }
     if (chapPos.x < 0 || chapPos.x >= cols || chapPos.y < 0 || chapPos.y >= rows) {
       throw new IllegalArgumentException("Chap's initial position must be within bounds.");
+    }
+    for (TileType t : chapInventory) {
+      if (!(t == TileType.BLUE_KEY || t == TileType.RED_KEY)) {
+        throw new IllegalArgumentException("Chap should only be holding keys.");
+      }
+      chap.addKey(t);
     }
 
     //Validation of Enemies.

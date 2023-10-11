@@ -21,14 +21,14 @@ import org.junit.jupiter.api.Test;
 public class MazeCreationTests {
 
   private TileType[][] insertionGrid;
-  private Domain domain;
+  private Domain d;
 
   /**
    * Setup function.
    */
   @BeforeEach
   public void setUp() {
-    domain = new Domain();
+    d = new Domain();
     insertionGrid = new Maze(7, 9).getTiles();
   }
 
@@ -38,14 +38,18 @@ public class MazeCreationTests {
   @Test
   public void testValidCreation() {
     insertionGrid[0][3] = TileType.WALL;
-    Chap ourChap = new Chap(0, 1);
-    List<EnemyActor> enemies = new ArrayList<>();
-    Domain d = new Domain();
+    Chap ourChap;
+    ourChap = new Chap(0, 1);
+    List<EnemyActor> enemies;
+    enemies = new ArrayList<>();
+    List<TileType> keys = new ArrayList<>();
+    keys.add(TileType.RED_KEY);
     Assertions.assertEquals(new Point(0, 0), d.getChap().getPosition());
     Assertions.assertTrue(d.getEnemyActorList().isEmpty());
-    d.buildNewLevel(insertionGrid, ourChap, enemies, "Short");
-    assert d.getTiles() == insertionGrid;
+    d.buildNewLevel(insertionGrid, ourChap, enemies, keys, "Short");
+    Assertions.assertEquals(d.getTiles(), insertionGrid);
     Assertions.assertEquals(new Point(0, 1), d.getChap().getPosition());
+    Assertions.assertTrue(d.getChap().hasKey(TileType.RED_KEY));
   }
 
   /**
@@ -58,9 +62,12 @@ public class MazeCreationTests {
     ourChap = new Chap(0, 1);
     List<EnemyActor> enemies;
     enemies = new ArrayList<>();
-    Domain d;
+    List<TileType> keys;
+    keys = new ArrayList<>();
+    keys.add(TileType.RED_KEY);
     d = new Domain();
 
+    //Badly shaped grid
     TileType[][] badGrid = new TileType[3][];
     for (int i = 0; i < 2; i++) {
       badGrid[i] = new TileType[3];
@@ -71,10 +78,16 @@ public class MazeCreationTests {
     badGrid[2] = new TileType[1];
     badGrid[2][0] = TileType.EXIT;
     Assertions.assertThrows(IllegalArgumentException.class,
-        () -> d.buildNewLevel(badGrid, ourChap, enemies, "Y"));
+        () -> d.buildNewLevel(badGrid, ourChap, enemies, keys, "Y"));
 
+    //Invalid chap position
     Chap badChap = new Chap(99, 99);
     Assertions.assertThrows(IllegalArgumentException.class,
-        () -> d.buildNewLevel(insertionGrid, badChap, enemies, "Y"));
+        () -> d.buildNewLevel(insertionGrid, badChap, enemies, keys, "Y"));
+
+    //Non-Key passed into keys
+    keys.add(TileType.WALL);
+    Assertions.assertThrows(IllegalArgumentException.class,
+        () -> d.buildNewLevel(insertionGrid, ourChap, enemies, keys, "Y"));
   }
 }
