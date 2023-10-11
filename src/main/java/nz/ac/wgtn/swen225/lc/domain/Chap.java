@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * @author Jebadiah (300629357).
  */
 
-public class Chap {
+public class Chap implements Entity {
 
   //Chap's current position.
   private Point position;
@@ -62,6 +62,7 @@ public class Chap {
    *
    * @return Chap's current Position.
    */
+  @Override
   public Point getPosition() {
     return position;
   }
@@ -73,6 +74,7 @@ public class Chap {
    * @param row Chap's new row.
    * @param col Chap's new column.
    */
+  @Override
   public void setPosition(int row, int col) {
     position.setLocation(row, col);
   }
@@ -145,6 +147,7 @@ public class Chap {
    *
    * @param direction Chap's new direction.
    */
+  @Override
   public void setDirection(Direction direction) {
     this.direction = direction;
   }
@@ -154,6 +157,7 @@ public class Chap {
    *
    * @return Chap's current direction.
    */
+  @Override
   public Direction getDirection() {
     return direction;
   }
