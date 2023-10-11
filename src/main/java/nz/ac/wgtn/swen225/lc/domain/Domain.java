@@ -20,6 +20,8 @@ public class Domain {
   private boolean won;
   private boolean failed;
 
+  private String info;
+
 
   /**
    * Default Constructor. Creates an empty maze and puts chap in the top left position.
@@ -27,11 +29,12 @@ public class Domain {
    */
   public Domain() {
     this.maze = new Maze(9, 9);
-    maze.generateMaze();
+    maze.generateEmptyMaze();
     chap = new Chap(0, 0);
     this.treasureRemaining = 10;  //TEST VALUE
     won = false;
     failed = false;
+    info = "Default Info String";
   }
 
   private final ArrayList<DomainObserver> observers = new ArrayList<>();
@@ -61,8 +64,8 @@ public class Domain {
     if (won) {
       throw new IllegalStateException("Chap has won.");
     }
-    int newRow = this.chap.getPosition().x;
-    int newCol = this.chap.getPosition().y;
+    int newRow = this.chap.getPosition().y;
+    int newCol = this.chap.getPosition().x;
     switch (dir) {
       case UP:
         newRow--;
@@ -136,7 +139,7 @@ public class Domain {
       default:
         throw new IllegalArgumentException("Unhandled TileType in movement");
     }
-    this.chap.setPosition(newRow, newCol);
+    this.chap.setPosition(newCol, newRow);
   }
 
   /**
@@ -167,6 +170,15 @@ public class Domain {
     return maze.getTiles()[chapPos.y][chapPos.x] == TileType.INFO;
   }
 
+  /**
+   * Getter for info
+   *
+   * @return infotext for the currently loaded level.
+   */
+  public String getInfo() {
+    return info;
+  }
+
 
   /**
    * Returns whether or not chap has won by reaching the exit.
@@ -187,23 +199,23 @@ public class Domain {
   }
 
   //FUNCTIONS FOR JUNIT TESTS
-  public void setFailed(boolean set){
+  public void setFailed(boolean set) {
     this.failed = set;
   }
 
-  public void setWon(boolean set){
+  public void setWon(boolean set) {
     this.won = set;
   }
 
-  public Maze getMaze(){
+  public Maze getMaze() {
     return this.maze;
   }
 
-  public void setMaze(Maze m){
+  public void setMaze(Maze m) {
     this.maze = m;
   }
 
-  public int getTreasureRemaining(){
+  public int getTreasureRemaining() {
     return this.treasureRemaining;
   }
 

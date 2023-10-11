@@ -91,7 +91,7 @@ public class Maze {
   /**
    * Utility method to fill the grid with blank tiles.
    */
-  public void generateMaze() {
+  public void generateEmptyMaze() {
     for (int i = 0; i < numRows; i++) {
       for (int j = 0; j < numCols; j++) {
         tiles[i][j] = TileType.FREE;
