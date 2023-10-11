@@ -4,6 +4,11 @@ import javax.sound.sampled.*;
 import java.io.IOException;
 import java.net.URL;
 
+/**
+ * Class for playing sound effects and background music.
+ *
+ * @author Leory Xue (300607821)
+ */
 public class Sound {
 
   private Clip backgroundMusicClip;
