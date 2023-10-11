@@ -1,7 +1,7 @@
 package nz.ac.wgtn.swen225.lc.domain;
 
 import java.awt.Point;
-import javax.swing.text.Position;
+import java.util.ArrayList;
 
 /**
  * The Domain Module's public interface (for lack of a better word), through which it exposes
@@ -20,6 +20,7 @@ public class Domain {
   private boolean won;
   private boolean failed;
 
+
   /**
    * Default Constructor. Creates an empty maze and puts chap in the top left position.
    * TODO consider other constructors. More likely, some integration with Persistency or something.
@@ -28,9 +29,21 @@ public class Domain {
     this.maze = new Maze(9, 9);
     maze.generateMaze();
     chap = new Chap(0, 0);
-    this.treasureRemaining = 0;
+    this.treasureRemaining = 10;  //TEST VALUE
     won = false;
     failed = false;
+  }
+
+  private final ArrayList<DomainObserver> observers = new ArrayList<>();
+
+  public void addObserver(DomainObserver observer) {
+    observers.add(observer);
+  }
+
+  private void notifyObservers(EventType eventType, TileType itemType) {
+    for (DomainObserver observer : observers) {
+      observer.handleEvent(eventType, itemType);
+    }
   }
 
   /**
@@ -84,26 +97,32 @@ public class Domain {
         throw new IllegalArgumentException("Impassable wall.");
       case RED_KEY:
       case BLUE_KEY:
-        chap.addKey(targetTile);
+        notifyObservers(EventType.PICKUP_ITEM, targetTile);
         maze.setTile(newRow, newCol, TileType.FREE);
+        chap.addKey(targetTile);
         break;
       case RED_DOOR:
         if (chap.hasKey(TileType.RED_KEY)) {
+          notifyObservers(EventType.UNLOCK_DOOR, TileType.RED_DOOR);
           maze.setTile(newRow, newCol, TileType.FREE);
         } else {
+          notifyObservers(EventType.LOCKED_DOOR, TileType.RED_DOOR);
           throw new IllegalArgumentException("Can't unlock this red door.");
         }
         break;
       case BLUE_DOOR:
         if (chap.hasKey(TileType.BLUE_KEY)) {
+          notifyObservers(EventType.UNLOCK_DOOR, TileType.BLUE_DOOR);
           maze.setTile(newRow, newCol, TileType.FREE);
         } else {
+          notifyObservers(EventType.LOCKED_DOOR, TileType.BLUE_DOOR);
           throw new IllegalArgumentException("Can't unlock this blue door.");
         }
         break;
       case TREASURE:
-        treasureRemaining--;
+        notifyObservers(EventType.PICKUP_ITEM, TileType.TREASURE);
         maze.setTile(newRow, newCol, TileType.FREE);
+        treasureRemaining--;
         break;
       case EXIT_LOCK:
         if (treasureRemaining >= 0) {
@@ -166,4 +185,13 @@ public class Domain {
   public boolean getFailed() {
     return failed;
   }
+
+  public void setFailed(boolean set){
+    this.failed = set;
+  }
+
+  public void setWon(boolean set){
+    this.won = set;
+  }
+
 }
