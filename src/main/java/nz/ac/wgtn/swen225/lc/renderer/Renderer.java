@@ -1,20 +1,30 @@
 package nz.ac.wgtn.swen225.lc.renderer;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.JPanel;
-import nz.ac.wgtn.swen225.lc.domain.*;
+import nz.ac.wgtn.swen225.lc.domain.Direction;
+import nz.ac.wgtn.swen225.lc.domain.Domain;
+import nz.ac.wgtn.swen225.lc.domain.DomainObserver;
+import nz.ac.wgtn.swen225.lc.domain.EventType;
+import nz.ac.wgtn.swen225.lc.domain.TileType;
 
 /**
  * Renderer.java
  * Handles the rendering of the game.
+ *
  * @author Leory Xue (300607821)
  */
 public class Renderer extends JPanel implements DomainObserver {
-  private static final int GRID_SIZE = 9;
   private static final HashMap<Direction, Sprite> CHAP_SPRITES = new HashMap<>();
   private static final HashMap<TileType, Sprite> TILE_SPRITES = new HashMap<>();
+  private static final int FOCUS_SIZE = 9;
+  private int gridSize = 0;
 
   static {
     TILE_SPRITES.put(TileType.WALL, Sprite.wallTile);
@@ -35,58 +45,132 @@ public class Renderer extends JPanel implements DomainObserver {
   }
 
   private final Domain domain;
-
-  //sound effect
   private final Sound sound = new Sound();
+  private ArrayList<TileType> chapInventory = new ArrayList<>();
 
+
+  /**
+   * Constructor for the Renderer class.
+   *
+   * @param domain The domain to be rendered.
+   */
   public Renderer(Domain domain) {
     this.domain = domain;
     domain.addObserver(this);
     sound.playBackgroundMusic();
-    setPreferredSize(new Dimension(GRID_SIZE * 50, GRID_SIZE * 50)); // Adjust the size as needed
+    gridSize = domain.getTiles().length;
+    setPreferredSize(new Dimension(FOCUS_SIZE * 50, (FOCUS_SIZE + 1) * 50));
   }
 
+
+  /**
+   * Overridden paintComponent method to draw the game.
+   *
+   * @param g The graphics object.
+   */
   @Override
   protected void paintComponent(Graphics g) {
     super.paintComponent(g);
+    // Set the background color to freeTile0
+    setBackground(new Color(152, 106, 147, 255));
 
-    int cellWidth = getWidth() / GRID_SIZE;
-    int cellHeight = getHeight() / GRID_SIZE;
+    int cellWidth = getWidth() / FOCUS_SIZE;
+    int cellHeight = getHeight() / (FOCUS_SIZE + 1); // Increase the number of rows to 10
 
-    for (int row = 0; row < GRID_SIZE; row++) {
-      for (int col = 0; col < GRID_SIZE; col++) {
+    // Calculate the top-left cell coordinates of the focus area based on the player's position
+    int focusTopRow = Math.max(0, domain.getChap().getPosition().y - (FOCUS_SIZE / 2));
+    int focusLeftCol = Math.max(0, domain.getChap().getPosition().x - (FOCUS_SIZE / 2));
+
+    // Loop through the focus area and draw tiles (including the extra row)
+    for (int row = focusTopRow; row < focusTopRow + (FOCUS_SIZE + 1) && row < gridSize; row++) {
+      for (int col = focusLeftCol; col < focusLeftCol + FOCUS_SIZE && col < gridSize; col++) {
         TileType tile = domain.getTiles()[row][col];
         Sprite sprite = TILE_SPRITES.get(tile);
 
         if (sprite != null) {
           BufferedImage spriteImage = sprite.sprite;
-          g.drawImage(spriteImage, col * cellWidth, row * cellHeight, cellWidth, cellHeight, this);
+          int drawX = (col - focusLeftCol) * cellWidth;
+          int drawY = (row - focusTopRow) * cellHeight;
+          g.drawImage(spriteImage, drawX, drawY, cellWidth, cellHeight, this);
         }
+      }
+    }
 
-        //if player is on an info tile, display a random info message FOR NOW: NEED INFO FROM DOMAIN
-        if (domain.isOnInfo()){
-          String infoMessage = "Move Larry with the arrow keys";
-          g.setColor(Color.WHITE);
-          //draw the message in the top middle of the screen in big size with white font and black outline
-          g.setFont(new Font("TimesRoman", Font.BOLD, 20));
-          //give font outline
-          g.drawString(infoMessage, (getWidth() / 2) - (g.getFontMetrics().stringWidth(infoMessage) / 2), getHeight()/4);
-        }
+    if (domain.getFailed()) {
+      // Draw a black screen over the game and display the game over message
+      g.setColor(Color.BLACK);
+      g.fillRect(0, 0, getWidth(), getHeight());
+      g.setColor(Color.WHITE);
+      g.drawString("Game Over", (getWidth() / 2) - (g.getFontMetrics().stringWidth("Game Over") / 2), getHeight() / 2);
+    }
 
-        if (domain.getChap().getPosition().equals(new Point(col, row))) {
-          //determine which sprite to use
-          Direction chapDirection = domain.getChap().getDirection();
-          Sprite chapSprite = CHAP_SPRITES.get(chapDirection);
-          g.drawImage(chapSprite.sprite, col * cellWidth, row * cellHeight, cellWidth, cellHeight, this);
+    // If the player is on an info tile, display a random info message FOR NOW: NEED INFO FROM DOMAIN
+    if (domain.isOnInfo()) {
+      String infoMessage = "Move Larry with the arrow keys";
+      g.setColor(Color.WHITE);
+      //draw the message in the top middle of the screen
+      g.setFont(new Font("TimesRoman", Font.BOLD, 20));
+      //give font outline
+      g.drawString(infoMessage, (getWidth() / 2) - (g.getFontMetrics().stringWidth(infoMessage) / 2), getHeight() / 4);
+    }
+
+
+    // Draw the player character
+    int chapDrawX = (domain.getChap().getPosition().x - focusLeftCol) * cellWidth;
+    int chapDrawY = (domain.getChap().getPosition().y - focusTopRow) * cellHeight;
+    Direction chapDirection = domain.getChap().getDirection();
+    Sprite chapSprite = CHAP_SPRITES.get(chapDirection);
+    g.drawImage(chapSprite.sprite, chapDrawX, chapDrawY, cellWidth, cellHeight, this);
+
+    // Populate the last row with the inventory
+    int lastRow = FOCUS_SIZE;
+    for (int col = 0; col < FOCUS_SIZE; col++) {
+      if (col < chapInventory.size()) {
+        Sprite sprite = TILE_SPRITES.get(chapInventory.get(col));
+        BufferedImage spriteImage = sprite.sprite;
+        int drawX = col * cellWidth;
+        int drawY = lastRow * cellHeight;
+        g.drawImage(spriteImage, drawX, drawY, cellWidth, cellHeight, this);
+      } else {
+        // Draw freeTile in the last row if Chap's inventory is empty
+        TileType freeTile = TileType.FREE;
+        Sprite freeTileSprite = TILE_SPRITES.get(freeTile);
+
+        if (freeTileSprite != null) {
+          BufferedImage spriteImage = freeTileSprite.sprite;
+          int drawX = col * cellWidth;
+          int drawY = lastRow * cellHeight;
+          g.drawImage(spriteImage, drawX, drawY, cellWidth, cellHeight, this);
         }
       }
     }
   }
 
+  /**
+   * Method to update the renderer.
+   */
   public void updateRenderer() {
+    ArrayList<TileType> chapInventory = domain.getChap().getKeys(); // Get Chap's keys
+    updateChapInventory(chapInventory);
     repaint();
   }
 
+  /**
+   * Method to update Chap's inventory.
+   *
+   * @param inventory The inventory to be updated.
+   */
+  public void updateChapInventory(ArrayList<TileType> inventory) {
+    chapInventory.clear();
+    chapInventory.addAll(inventory);
+  }
+
+  /**
+   * Implementation of the handleEvent method from DomainObserver.
+   *
+   * @param eventType The type of event.
+   * @param itemType  The type of item.
+   */
   @Override
   public void handleEvent(EventType eventType, TileType itemType) {
     switch (eventType) {
@@ -99,7 +183,14 @@ public class Renderer extends JPanel implements DomainObserver {
       case LOCKED_DOOR:
         sound.playLockedSound();
         break;
-      case LEVEL_RESET:
+      case DAMAGE:
+        sound.playDamageSound();
+        break;
+      case DEATH:
+        sound.stopBackgroundMusic();
+        sound.playDeathSound();
+        break;
+      default:
         break;
     }
   }

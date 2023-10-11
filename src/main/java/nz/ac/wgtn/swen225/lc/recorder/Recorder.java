@@ -269,36 +269,26 @@ public class Recorder {
     RecordItem currentRecord = loadedRecording.get(sequenceNumber);
 
     // ---- Extract the data ---- //
-    String actor = currentRecord.getActor().trim();
     String move = currentRecord.getMove().trim();
 
-    // ---- Send the actors move data to App ---- //
-    if (actor.equals("ACTOR")) {
-      // todo: send actor move to app to tell domain to move actor
-
-    }
-
-
-
     // ---- Send the user move data to App ---- //
-    if (actor.equals("CHAP")) {
-      switch (move) {
-        case "MOVE_UP":
-          app.handleInput(AppInput.MOVE_UP);
-          break;
-        case "MOVE_DOWN":
-          app.handleInput(AppInput.MOVE_DOWN);
-          break;
-        case "MOVE_LEFT":
-          app.handleInput(AppInput.MOVE_LEFT);
-          break;
-        case "MOVE_RIGHT":
-          app.handleInput(AppInput.MOVE_RIGHT);
-          break;
-        default:
-          throw new IllegalArgumentException("Error: Invalid move: " + move);
-      }
+    switch (move) {
+      case "MOVE_UP":
+        app.handleInput(AppInput.MOVE_UP);
+        break;
+      case "MOVE_DOWN":
+        app.handleInput(AppInput.MOVE_DOWN);
+        break;
+      case "MOVE_LEFT":
+        app.handleInput(AppInput.MOVE_LEFT);
+        break;
+      case "MOVE_RIGHT":
+        app.handleInput(AppInput.MOVE_RIGHT);
+        break;
+      default:
+        throw new IllegalArgumentException("Error: Invalid move: " + move);
     }
+
 
   }
 
@@ -353,7 +343,7 @@ public class Recorder {
     // ---- Create a new instance of the Recorder ---- //
     Recorder recorder = new Recorder(new App());
 
-    /*#
+
     // ---- Start recording game ---- //
     recorder.startRecording("1"); // Send [level number]
 
@@ -366,15 +356,13 @@ public class Recorder {
     // ---- Stop recording the game and save json file---- //
     recorder.addToRecording("END");
 
-     */
-
     // ---- Auto replay game ---- //
     System.out.println(" \n ---------- Auto Replay ----------");
     recorder.autoReplay();
 
     // ---- Manual replay game ---- //
-    //System.out.println(" \n ---------- Manual Replay ----------");
-    //recorder.manualReplay();
+    System.out.println(" \n ---------- Manual Replay ----------");
+    recorder.manualReplay();
   }
 
 

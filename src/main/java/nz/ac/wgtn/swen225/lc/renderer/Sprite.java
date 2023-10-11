@@ -2,8 +2,6 @@ package nz.ac.wgtn.swen225.lc.renderer;
 
 import java.awt.image.BufferedImage;
 
-
-
 /**
  * Sprite.java
  * Enum for different sprites
@@ -20,17 +18,7 @@ public enum Sprite {
   actorU,
   actorD,
   wallTile,
-  freeTile0,
   freeTile1,
-  freeTile2,
-  freeTile3,
-  freeTile4,
-  freeTile5,
-  freeTile6,
-  freeTile7,
-  freeTile8,
-  freeTile9,
-  freeTile10,
   redKey,
   blueKey,
   greenKey,
