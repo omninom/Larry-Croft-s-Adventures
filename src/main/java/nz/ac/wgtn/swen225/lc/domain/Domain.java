@@ -64,8 +64,8 @@ public class Domain {
     if (won) {
       throw new IllegalStateException("Chap has won.");
     }
-    int newRow = this.chap.getPosition().x;
-    int newCol = this.chap.getPosition().y;
+    int newRow = this.chap.getPosition().y;
+    int newCol = this.chap.getPosition().x;
     switch (dir) {
       case UP:
         newRow--;
@@ -139,7 +139,7 @@ public class Domain {
       default:
         throw new IllegalArgumentException("Unhandled TileType in movement");
     }
-    this.chap.setPosition(newRow, newCol);
+    this.chap.setPosition(newCol, newRow);
   }
 
   /**

@@ -73,7 +73,7 @@ public class Renderer extends JPanel implements DomainObserver {
           g.drawString(infoMessage, (getWidth() / 2) - (g.getFontMetrics().stringWidth(infoMessage) / 2), getHeight()/4);
         }
 
-        if (domain.getChap().getPosition().equals(new Point(row, col))) {
+        if (domain.getChap().getPosition().equals(new Point(col, row))) {
           //determine which sprite to use
           Direction chapDirection = domain.getChap().getDirection();
           Sprite chapSprite = CHAP_SPRITES.get(chapDirection);
