@@ -65,7 +65,7 @@ public class Renderer extends JPanel implements DomainObserver {
     domain.addObserver(this);
     sound.playBackgroundMusic();
     gridSize = domain.getTiles().length;
-    setPreferredSize(new Dimension(FOCUS_SIZE * 50, (FOCUS_SIZE + 1) * 50));
+    setPreferredSize(new Dimension(FOCUS_SIZE * 50, (FOCUS_SIZE + 1) * 50 + 25)); //Added 25 for extra space for inventory
   }
 
 
@@ -81,14 +81,15 @@ public class Renderer extends JPanel implements DomainObserver {
     setBackground(new Color(152, 106, 147, 255));
 
     int cellWidth = getWidth() / FOCUS_SIZE;
-    int cellHeight = getHeight() / (FOCUS_SIZE + 1); // Increase the number of rows to 10
+    // The height of each cell is the height of the panel divided by the number of rows, we also minus 25 to allow space for the inventory
+    int cellHeight = (getHeight()-25) / (FOCUS_SIZE + 1); // Increase the number of "rows" to 10 this allows spacing for inventory
 
     // Calculate the top-left cell coordinates of the focus area based on the player's position
     int focusTopRow = Math.max(0, domain.getChap().getPosition().y - (FOCUS_SIZE / 2));
     int focusLeftCol = Math.max(0, domain.getChap().getPosition().x - (FOCUS_SIZE / 2));
 
-    // Loop through the focus area and draw tiles (including the extra row)
-    for (int row = focusTopRow; row < focusTopRow + (FOCUS_SIZE + 1) && row < gridSize; row++) {
+    // Loop through the focus area and draw tiles
+    for (int row = focusTopRow; row < focusTopRow + (FOCUS_SIZE) && row < gridSize; row++) {
       for (int col = focusLeftCol; col < focusLeftCol + FOCUS_SIZE && col < gridSize; col++) {
         TileType tile = domain.getTiles()[row][col];
         Sprite sprite = TILE_SPRITES.get(tile);
@@ -144,7 +145,7 @@ public class Renderer extends JPanel implements DomainObserver {
         Sprite sprite = TILE_SPRITES.get(chapInventory.get(col));
         BufferedImage spriteImage = sprite.sprite;
         int drawX = col * cellWidth;
-        int drawY = lastRow * cellHeight;
+        int drawY = lastRow * cellHeight + 25;  // Add 25 to draw the inventory below the game
         g.drawImage(spriteImage, drawX, drawY, cellWidth, cellHeight, this);
       } else {
         // Draw freeTile in the last row if Chap's inventory is empty
@@ -154,10 +155,13 @@ public class Renderer extends JPanel implements DomainObserver {
         if (freeTileSprite != null) {
           BufferedImage spriteImage = freeTileSprite.sprite;
           int drawX = col * cellWidth;
-          int drawY = lastRow * cellHeight;
+          int drawY = lastRow * cellHeight + 25; // Add 25 to draw the inventory below the game
           g.drawImage(spriteImage, drawX, drawY, cellWidth, cellHeight, this);
         }
       }
+      //draw horizontal line to separate inventory from game
+      g.setColor(new Color(53, 18, 46));
+      g.fillRect(0, FOCUS_SIZE * cellHeight+ 8, getWidth(), 10);  // Add 8 to draw the line below the game
     }
   }
 
