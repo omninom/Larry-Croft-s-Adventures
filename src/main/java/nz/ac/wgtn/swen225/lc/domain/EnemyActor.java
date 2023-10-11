@@ -1,8 +1,8 @@
 package nz.ac.wgtn.swen225.lc.domain;
 
 /**
- * Interface for autonomously moving Entities that kill Chap on touch.
- * Capable of using a passed Domain object to make smart decisions.
+ * Interface for autonomously moving Entities that kill Chap on touch. Capable of using a passed
+ * Domain object to make smart decisions.
  */
 public interface EnemyActor extends Entity {
   /**

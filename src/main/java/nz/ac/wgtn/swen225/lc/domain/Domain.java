@@ -114,7 +114,7 @@ public class Domain {
     //These are reset on load by default.
     won = false;
     failed = false;
-    notifyObservers(EventType.LEVEL_RESET,TileType.FREE);
+    notifyObservers(EventType.LEVEL_RESET, TileType.FREE);
   }
 
   private final ArrayList<DomainObserver> observers = new ArrayList<>();
