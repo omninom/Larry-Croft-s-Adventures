@@ -2,8 +2,6 @@ package nz.ac.wgtn.swen225.lc.renderer;
 
 import java.awt.image.BufferedImage;
 
-
-
 /**
  * Sprite.java
  * Enum for different sprites
