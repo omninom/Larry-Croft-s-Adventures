@@ -1,5 +1,6 @@
 package test.nz.ac.wgtn.swen225.lc.domain;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -128,6 +129,24 @@ public class DomainTest {
 
     domain.moveChap(Direction.RIGHT);
     assertEquals(inittreasure - 1, domain.getTreasureRemaining());
+  }
+
+  /**
+   * Tests that Domain properly detects Info tiles.
+   */
+  @Test
+  public void infoTileTest() {
+    TileType[][] maze = domain.getTiles();
+    maze[0][1] = TileType.INFO;
+    String infoText = Double.toString(Math.random());
+    domain.buildNewLevel(maze, domain.getChap(), domain.getEnemyActorList(),
+        domain.getChap().getKeys(), infoText);
+    int inittreasure = domain.getTreasureRemaining();
+
+    domain.moveChap(Direction.RIGHT);
+    assertTrue(domain.isOnInfo());
+    assertEquals(domain.getInfo(), infoText);
+
   }
 
   /**
