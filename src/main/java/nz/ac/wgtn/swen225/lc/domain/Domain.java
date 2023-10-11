@@ -108,6 +108,7 @@ public class Domain {
         if (chap.hasKey(TileType.RED_KEY)) {
           notifyObservers(EventType.UNLOCK_DOOR, TileType.RED_DOOR);
           maze.setTile(newRow, newCol, TileType.FREE);
+          chap.removeKey(TileType.RED_KEY);
         } else {
           notifyObservers(EventType.LOCKED_DOOR, TileType.RED_DOOR);
           throw new IllegalArgumentException("Can't unlock this red door.");
@@ -117,6 +118,7 @@ public class Domain {
         if (chap.hasKey(TileType.BLUE_KEY)) {
           notifyObservers(EventType.UNLOCK_DOOR, TileType.BLUE_DOOR);
           maze.setTile(newRow, newCol, TileType.FREE);
+          chap.removeKey(TileType.BLUE_KEY);
         } else {
           notifyObservers(EventType.LOCKED_DOOR, TileType.BLUE_DOOR);
           throw new IllegalArgumentException("Can't unlock this blue door.");
