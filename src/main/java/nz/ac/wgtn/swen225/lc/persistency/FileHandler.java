@@ -26,17 +26,10 @@ public class FileHandler {
     String json = mapper.writeValueAsString(maze);
     System.out.println(json); // DEBUG: raw json string
 
-    FileOutputStream fos = null;
-    try {
-      fos = new FileOutputStream(file);
+    try (FileOutputStream fos = new FileOutputStream(file)) {
       mapper.writerWithDefaultPrettyPrinter().writeValue(fos, maze);
-      fos.close();
     } catch (IOException e) {
       throw new IOException("Failed to save file");
-    } finally {
-      if (fos != null) {
-        fos.close();
-      }
     }
 
     System.out.println("Save successful");
