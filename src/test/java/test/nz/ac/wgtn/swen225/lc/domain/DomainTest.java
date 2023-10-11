@@ -140,7 +140,6 @@ public class DomainTest {
     String infoText = Double.toString(Math.random());
     domain.buildNewLevel(maze, domain.getChap(), domain.getEnemyActorList(),
         domain.getChap().getKeys(), infoText);
-    int inittreasure = domain.getTreasureRemaining();
 
     domain.moveChap(Direction.RIGHT);
     assertTrue(domain.isOnInfo());

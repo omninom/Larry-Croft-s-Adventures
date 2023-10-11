@@ -2,6 +2,7 @@ package nz.ac.wgtn.swen225.lc.domain;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -87,11 +88,14 @@ public class Domain {
     if (chapPos.x < 0 || chapPos.x >= cols || chapPos.y < 0 || chapPos.y >= rows) {
       throw new IllegalArgumentException("Chap's initial position must be within bounds.");
     }
+    Chap ourChap = new Chap(chapPos.x, chapPos.y);
+    ourChap.setDirection(chap.getDirection());
+    ourChap.setAlive(chap.isAlive());
     for (TileType t : chapInventory) {
       if (!(t == TileType.BLUE_KEY || t == TileType.RED_KEY)) {
         throw new IllegalArgumentException("Chap should only be holding keys.");
       }
-      chap.addKey(t);
+      ourChap.addKey(t);
     }
 
     List<EnemyActor> ourEnemyList = new ArrayList<>();
@@ -115,7 +119,7 @@ public class Domain {
     newMaze.setTiles(mazeTiles);
 
     this.maze = newMaze;
-    this.chap = chap;
+    this.chap = ourChap;
     this.treasureRemaining = treasureCount;
     info = infoText;
     enemyActorList = ourEnemyList;
@@ -305,7 +309,7 @@ public class Domain {
    * @return unmodifiable list of enemies
    */
   public List<EnemyActor> getEnemyActorList() {
-    return enemyActorList;
+    return Collections.unmodifiableList(enemyActorList);
   }
 
   /**

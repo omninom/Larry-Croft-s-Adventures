@@ -48,7 +48,13 @@ public class MazeCreationTests {
     Assertions.assertEquals(new Point(0, 0), domain.getChap().getPosition());
     Assertions.assertTrue(domain.getEnemyActorList().isEmpty());
     domain.buildNewLevel(insertionGrid, ourChap, enemies, keys, "Short");
-    Assertions.assertEquals(domain.getTiles(), insertionGrid);
+
+    for (int row = 0; row < insertionGrid.length; row++) {
+      for (int col = 0; col < insertionGrid[row].length; col++) {
+        Assertions.assertEquals(insertionGrid[row][col], domain.getTiles()[row][col]);
+      }
+    }
+
     Assertions.assertEquals(new Point(0, 1), domain.getChap().getPosition());
     Assertions.assertTrue(domain.getChap().hasKey(TileType.RED_KEY));
   }

@@ -21,7 +21,6 @@ public class Chap implements Entity {
 
   //The keys that Chap is holding.
   private ArrayList<TileType> keys;
-  private int treasure;
   private boolean alive;
 
   /**
@@ -37,25 +36,6 @@ public class Chap implements Entity {
     this.direction = Direction.DOWN;
   }
 
-  /**
-   * JSON Constructor for the Chap class.
-   *
-   * @param position  Chap's saved position.
-   * @param keys      Chap's saved keys.
-   * @param alive     Whether Chap is alive.
-   * @param direction Which direction Chap is facing in.
-   */
-  @JsonCreator
-  public Chap(@JsonProperty("position") Point position,
-              @JsonProperty("keys") ArrayList<TileType> keys,
-              @JsonProperty("alive") boolean alive,
-              @JsonProperty("direction") Direction direction) {
-    // Initialize fields with arguments
-    this.position = position;
-    this.keys = keys;
-    this.alive = alive;
-    this.direction = direction;
-  }
 
   /**
    * Getter for position.

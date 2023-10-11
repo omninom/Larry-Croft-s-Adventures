@@ -41,7 +41,13 @@ public class Maze {
    * @return 2d Array of the maze
    */
   public TileType[][] getTiles() {
-    return tiles;
+    TileType[][] ret = new TileType[numRows][numCols];
+    for (int row = 0; row < numRows; row++) {
+      for (int col = 0; col < numCols; col++) {
+        ret[row][col] = tiles[row][col];
+      }
+    }
+    return ret;
   }
 
   /**
@@ -77,7 +83,13 @@ public class Maze {
         throw new IllegalArgumentException("Rows must all be of the same size.");
       }
     }
-    this.tiles = tiles;
+    TileType[][] ourTiles = new TileType[rows][cols];
+    for (int row = 0; row < rows; row++) {
+      for (int col = 0; col < cols; col++) {
+        ourTiles[row][col] = tiles[row][col];
+      }
+    }
+    this.tiles = ourTiles;
     this.numCols = cols;
     this.numRows = rows;
   }
