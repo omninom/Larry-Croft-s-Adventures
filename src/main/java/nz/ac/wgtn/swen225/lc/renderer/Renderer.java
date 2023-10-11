@@ -22,6 +22,7 @@ import nz.ac.wgtn.swen225.lc.domain.TileType;
  */
 public class Renderer extends JPanel implements DomainObserver {
   private static final HashMap<Direction, Sprite> CHAP_SPRITES = new HashMap<>();
+  private static final HashMap<Direction, Sprite> ENEMY_SPRITES = new HashMap<>();
   private static final HashMap<TileType, Sprite> TILE_SPRITES = new HashMap<>();
   private static final int FOCUS_SIZE = 9;
   private int gridSize = 0;
@@ -42,11 +43,16 @@ public class Renderer extends JPanel implements DomainObserver {
     CHAP_SPRITES.put(Direction.DOWN, Sprite.chapD);
     CHAP_SPRITES.put(Direction.LEFT, Sprite.chapL);
     CHAP_SPRITES.put(Direction.RIGHT, Sprite.chapR);
+
+    ENEMY_SPRITES.put(Direction.UP, Sprite.actorU);
+    ENEMY_SPRITES.put(Direction.DOWN, Sprite.actorD);
+    ENEMY_SPRITES.put(Direction.LEFT, Sprite.actorL);
+    ENEMY_SPRITES.put(Direction.RIGHT, Sprite.actorR);
   }
 
   private final Domain domain;
   private final Sound sound = new Sound();
-  private ArrayList<TileType> chapInventory = new ArrayList<>();
+  private final ArrayList<TileType> chapInventory = new ArrayList<>();
 
 
   /**
@@ -109,7 +115,7 @@ public class Renderer extends JPanel implements DomainObserver {
       String infoMessage = "Move Larry with the arrow keys";
       g.setColor(Color.WHITE);
       //draw the message in the top middle of the screen
-      g.setFont(new Font("TimesRoman", Font.BOLD, 20));
+      g.setFont(new Font("Dialog", Font.BOLD, 20));
       //give font outline
       g.drawString(infoMessage, (getWidth() / 2) - (g.getFontMetrics().stringWidth(infoMessage) / 2), getHeight() / 4);
     }
@@ -121,6 +127,15 @@ public class Renderer extends JPanel implements DomainObserver {
     Direction chapDirection = domain.getChap().getDirection();
     Sprite chapSprite = CHAP_SPRITES.get(chapDirection);
     g.drawImage(chapSprite.sprite, chapDrawX, chapDrawY, cellWidth, cellHeight, this);
+
+    // Draw the enemy characters
+    for (int i = 0; i < domain.getEnemyActorList().size(); i++) {
+      int enemyDrawX = (domain.getEnemyActorList().get(i).getPosition().x - focusLeftCol) * cellWidth;
+      int enemyDrawY = (domain.getEnemyActorList().get(i).getPosition().y - focusTopRow) * cellHeight;
+      Direction enemyDirection = domain.getEnemyActorList().get(i).getDirection();
+      Sprite enemySprite = ENEMY_SPRITES.get(enemyDirection);
+      g.drawImage(enemySprite.sprite, enemyDrawX, enemyDrawY, cellWidth, cellHeight, this);
+    }
 
     // Populate the last row with the inventory
     int lastRow = FOCUS_SIZE;
