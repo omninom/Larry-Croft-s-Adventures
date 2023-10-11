@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.JPanel;
@@ -24,8 +23,24 @@ public class Renderer extends JPanel implements DomainObserver {
   private static final HashMap<Direction, Sprite> CHAP_SPRITES = new HashMap<>();
   private static final HashMap<Direction, Sprite> ENEMY_SPRITES = new HashMap<>();
   private static final HashMap<TileType, Sprite> TILE_SPRITES = new HashMap<>();
-  private static final int FOCUS_SIZE = 9;
+  private static final int FOCUS_SIZE = 9;  //9x9 focus area
   private int gridSize = 0;
+  private final Domain domain;
+  private final Sound sound = new Sound();
+  private final ArrayList<TileType> chapInventory = new ArrayList<>();
+
+  /**
+   * Constructor for the Renderer class.
+   *
+   * @param domain The domain to be rendered.
+   */
+  public Renderer(Domain domain) {
+    this.domain = domain;
+    domain.addObserver(this);
+    sound.playBackgroundMusic();
+    gridSize = domain.getTiles().length;
+    setPreferredSize(new Dimension(FOCUS_SIZE * 50, (FOCUS_SIZE + 1) * 50 + 25));
+  }
 
   static {
     TILE_SPRITES.put(TileType.WALL, Sprite.wallTile);
@@ -50,86 +65,124 @@ public class Renderer extends JPanel implements DomainObserver {
     ENEMY_SPRITES.put(Direction.RIGHT, Sprite.actorR);
   }
 
-  private final Domain domain;
-  private final Sound sound = new Sound();
-  private final ArrayList<TileType> chapInventory = new ArrayList<>();
-
-
-  /**
-   * Constructor for the Renderer class.
-   *
-   * @param domain The domain to be rendered.
-   */
-  public Renderer(Domain domain) {
-    this.domain = domain;
-    domain.addObserver(this);
-    sound.playBackgroundMusic();
-    gridSize = domain.getTiles().length;
-    setPreferredSize(new Dimension(FOCUS_SIZE * 50, (FOCUS_SIZE + 1) * 50 + 25)); //Added 25 for extra space for inventory
-  }
-
-
-  /**
-   * Overridden paintComponent method to draw the game.
-   *
-   * @param g The graphics object.
-   */
   @Override
   protected void paintComponent(Graphics g) {
     super.paintComponent(g);
-    // Set the background color to freeTile0
+    // First check if the game is over
+    if (domain.getFailed()) {
+      drawGameOverScreen(g, "Game Over");
+    } else if (domain.getWon()) {
+      drawGameOverScreen(g, "You Won!");
+    }
+    //set background color to the same as the free tile
     setBackground(new Color(152, 106, 147, 255));
-
     int cellWidth = getWidth() / FOCUS_SIZE;
-    // The height of each cell is the height of the panel divided by the number of rows, we also minus 25 to allow space for the inventory
-    int cellHeight = (getHeight()-25) / (FOCUS_SIZE + 1); // Increase the number of "rows" to 10 this allows spacing for inventory
-
+    // we minus 25 to allow space for the inventory
+    // Increase the number of "rows" to 10 this allows spacing for inventory
+    int cellHeight = (getHeight() - 25) / (FOCUS_SIZE + 1);
     // Calculate the top-left cell coordinates of the focus area based on the player's position
     int focusTopRow = Math.max(0, domain.getChap().getPosition().y - (FOCUS_SIZE / 2));
     int focusLeftCol = Math.max(0, domain.getChap().getPosition().x - (FOCUS_SIZE / 2));
 
+    drawTiles(g, cellWidth, cellHeight, focusTopRow, focusLeftCol);
+    drawCharacters(g, cellWidth, cellHeight, focusTopRow, focusLeftCol);
+    drawInventory(g, cellWidth, cellHeight);
+    if (domain.isOnInfo()) {
+      drawInfoMessage(g);
+    }
+  }
+
+  /**
+   * Draw the tiles in the focus area.
+   *
+   * @param g            Graphics
+   * @param cellWidth    the width of each cell
+   * @param cellHeight   the height of each cell
+   * @param focusTopRow  the top row of the focus area
+   * @param focusLeftCol the left column of the focus area
+   */
+  private void drawTiles(Graphics g, int cellWidth, int cellHeight, int focusTopRow, int focusLeftCol) {
     // Loop through the focus area and draw tiles
-    for (int row = focusTopRow; row < focusTopRow + (FOCUS_SIZE) && row < gridSize; row++) {
+    for (int row = focusTopRow; row < focusTopRow + FOCUS_SIZE && row < gridSize; row++) {
       for (int col = focusLeftCol; col < focusLeftCol + FOCUS_SIZE && col < gridSize; col++) {
         TileType tile = domain.getTiles()[row][col];
         Sprite sprite = TILE_SPRITES.get(tile);
 
         if (sprite != null) {
-          BufferedImage spriteImage = sprite.sprite;
           int drawX = (col - focusLeftCol) * cellWidth;
           int drawY = (row - focusTopRow) * cellHeight;
-          g.drawImage(spriteImage, drawX, drawY, cellWidth, cellHeight, this);
+          g.drawImage(sprite.sprite, drawX, drawY, cellWidth, cellHeight, this);
         }
       }
     }
+  }
 
-    if (domain.getFailed()) {
-      // Draw a black screen over the game and display the game over message
-      g.setColor(Color.BLACK);
-      g.fillRect(0, 0, getWidth(), getHeight());
-      g.setColor(Color.WHITE);
-      g.drawString("Game Over", (getWidth() / 2) - (g.getFontMetrics().stringWidth("Game Over") / 2), getHeight() / 2);
-    }
+  /**
+   * Draw the game over screen.
+   *
+   * @param g Graphics
+   */
+  private void drawGameOverScreen(Graphics g, String message) {
+    g.setColor(Color.BLACK);
+    g.fillRect(0, 0, getWidth(), getHeight());
+    g.setColor(Color.WHITE);
+    g.drawString(message, (getWidth() / 2)
+        - (g.getFontMetrics().stringWidth(message) / 2), getHeight() / 2);
+  }
 
-    // If the player is on an info tile, display a random info message FOR NOW: NEED INFO FROM DOMAIN
-    if (domain.isOnInfo()) {
-      String infoMessage = "Move Larry with the arrow keys";
-      g.setColor(Color.WHITE);
-      //draw the message in the top middle of the screen
-      g.setFont(new Font("Dialog", Font.BOLD, 20));
-      //give font outline
-      g.drawString(infoMessage, (getWidth() / 2) - (g.getFontMetrics().stringWidth(infoMessage) / 2), getHeight() / 4);
-    }
+  /**
+   * Draw the info message.
+   *
+   * @param g Graphics
+   */
+  private void drawInfoMessage(Graphics g) {
+    g.setColor(Color.WHITE);
+    g.setFont(new Font("Dialog", Font.BOLD, 20));
+    g.drawString(domain.getInfo(), (getWidth() / 2)
+        - (g.getFontMetrics().stringWidth(domain.getInfo()) / 2), getHeight() / 4);
+  }
 
+  /**
+   * Draw the characters in the focus area.
+   *
+   * @param g            Graphics
+   * @param cellWidth    the width of each cell
+   * @param cellHeight   the height of each cell
+   * @param focusTopRow  the top row of the focus area
+   * @param focusLeftCol the left column of the focus area
+   */
+  private void drawCharacters(Graphics g, int cellWidth, int cellHeight, int focusTopRow, int focusLeftCol) {
+    drawChap(g, cellWidth, cellHeight, focusTopRow, focusLeftCol);
+    drawEnemies(g, cellWidth, cellHeight, focusTopRow, focusLeftCol);
+  }
 
-    // Draw the player character
+  /**
+   * Draw Chap in the focus area.
+   *
+   * @param g            Graphics
+   * @param cellWidth    the width of each cell
+   * @param cellHeight   the height of each cell
+   * @param focusTopRow  the top row of the focus area
+   * @param focusLeftCol the left column of the focus area
+   */
+  private void drawChap(Graphics g, int cellWidth, int cellHeight, int focusTopRow, int focusLeftCol) {
     int chapDrawX = (domain.getChap().getPosition().x - focusLeftCol) * cellWidth;
     int chapDrawY = (domain.getChap().getPosition().y - focusTopRow) * cellHeight;
     Direction chapDirection = domain.getChap().getDirection();
     Sprite chapSprite = CHAP_SPRITES.get(chapDirection);
     g.drawImage(chapSprite.sprite, chapDrawX, chapDrawY, cellWidth, cellHeight, this);
+  }
 
-    // Draw the enemy characters
+  /**
+   * Draw the enemies in the focus area.
+   *
+   * @param g           Graphics
+   * @param cellWidth  the width of each cell
+   * @param cellHeight the height of each cell
+   * @param focusTopRow the top row of the focus area
+   * @param focusLeftCol the left column of the focus area
+   */
+  private void drawEnemies(Graphics g, int cellWidth, int cellHeight, int focusTopRow, int focusLeftCol) {
     for (int i = 0; i < domain.getEnemyActorList().size(); i++) {
       int enemyDrawX = (domain.getEnemyActorList().get(i).getPosition().x - focusLeftCol) * cellWidth;
       int enemyDrawY = (domain.getEnemyActorList().get(i).getPosition().y - focusTopRow) * cellHeight;
@@ -137,47 +190,54 @@ public class Renderer extends JPanel implements DomainObserver {
       Sprite enemySprite = ENEMY_SPRITES.get(enemyDirection);
       g.drawImage(enemySprite.sprite, enemyDrawX, enemyDrawY, cellWidth, cellHeight, this);
     }
+  }
 
-    // Populate the last row with the inventory
+  /**
+   * Draw the inventory.
+   *
+   * @param g          Graphics
+   * @param cellWidth  the width of each cell
+   * @param cellHeight the height of each cell
+   */
+  private void drawInventory(Graphics g, int cellWidth, int cellHeight) {
+    // Draw the inventory separator line
+    g.setColor(new Color(53, 18, 46));
+    g.fillRect(0, FOCUS_SIZE * cellHeight + 8, getWidth(), 10); // Add 8 to draw the line below the
+
     int lastRow = FOCUS_SIZE;
     for (int col = 0; col < FOCUS_SIZE; col++) {
       if (col < chapInventory.size()) {
         Sprite sprite = TILE_SPRITES.get(chapInventory.get(col));
-        BufferedImage spriteImage = sprite.sprite;
         int drawX = col * cellWidth;
         int drawY = lastRow * cellHeight + 25;  // Add 25 to draw the inventory below the game
-        g.drawImage(spriteImage, drawX, drawY, cellWidth, cellHeight, this);
+        g.drawImage(sprite.sprite, drawX, drawY, cellWidth, cellHeight, this);
       } else {
-        // Draw freeTile in the last row if Chap's inventory is empty
+        // Empty inventory slots are drawn with a free tile
         TileType freeTile = TileType.FREE;
         Sprite freeTileSprite = TILE_SPRITES.get(freeTile);
 
         if (freeTileSprite != null) {
-          BufferedImage spriteImage = freeTileSprite.sprite;
           int drawX = col * cellWidth;
-          int drawY = lastRow * cellHeight + 25; // Add 25 to draw the inventory below the game
-          g.drawImage(spriteImage, drawX, drawY, cellWidth, cellHeight, this);
+          int drawY = lastRow * cellHeight + 25;  // Add 25 to draw the inventory below the game
+          g.drawImage(freeTileSprite.sprite, drawX, drawY, cellWidth, cellHeight, this);
         }
       }
-      //draw horizontal line to separate inventory from game
-      g.setColor(new Color(53, 18, 46));
-      g.fillRect(0, FOCUS_SIZE * cellHeight+ 8, getWidth(), 10);  // Add 8 to draw the line below the game
     }
   }
 
   /**
-   * Method to update the renderer.
+   * Update the Renderer.
    */
   public void updateRenderer() {
-    ArrayList<TileType> chapInventory = domain.getChap().getKeys(); // Get Chap's keys
+    ArrayList<TileType> chapInventory = domain.getChap().getKeys();
     updateChapInventory(chapInventory);
     repaint();
   }
 
   /**
-   * Method to update Chap's inventory.
+   * Update chaps inventory.
    *
-   * @param inventory The inventory to be updated.
+   * @param inventory the new inventory.
    */
   public void updateChapInventory(ArrayList<TileType> inventory) {
     chapInventory.clear();
