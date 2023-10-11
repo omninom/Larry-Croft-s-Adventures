@@ -106,8 +106,8 @@ public class DomainTest {
   @Test
   public void doorUnlockTest() {
     Maze tester = domain.getMaze();
-    tester.setTile(1, 0, TileType.BLUE_KEY);
-    tester.setTile(2, 0, TileType.BLUE_DOOR);
+    tester.setTile(0, 1, TileType.BLUE_KEY);
+    tester.setTile(0, 2, TileType.BLUE_DOOR);
     domain.setMaze(tester);
 
     domain.moveChap(Direction.RIGHT);
