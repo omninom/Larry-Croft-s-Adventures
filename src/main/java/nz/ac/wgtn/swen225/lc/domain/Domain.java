@@ -94,6 +94,7 @@ public class Domain {
       chap.addKey(t);
     }
 
+    List<EnemyActor> ourEnemyList = new ArrayList<>();
     //Validation of Enemies.
     for (EnemyActor enemy : enemies) {
       if (enemy == null) {
@@ -106,6 +107,7 @@ public class Domain {
       if (enemyPos.x < 0 || enemyPos.x >= cols || enemyPos.y < 0 || enemyPos.y >= rows) {
         throw new IllegalArgumentException("An Enemy's initial position must be within bounds.");
       }
+      ourEnemyList.add(enemy);
     }
 
     //Construction
@@ -116,7 +118,7 @@ public class Domain {
     this.chap = chap;
     this.treasureRemaining = treasureCount;
     info = infoText;
-    enemyActorList = enemies;
+    enemyActorList = ourEnemyList;
 
     //These are reset on load by default.
     won = false;

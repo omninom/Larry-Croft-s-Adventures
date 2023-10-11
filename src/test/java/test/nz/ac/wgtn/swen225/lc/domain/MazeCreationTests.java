@@ -42,6 +42,7 @@ public class MazeCreationTests {
     ourChap = new Chap(0, 1);
     List<EnemyActor> enemies;
     enemies = new ArrayList<>();
+    enemies.add(new DomainTestActor(1, 0));
     List<TileType> keys = new ArrayList<>();
     keys.add(TileType.RED_KEY);
     Assertions.assertEquals(new Point(0, 0), d.getChap().getPosition());
@@ -62,6 +63,7 @@ public class MazeCreationTests {
     ourChap = new Chap(0, 1);
     List<EnemyActor> enemies;
     enemies = new ArrayList<>();
+    enemies.add(new DomainTestActor(1, 0));
     List<TileType> keys;
     keys = new ArrayList<>();
     keys.add(TileType.RED_KEY);
@@ -84,6 +86,12 @@ public class MazeCreationTests {
     Chap badChap = new Chap(99, 99);
     Assertions.assertThrows(IllegalArgumentException.class,
         () -> d.buildNewLevel(insertionGrid, badChap, enemies, keys, "Y"));
+
+    //Invalid enemy position
+    enemies.add(new DomainTestActor(99, 99));
+    Assertions.assertThrows(IllegalArgumentException.class,
+        () -> d.buildNewLevel(insertionGrid, ourChap, enemies, keys, "Y"));
+    enemies.remove(enemies.size() - 1);
 
     //Non-Key passed into keys
     keys.add(TileType.WALL);

@@ -6,8 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
+import nz.ac.wgtn.swen225.lc.domain.Chap;
 import nz.ac.wgtn.swen225.lc.domain.Direction;
 import nz.ac.wgtn.swen225.lc.domain.Domain;
+import nz.ac.wgtn.swen225.lc.domain.EnemyActor;
 import nz.ac.wgtn.swen225.lc.domain.Maze;
 import nz.ac.wgtn.swen225.lc.domain.TileType;
 import org.junit.jupiter.api.BeforeEach;
@@ -123,5 +126,27 @@ public class DomainTest {
 
     domain.moveChap(Direction.RIGHT);
     assertEquals(inittreasure - 1, domain.getTreasureRemaining());
+  }
+
+  /**
+   * Tests that enemies can kill Chap.
+   */
+  @Test
+  public void enemyKillTest() {
+    TileType[][] maze = domain.getTiles();
+    int initialTreasure = domain.getTreasureRemaining();
+    Chap newChap = new Chap(0, 0);
+    DomainTestActor killer = new DomainTestActor(0, 0);
+
+    List<EnemyActor> enemyList = List.of(killer);
+    domain.buildNewLevel(maze, newChap, enemyList,
+        domain.getChap().getKeys(), "Y");
+    assertEquals(initialTreasure, domain.getTreasureRemaining());
+    domain.moveChap(Direction.RIGHT);
+    assertTrue(domain.getFailed());
+    assertFalse(domain.getWon());
+    for (Direction dir : Direction.values()) {
+      assertThrows(IllegalStateException.class, () -> domain.moveChap(dir));
+    }
   }
 }
