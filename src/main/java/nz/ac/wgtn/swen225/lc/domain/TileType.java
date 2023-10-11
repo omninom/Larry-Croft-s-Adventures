@@ -3,6 +3,9 @@ package nz.ac.wgtn.swen225.lc.domain;
 /**
  * Enum for the different types of tile in-game. Used for quick checking of a tile's type without
  * instanceof calls.
+ *
+ * @author Riley West (300608942).
+ * @author Jebadiah (300629357).
  */
 public enum TileType {
   /**

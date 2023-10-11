@@ -1,51 +1,79 @@
 package test.nz.ac.wgtn.swen225.lc.domain;
 
-import nz.ac.wgtn.swen225.lc.domain.*;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import nz.ac.wgtn.swen225.lc.domain.Direction;
+import nz.ac.wgtn.swen225.lc.domain.Domain;
+import nz.ac.wgtn.swen225.lc.domain.Maze;
+import nz.ac.wgtn.swen225.lc.domain.TileType;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+/**
+ * Tests Domain's in-game logic.
+ *
+ * @author Riley West (300608942).
+ * @author Jebadiah (300629357).
+ */
 public class DomainTest {
   private Domain domain;
 
+  /**
+   * Setup method.
+   */
   @BeforeEach
   public void setUp() {
     domain = new Domain();
   }
 
+  /**
+   * Test moving Chap to a valid position.
+   */
   @Test
   public void testMoveChapValidMove() {
-    // Test moving Chap to a valid position
     assertDoesNotThrow(() -> domain.moveChap(Direction.RIGHT));
     assertEquals(1, domain.getChap().getPosition().x);
     assertEquals(0, domain.getChap().getPosition().y);
   }
 
+  /**
+   * Test moving Chap out of bounds.
+   */
   @Test
   public void testMoveChapInvalidMove() {
-    // Test moving Chap out of bounds
     assertThrows(IllegalArgumentException.class, () -> domain.moveChap(Direction.LEFT));
   }
 
+  /**
+   * Test moving Chap when in a failed state.
+   */
   @Test
   public void testMoveChapFailedState() {
     domain.setFailed(true);
-    // Test moving Chap when in a failed state
     domain.moveChap(Direction.RIGHT);
 
     assertThrows(IllegalStateException.class, () -> domain.moveChap(Direction.RIGHT));
   }
 
+  /**
+   * Test moving Chap when in a succeeded state.
+   */
   @Test
   public void testMoveChapWonState() {
     domain.setWon(true);
-    // Test moving Chap when in a failed state
     domain.moveChap(Direction.RIGHT);
 
     assertThrows(IllegalStateException.class, () -> domain.moveChap(Direction.RIGHT));
   }
 
+
+  /**
+   * Test that Chap can win.
+   */
   @Test
   public void testGetWon() {
     Maze tester = domain.getMaze();
@@ -58,6 +86,9 @@ public class DomainTest {
     assertTrue(domain.getWon());
   }
 
+  /**
+   * Test that Chap can pick up keys.
+   */
   @Test
   public void pickupTest() {
     Maze tester = domain.getMaze();
@@ -68,6 +99,10 @@ public class DomainTest {
     assertTrue(domain.getChap().hasKey(TileType.BLUE_KEY));
   }
 
+
+  /**
+   * Test that Chap can unlock doors.
+   */
   @Test
   public void doorUnlockTest() {
     Maze tester = domain.getMaze();
@@ -80,6 +115,9 @@ public class DomainTest {
     assertFalse(domain.getChap().hasKey(TileType.BLUE_KEY));
   }
 
+  /**
+   * Test that chap can pick up treasure.
+   */
   @Test
   public void treasurePickupTest() {
     Maze test = domain.getMaze();

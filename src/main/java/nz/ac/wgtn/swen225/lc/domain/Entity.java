@@ -4,6 +4,8 @@ import java.awt.Point;
 
 /**
  * Used for anything on the board that may move. Chap or Actors.
+ *
+ * @author Jebadiah (300629357).
  */
 public interface Entity {
 

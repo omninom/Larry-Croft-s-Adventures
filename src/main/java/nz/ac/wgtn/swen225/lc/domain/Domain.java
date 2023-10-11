@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The Domain Module's public interface (for lack of a better word), through which it exposes
- * certain values.
+ * This class serves as both the public interface to the Domain module And as its logical
+ * controller.
  * TODO craft implementation here, make it an implementation of interface DomainView and refactor
  * TODO other modules to fit
  *
@@ -40,7 +40,7 @@ public class Domain {
   }
 
   /**
-   * Builds a maze and state using passed objects
+   * Builds a maze and state using passed objects.
    * TODO Maze should store information about the current level like enemies and chap, move it
    *
    * @param mazeTiles TileType grid for new level
@@ -117,12 +117,26 @@ public class Domain {
     notifyObservers(EventType.LEVEL_RESET, TileType.FREE);
   }
 
+  /**
+   * List of observers. Primarily used by the Renderer to play sound effects.
+   */
   private final ArrayList<DomainObserver> observers = new ArrayList<>();
 
+  /**
+   * Adds an observer of events in Domain.
+   *
+   * @param observer the new DomainObserver
+   */
   public void addObserver(DomainObserver observer) {
     observers.add(observer);
   }
 
+  /**
+   * Observer notification method.
+   *
+   * @param eventType the type of event.
+   * @param itemType  the associated TileType.
+   */
   private void notifyObservers(EventType eventType, TileType itemType) {
     for (DomainObserver observer : observers) {
       observer.handleEvent(eventType, itemType);
@@ -262,7 +276,7 @@ public class Domain {
   }
 
   /**
-   * Getter for info
+   * Getter for info.
    *
    * @return infotext for the currently loaded level.
    */
@@ -290,22 +304,48 @@ public class Domain {
   }
 
   //FUNCTIONS FOR JUNIT TESTS
+
+  /**
+   * Setter for the failure variable.
+   *
+   * @param set failed's new value.
+   */
   public void setFailed(boolean set) {
     this.failed = set;
   }
 
+  /**
+   * Setter for the win variable.
+   *
+   * @param set won's new value.
+   */
   public void setWon(boolean set) {
     this.won = set;
   }
 
+  /**
+   * Getter for the maze variable.
+   *
+   * @return the current maze
+   */
   public Maze getMaze() {
     return this.maze;
   }
 
+  /**
+   * Setter for the maze variable.
+   *
+   * @param m the new Maze.
+   */
   public void setMaze(Maze m) {
     this.maze = m;
   }
 
+  /**
+   * Getter for the remaining treasure variable.
+   *
+   * @return the amount of treasure remaining
+   */
   public int getTreasureRemaining() {
     return this.treasureRemaining;
   }
