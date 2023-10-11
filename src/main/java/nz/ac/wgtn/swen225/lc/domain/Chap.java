@@ -1,7 +1,5 @@
 package nz.ac.wgtn.swen225.lc.domain;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.awt.Point;
 import java.util.ArrayList;
 
@@ -20,7 +18,7 @@ public class Chap implements Entity {
   private Direction direction;
 
   //The keys that Chap is holding.
-  private ArrayList<TileType> keys;
+  private final ArrayList<TileType> keys;
   private boolean alive;
 
   /**
@@ -56,7 +54,7 @@ public class Chap implements Entity {
    */
   @Override
   public void setPosition(int row, int col) {
-    position.setLocation(row, col);
+    position = new Point(row, col);
   }
 
   /**

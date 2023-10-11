@@ -46,7 +46,7 @@ public class DomainTestActor implements EnemyActor {
 
   @Override
   public void setPosition(int row, int col) {
-    this.position.move(row, col);
+    this.position = new Point(row, col);
   }
 
   @Override

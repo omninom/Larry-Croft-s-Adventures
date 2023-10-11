@@ -15,13 +15,6 @@ public class Maze {
   private int numCols;
 
   /**
-   * Default constructor for deserialising by Jackson.
-   * TODO implement one of these? Check with Benjamin.
-   */
-  public Maze() {
-  }
-
-  /**
    * "Normal" constructor.
    *
    * @param numRows row count of the maze.
