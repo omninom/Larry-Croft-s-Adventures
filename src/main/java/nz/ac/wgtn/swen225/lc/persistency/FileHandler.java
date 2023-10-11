@@ -44,7 +44,8 @@ public class FileHandler {
   public Maze loadMaze(String fileName) {
     Maze maze;
 
-    try (InputStream inputStream = getClass().getResourceAsStream(String.format("/levels/%s", fileName))) {
+    try (InputStream inputStream = getClass().getResourceAsStream(
+        String.format("/levels/%s", fileName))) {
       ObjectMapper mapper = new ObjectMapper();
       mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
       maze = mapper.readValue(inputStream, Maze.class);
