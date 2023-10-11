@@ -4,15 +4,25 @@ import javax.sound.sampled.*;
 import java.io.IOException;
 import java.net.URL;
 
+/**
+ * Class for playing sound effects and background music.
+ *
+ * @author Leory Xue (300607821)
+ */
 public class Sound {
 
   private Clip backgroundMusicClip;
 
+  /**
+   * Constructor for Sound class.
+   */
   public Sound() {
-    //initialise background music
     loadBackgroundMusic();
   }
 
+  /**
+   * Load the background music.
+   */
   private void loadBackgroundMusic() {
     try {
       URL musicUrl = Sound.class.getResource("/sound/bgm.wav");
@@ -27,6 +37,9 @@ public class Sound {
     }
   }
 
+  /**
+   * Play the background music.
+   */
   public void playBackgroundMusic() {
     if (backgroundMusicClip != null && !backgroundMusicClip.isRunning()) {
       backgroundMusicClip.setFramePosition(0);
@@ -34,28 +47,55 @@ public class Sound {
     }
   }
 
+  /**
+   * Stop the background music.
+   */
   public void stopBackgroundMusic() {
     if (backgroundMusicClip != null && backgroundMusicClip.isRunning()) {
       backgroundMusicClip.stop();
     }
   }
 
+  /**
+   * Play the damage sound effect.
+   */
   public void playDamageSound() {
     playSoundEffect("/sound/damage.wav");
   }
 
+  /**
+   * Play the locked sound effect.
+   */
   public void playLockedSound() {
     playSoundEffect("/sound/locked.wav");
   }
 
+  /**
+   * Play the pickup sound effect.
+   */
   public void playPickupSound() {
     playSoundEffect("/sound/treasure.wav");
   }
 
+  /**
+   * Play the unlock sound effect.
+   */
   public void playUnlockSound() {
     playSoundEffect("/sound/unlock.wav");
   }
 
+  /**
+   * Play the death sound effect.
+   */
+  public void playDeathSound() {
+    playSoundEffect("/sound/death.wav");
+  }
+
+  /**
+   * Play a sound effect.
+   *
+   * @param soundEffectPath the path to the sound effect.
+   */
   private void playSoundEffect(String soundEffectPath) {
     try {
       URL soundEffectUrl = Sound.class.getResource(soundEffectPath);
