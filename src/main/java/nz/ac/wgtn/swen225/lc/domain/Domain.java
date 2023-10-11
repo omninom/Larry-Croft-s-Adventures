@@ -32,7 +32,7 @@ public class Domain {
     this.maze = new Maze(9, 9);
     maze.generateEmptyMaze();
     chap = new Chap(0, 0);
-    this.treasureRemaining = 10;  //TEST VALUE
+    this.treasureRemaining = 0;
     won = false;
     failed = false;
     info = "Default Info String";
@@ -46,10 +46,11 @@ public class Domain {
    * @param mazeTiles TileType grid for new level
    * @param chap      Chap object for new level
    * @param enemies   List of EnemyActor objects for new level
+   * @param chapInventory   List of keys that Chap starts holding
    * @param infoText  info string for new level.
    */
   public void buildNewLevel(TileType[][] mazeTiles, Chap chap, List<EnemyActor> enemies,
-                            String infoText) {
+                            List<TileType> chapInventory, String infoText) {
 
     //Validation
     //Validating maze size and gathering treasure count info.
@@ -64,12 +65,12 @@ public class Domain {
       throw new IllegalArgumentException("Maze must have at least one column.");
     }
     int treasureCount = 0;
-    for (int r = 0; r < rows; r++) {
-      if (mazeTiles[r].length != cols) {
+    for (TileType[] mazeTile : mazeTiles) {
+      if (mazeTile.length != cols) {
         throw new IllegalArgumentException("Maze rows must be of the same size");
       }
       for (int c = 0; c < cols; c++) {
-        if (mazeTiles[r][c] == TileType.TREASURE) {
+        if (mazeTile[c] == TileType.TREASURE) {
           treasureCount++;
         }
       }
@@ -86,7 +87,14 @@ public class Domain {
     if (chapPos.x < 0 || chapPos.x >= cols || chapPos.y < 0 || chapPos.y >= rows) {
       throw new IllegalArgumentException("Chap's initial position must be within bounds.");
     }
+    for (TileType t : chapInventory) {
+      if (!(t == TileType.BLUE_KEY || t == TileType.RED_KEY)) {
+        throw new IllegalArgumentException("Chap should only be holding keys.");
+      }
+      chap.addKey(t);
+    }
 
+    List<EnemyActor> ourEnemyList = new ArrayList<>();
     //Validation of Enemies.
     for (EnemyActor enemy : enemies) {
       if (enemy == null) {
@@ -99,6 +107,7 @@ public class Domain {
       if (enemyPos.x < 0 || enemyPos.x >= cols || enemyPos.y < 0 || enemyPos.y >= rows) {
         throw new IllegalArgumentException("An Enemy's initial position must be within bounds.");
       }
+      ourEnemyList.add(enemy);
     }
 
     //Construction
@@ -109,7 +118,7 @@ public class Domain {
     this.chap = chap;
     this.treasureRemaining = treasureCount;
     info = infoText;
-    enemyActorList = enemies;
+    enemyActorList = ourEnemyList;
 
     //These are reset on load by default.
     won = false;
@@ -158,84 +167,118 @@ public class Domain {
     if (won) {
       throw new IllegalStateException("Chap has won.");
     }
-    int newRow = this.chap.getPosition().y;
-    int newCol = this.chap.getPosition().x;
-    switch (dir) {
-      case UP:
-        newRow--;
-        break;
-      case DOWN:
-        newRow++;
-        break;
-      case LEFT:
-        newCol--;
-        break;
-      case RIGHT:
-        newCol++;
-        break;
-      default:
-        //In normal cases, should not trigger, as only these 4 enums exist.
-        throw new IllegalArgumentException("Unknown direction.");
-    }
+    Point newPos = getAdjacentPoint(chap.getPosition(), dir);
     //Regardless of whether Chap is actually supposed to move, his facing should change.
     this.chap.setDirection(dir);
     TileType targetTile;
     try {
-      targetTile = maze.getTiles()[newRow][newCol];
+      targetTile = maze.getTiles()[newPos.y][newPos.x];
     } catch (ArrayIndexOutOfBoundsException e) {
       throw new IllegalArgumentException("Can't move out of bounds.");
     }
     switch (targetTile) {
-      case FREE:
-        break;
-      case INFO:
-        break;
-      case WALL:
-        throw new IllegalArgumentException("Impassable wall.");
-      case RED_KEY:
-      case BLUE_KEY:
+      case FREE, INFO -> {
+      }
+      case WALL -> throw new IllegalArgumentException("Impassable wall.");
+      case RED_KEY, BLUE_KEY -> {
         notifyObservers(EventType.PICKUP_ITEM, targetTile);
-        maze.setTile(newRow, newCol, TileType.FREE);
+        maze.setTile(newPos.y, newPos.x, TileType.FREE);
         chap.addKey(targetTile);
-        break;
-      case RED_DOOR:
+      }
+      case RED_DOOR -> {
         if (chap.hasKey(TileType.RED_KEY)) {
           notifyObservers(EventType.UNLOCK_DOOR, TileType.RED_DOOR);
-          maze.setTile(newRow, newCol, TileType.FREE);
+          maze.setTile(newPos.y, newPos.x, TileType.FREE);
           chap.removeKey(TileType.RED_KEY);
         } else {
           notifyObservers(EventType.LOCKED_DOOR, TileType.RED_DOOR);
           throw new IllegalArgumentException("Can't unlock this red door.");
         }
-        break;
-      case BLUE_DOOR:
+      }
+      case BLUE_DOOR -> {
         if (chap.hasKey(TileType.BLUE_KEY)) {
           notifyObservers(EventType.UNLOCK_DOOR, TileType.BLUE_DOOR);
-          maze.setTile(newRow, newCol, TileType.FREE);
+          maze.setTile(newPos.y, newPos.x, TileType.FREE);
           chap.removeKey(TileType.BLUE_KEY);
         } else {
           notifyObservers(EventType.LOCKED_DOOR, TileType.BLUE_DOOR);
           throw new IllegalArgumentException("Can't unlock this blue door.");
         }
-        break;
-      case TREASURE:
+      }
+      case TREASURE -> {
         notifyObservers(EventType.PICKUP_ITEM, TileType.TREASURE);
-        maze.setTile(newRow, newCol, TileType.FREE);
+        maze.setTile(newPos.y, newPos.x, TileType.FREE);
         treasureRemaining--;
-        break;
-      case EXIT_LOCK:
+      }
+      case EXIT_LOCK -> {
         if (treasureRemaining >= 0) {
           throw new IllegalArgumentException("Can't unlock this red door.");
         }
-        maze.setTile(newRow, newCol, TileType.FREE);
-        break;
-      case EXIT:
-        this.won = true;
-        break;
-      default:
-        throw new IllegalArgumentException("Unhandled TileType in movement");
+        maze.setTile(newPos.y, newPos.x, TileType.FREE);
+      }
+      case EXIT -> this.won = true;
+      default -> throw new IllegalArgumentException("Unhandled TileType in movement");
     }
-    this.chap.setPosition(newCol, newRow);
+    this.chap.setPosition(newPos.x, newPos.y);
+    if (enemyCollision()) {
+      this.failed = true;
+      return;
+    }
+    moveEnemies();
+    if (enemyCollision()) {
+      this.failed = true;
+    }
+  }
+
+  private void moveEnemies() {
+    for (EnemyActor enemyActor : enemyActorList) {
+      moveEnemy(enemyActor);
+    }
+  }
+
+  private void moveEnemy(EnemyActor enemyActor) {
+    Point newPos = getAdjacentPoint(enemyActor.getPosition(), enemyActor.getMove(this));
+    TileType targetTile;
+    try {
+      targetTile = maze.getTiles()[newPos.y][newPos.x];
+    } catch (ArrayIndexOutOfBoundsException e) {
+      // Must silently fail here
+      return;
+    }
+    switch (targetTile) {
+      case FREE, INFO -> {
+      }
+      case WALL, BLUE_KEY, RED_KEY, BLUE_DOOR, RED_DOOR, TREASURE, EXIT_LOCK, EXIT -> {
+        return;
+      }
+      default -> throw new IllegalStateException("Unexpected value: " + targetTile);
+    }
+    enemyActor.setPosition(newPos.x, newPos.y);
+  }
+
+  /**
+   * Collision method for enemy actors.
+   *
+   * @return true if Chap has the same position as an EnemyActor, false otherwise.
+   */
+  private boolean enemyCollision() {
+    for (EnemyActor enemyActor : enemyActorList) {
+      if (enemyActor.getPosition().equals(chap.getPosition())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private Point getAdjacentPoint(Point original, Direction dir) {
+
+    return switch (dir) {
+      case UP -> new Point(original.x, original.y - 1);
+      case DOWN -> new Point(original.x, original.y + 1);
+      case LEFT -> new Point(original.x - 1, original.y);
+      case RIGHT -> new Point(original.x + 1, original.y);
+      //In normal cases, should not trigger, as only these 4 enum values exist.
+    };
   }
 
   /**

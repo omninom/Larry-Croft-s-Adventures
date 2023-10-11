@@ -1,13 +1,17 @@
 package test.nz.ac.wgtn.swen225.lc.domain;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
+import nz.ac.wgtn.swen225.lc.domain.Chap;
 import nz.ac.wgtn.swen225.lc.domain.Direction;
 import nz.ac.wgtn.swen225.lc.domain.Domain;
+import nz.ac.wgtn.swen225.lc.domain.EnemyActor;
 import nz.ac.wgtn.swen225.lc.domain.Maze;
 import nz.ac.wgtn.swen225.lc.domain.TileType;
 import org.junit.jupiter.api.BeforeEach;
@@ -102,8 +106,8 @@ public class DomainTest {
   @Test
   public void doorUnlockTest() {
     Maze tester = domain.getMaze();
-    tester.setTile(1, 0, TileType.BLUE_KEY);
-    tester.setTile(2, 0, TileType.BLUE_DOOR);
+    tester.setTile(0, 1, TileType.BLUE_KEY);
+    tester.setTile(0, 2, TileType.BLUE_DOOR);
     domain.setMaze(tester);
 
     domain.moveChap(Direction.RIGHT);
@@ -116,12 +120,62 @@ public class DomainTest {
    */
   @Test
   public void treasurePickupTest() {
-    Maze test = domain.getMaze();
-    test.setTile(0, 1, TileType.TREASURE);
-    domain.setMaze(test);
+    TileType[][] maze = domain.getTiles();
+    maze[0][1] = TileType.TREASURE;
+
+    domain.buildNewLevel(maze, domain.getChap(), domain.getEnemyActorList(),
+        domain.getChap().getKeys(), "Y");
     int inittreasure = domain.getTreasureRemaining();
 
     domain.moveChap(Direction.RIGHT);
     assertEquals(inittreasure - 1, domain.getTreasureRemaining());
+  }
+
+  /**
+   * Tests that Domain properly detects Info tiles.
+   */
+  @Test
+  public void infoTileTest() {
+    TileType[][] maze = domain.getTiles();
+    maze[0][1] = TileType.INFO;
+    String infoText = Double.toString(Math.random());
+    domain.buildNewLevel(maze, domain.getChap(), domain.getEnemyActorList(),
+        domain.getChap().getKeys(), infoText);
+    int inittreasure = domain.getTreasureRemaining();
+
+    domain.moveChap(Direction.RIGHT);
+    assertTrue(domain.isOnInfo());
+    assertEquals(domain.getInfo(), infoText);
+
+  }
+
+  /**
+   * Tests that enemies can kill Chap.
+   */
+  @Test
+  public void enemyKillTest() {
+    TileType[][] maze = domain.getTiles();
+    int initialTreasure = domain.getTreasureRemaining();
+    Chap newChap = new Chap(0, 0);
+    DomainTestActor killer = new DomainTestActor(1, 1);
+
+    List<EnemyActor> enemyList = List.of(killer);
+    domain.buildNewLevel(maze, newChap, enemyList,
+        domain.getChap().getKeys(), "Y");
+    assertEquals(initialTreasure, domain.getTreasureRemaining());
+
+    System.out.println(domain.getChap().getPosition());
+    System.out.println(domain.getEnemyActorList().get(0).getPosition());
+
+    domain.moveChap(Direction.RIGHT);
+
+    System.out.println(domain.getChap().getPosition());
+    System.out.println(domain.getEnemyActorList().get(0).getPosition());
+
+    assertTrue(domain.getFailed());
+    assertFalse(domain.getWon());
+    for (Direction dir : Direction.values()) {
+      assertThrows(IllegalStateException.class, () -> domain.moveChap(dir));
+    }
   }
 }
