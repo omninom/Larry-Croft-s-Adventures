@@ -203,4 +203,8 @@ public class Domain {
     this.maze = m;
   }
 
+  public int getTreasureRemaining(){
+    return this.treasureRemaining;
+  }
+
 }

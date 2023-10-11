@@ -80,4 +80,14 @@ public class DomainTest {
         assertFalse(domain.getChap().hasKey(TileType.BLUE_KEY));
     }
 
+    @Test
+    public void treasurePickupTest(){
+        Maze test = domain.getMaze();
+        test.setTile(1, 0, TileType.TREASURE);
+        domain.setMaze(test);
+        int inittreasure = domain.getTreasureRemaining();
+
+        domain.moveChap(Direction.RIGHT);
+        assertEquals(inittreasure -1, domain.getTreasureRemaining());
+    }
 }
