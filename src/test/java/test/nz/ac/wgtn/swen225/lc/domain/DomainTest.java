@@ -119,9 +119,11 @@ public class DomainTest {
    */
   @Test
   public void treasurePickupTest() {
-    Maze test = domain.getMaze();
-    test.setTile(0, 1, TileType.TREASURE);
-    domain.setMaze(test);
+    TileType[][] maze = domain.getTiles();
+    maze[0][1] = TileType.TREASURE;
+
+    domain.buildNewLevel(maze, domain.getChap(), domain.getEnemyActorList(),
+        domain.getChap().getKeys(), "Y");
     int inittreasure = domain.getTreasureRemaining();
 
     domain.moveChap(Direction.RIGHT);
@@ -136,13 +138,21 @@ public class DomainTest {
     TileType[][] maze = domain.getTiles();
     int initialTreasure = domain.getTreasureRemaining();
     Chap newChap = new Chap(0, 0);
-    DomainTestActor killer = new DomainTestActor(0, 0);
+    DomainTestActor killer = new DomainTestActor(1, 1);
 
     List<EnemyActor> enemyList = List.of(killer);
     domain.buildNewLevel(maze, newChap, enemyList,
         domain.getChap().getKeys(), "Y");
     assertEquals(initialTreasure, domain.getTreasureRemaining());
+
+    System.out.println(domain.getChap().getPosition());
+    System.out.println(domain.getEnemyActorList().get(0).getPosition());
+
     domain.moveChap(Direction.RIGHT);
+
+    System.out.println(domain.getChap().getPosition());
+    System.out.println(domain.getEnemyActorList().get(0).getPosition());
+
     assertTrue(domain.getFailed());
     assertFalse(domain.getWon());
     for (Direction dir : Direction.values()) {

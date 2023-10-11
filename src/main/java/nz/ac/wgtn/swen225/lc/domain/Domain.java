@@ -32,7 +32,7 @@ public class Domain {
     this.maze = new Maze(9, 9);
     maze.generateEmptyMaze();
     chap = new Chap(0, 0);
-    this.treasureRemaining = 10;  //TEST VALUE
+    this.treasureRemaining = 0;
     won = false;
     failed = false;
     info = "Default Info String";
