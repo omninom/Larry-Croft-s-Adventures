@@ -5,5 +5,6 @@ public enum EventType {
     DEATH,
     LOCKED_DOOR,
     DAMAGE,
-    PICKUP_ITEM
+    PICKUP_ITEM,
+    LEVEL_RESET
 }
