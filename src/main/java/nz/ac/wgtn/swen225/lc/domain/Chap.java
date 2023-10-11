@@ -27,11 +27,11 @@ public class Chap implements Entity {
   /**
    * Constructor for the Chap class.
    *
-   * @param initialRow Chap's starting row.
    * @param initialCol Chap's starting column.
+   * @param initialRow Chap's starting row.
    */
-  public Chap(int initialRow, int initialCol) {
-    this.position = new Point(initialRow, initialCol);
+  public Chap(int initialCol, int initialRow) {
+    this.position = new Point(initialCol, initialRow);
     this.keys = new ArrayList<>();
     this.alive = true;
     this.direction = Direction.DOWN;
