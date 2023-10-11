@@ -92,7 +92,7 @@ public class Domain {
     ourChap.setDirection(chap.getDirection());
     ourChap.setAlive(chap.isAlive());
     for (TileType t : chapInventory) {
-      if (!(t == TileType.BLUE_KEY || t == TileType.RED_KEY)) {
+      if (!(t == TileType.BLUE_KEY || t == TileType.RED_KEY || t == TileType.GREEN_KEY || t == TileType.YELLOW_KEY)) {
         throw new IllegalArgumentException("Chap should only be holding keys.");
       }
       ourChap.addKey(t);
@@ -184,7 +184,7 @@ public class Domain {
       case FREE, INFO -> {
       }
       case WALL -> throw new IllegalArgumentException("Impassable wall.");
-      case RED_KEY, BLUE_KEY -> {
+      case RED_KEY, BLUE_KEY, GREEN_KEY, YELLOW_KEY -> {
         notifyObservers(EventType.PICKUP_ITEM, targetTile);
         maze.setTile(newPos.y, newPos.x, TileType.FREE);
         chap.addKey(targetTile);
@@ -207,6 +207,26 @@ public class Domain {
         } else {
           notifyObservers(EventType.LOCKED_DOOR, TileType.BLUE_DOOR);
           throw new IllegalArgumentException("Can't unlock this blue door.");
+        }
+      }
+      case GREEN_DOOR -> {
+        if(chap.hasKey(TileType.GREEN_KEY)) {
+          notifyObservers(EventType.UNLOCK_DOOR, TileType.GREEN_DOOR);
+          maze.setTile(newPos.y, newPos.x, TileType.FREE);
+          chap.removeKey(TileType.GREEN_KEY);
+        } else {
+          notifyObservers(EventType.LOCKED_DOOR, TileType.GREEN_DOOR);
+          throw new IllegalArgumentException("Can't unlock this green door.");
+        }
+      }
+      case YELLOW_DOOR -> {
+        if(chap.hasKey(TileType.YELLOW_KEY)) {
+          notifyObservers(EventType.UNLOCK_DOOR, TileType.YELLOW_DOOR);
+          maze.setTile(newPos.y, newPos.x, TileType.FREE);
+          chap.removeKey(TileType.YELLOW_KEY);
+        } else {
+          notifyObservers(EventType.LOCKED_DOOR, TileType.YELLOW_DOOR);
+          throw new IllegalArgumentException("Can't unlock this yellow door.");
         }
       }
       case TREASURE -> {
@@ -252,7 +272,7 @@ public class Domain {
     switch (targetTile) {
       case FREE, INFO -> {
       }
-      case WALL, BLUE_KEY, RED_KEY, BLUE_DOOR, RED_DOOR, TREASURE, EXIT_LOCK, EXIT -> {
+      case WALL, BLUE_KEY, RED_KEY, YELLOW_KEY, GREEN_KEY, BLUE_DOOR, RED_DOOR, YELLOW_DOOR, GREEN_DOOR, TREASURE, EXIT_LOCK, EXIT -> {
         return;
       }
       default -> throw new IllegalStateException("Unexpected value: " + targetTile);

@@ -25,6 +25,14 @@ public enum TileType {
    */
   RED_KEY,
   /**
+   * Tile with a green key in it.
+   */
+  GREEN_KEY,
+  /**
+   * Tile with a yellow key in it.
+   */
+  YELLOW_KEY,
+  /**
    * Locked blue door.
    */
   BLUE_DOOR,
@@ -32,6 +40,14 @@ public enum TileType {
    * Locked red door.
    */
   RED_DOOR,
+  /**
+   * Locked green door.
+   */
+  GREEN_DOOR,
+  /**
+   * Locked yellow door.
+   */
+  YELLOW_DOOR,
   /**
    * Tile that displays information when Chap steps on it.
    */
