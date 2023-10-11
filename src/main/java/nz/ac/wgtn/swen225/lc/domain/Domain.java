@@ -43,11 +43,11 @@ public class Domain {
    * Builds a maze and state using passed objects.
    * TODO Maze should store information about the current level like enemies and chap, move it
    *
-   * @param mazeTiles TileType grid for new level
-   * @param chap      Chap object for new level
-   * @param enemies   List of EnemyActor objects for new level
-   * @param chapInventory   List of keys that Chap starts holding
-   * @param infoText  info string for new level.
+   * @param mazeTiles     TileType grid for new level
+   * @param chap          Chap object for new level
+   * @param enemies       List of EnemyActor objects for new level
+   * @param chapInventory List of keys that Chap starts holding
+   * @param infoText      info string for new level.
    */
   public void buildNewLevel(TileType[][] mazeTiles, Chap chap, List<EnemyActor> enemies,
                             List<TileType> chapInventory, String infoText) {
