@@ -54,7 +54,6 @@ public class DomainTest {
   @Test
   public void testMoveChapFailedState() {
     domain.setFailed(true);
-    domain.moveChap(Direction.RIGHT);
 
     assertThrows(IllegalStateException.class, () -> domain.moveChap(Direction.RIGHT));
   }
@@ -65,7 +64,6 @@ public class DomainTest {
   @Test
   public void testMoveChapWonState() {
     domain.setWon(true);
-    domain.moveChap(Direction.RIGHT);
 
     assertThrows(IllegalStateException.class, () -> domain.moveChap(Direction.RIGHT));
   }
@@ -77,12 +75,10 @@ public class DomainTest {
   @Test
   public void testGetWon() {
     Maze tester = domain.getMaze();
-    tester.setTile(1, 0, TileType.EXIT);
+    tester.setTile(0, 1, TileType.EXIT);
     domain.setMaze(tester);
 
-    while (!domain.getWon()) {
-      domain.moveChap(Direction.RIGHT);
-    }
+    domain.moveChap(Direction.RIGHT);
     assertTrue(domain.getWon());
   }
 
@@ -92,7 +88,7 @@ public class DomainTest {
   @Test
   public void pickupTest() {
     Maze tester = domain.getMaze();
-    tester.setTile(1, 0, TileType.BLUE_KEY);
+    tester.setTile(0, 1, TileType.BLUE_KEY);
     domain.setMaze(tester);
 
     domain.moveChap(Direction.RIGHT);
@@ -121,7 +117,7 @@ public class DomainTest {
   @Test
   public void treasurePickupTest() {
     Maze test = domain.getMaze();
-    test.setTile(1, 0, TileType.TREASURE);
+    test.setTile(0, 1, TileType.TREASURE);
     domain.setMaze(test);
     int inittreasure = domain.getTreasureRemaining();
 
