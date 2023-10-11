@@ -1,8 +1,8 @@
 package nz.ac.wgtn.swen225.lc.domain;
 
 /**
- * Handles the generation of the level and most of the logic for the game.
- * Should ONLY be handled directly by Domain and Persistency.
+ * Handles the generation of the level and most of the logic for the game. Should ONLY be handled
+ * directly by Domain and Persistency.
  * TODO: export a lot of this to Domain. Maze != game logic.
  * TODO: run spotbugs, do a bunch of immutability.
  *
@@ -66,17 +66,24 @@ public class Maze {
 
   /**
    * Setter for the tiles of the maze grid.
-   * TODO Validating of passed array, shouldn't we change the variables for maze size?
    *
    * @param tiles new tile grid array.
    */
   public void setTiles(TileType[][] tiles) {
+    int rows = tiles.length;
+    int cols = tiles[0].length;
+    for (int i = 0; i < rows; i++) {
+      if (tiles[i].length != cols) {
+        throw new IllegalArgumentException("Rows must all be of the same size.");
+      }
+    }
     this.tiles = tiles;
+    this.numCols = cols;
+    this.numRows = rows;
   }
 
   /**
    * Setter for a single tile of the maze.
-   * TODO precondition code for valid position.
    *
    * @param row  row to place tile on.
    * @param col  column to place tile at.
@@ -91,7 +98,7 @@ public class Maze {
   /**
    * Utility method to fill the grid with blank tiles.
    */
-  public void generateMaze() {
+  public void generateEmptyMaze() {
     for (int i = 0; i < numRows; i++) {
       for (int j = 0; j < numCols; j++) {
         tiles[i][j] = TileType.FREE;

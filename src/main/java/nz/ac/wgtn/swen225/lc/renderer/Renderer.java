@@ -11,7 +11,7 @@ import nz.ac.wgtn.swen225.lc.domain.*;
  * Handles the rendering of the game.
  * @author Leory Xue (300607821)
  */
-public class Renderer extends JPanel {
+public class Renderer extends JPanel implements DomainObserver {
   private static final int GRID_SIZE = 9;
   private static final HashMap<Direction, Sprite> CHAP_SPRITES = new HashMap<>();
   private static final HashMap<TileType, Sprite> TILE_SPRITES = new HashMap<>();
@@ -20,11 +20,11 @@ public class Renderer extends JPanel {
     TILE_SPRITES.put(TileType.WALL, Sprite.wallTile);
     TILE_SPRITES.put(TileType.FREE, Sprite.freeTile1);
     TILE_SPRITES.put(TileType.RED_DOOR, Sprite.redLock);
+    TILE_SPRITES.put(TileType.RED_KEY, Sprite.redKey);
     TILE_SPRITES.put(TileType.BLUE_DOOR, Sprite.blueLock);
+    TILE_SPRITES.put(TileType.BLUE_KEY, Sprite.blueKey);
     TILE_SPRITES.put(TileType.TREASURE, Sprite.treasure);
     TILE_SPRITES.put(TileType.INFO, Sprite.info);
-    TILE_SPRITES.put(TileType.RED_KEY, Sprite.redKey);
-    TILE_SPRITES.put(TileType.RED_KEY, Sprite.blueKey);
     TILE_SPRITES.put(TileType.EXIT, Sprite.exit);
     TILE_SPRITES.put(TileType.EXIT_LOCK, Sprite.exitLock);
 
@@ -37,10 +37,11 @@ public class Renderer extends JPanel {
   private final Domain domain;
 
   //sound effect
-  private Sound sound = new Sound();
+  private final Sound sound = new Sound();
 
   public Renderer(Domain domain) {
     this.domain = domain;
+    domain.addObserver(this);
     sound.playBackgroundMusic();
     setPreferredSize(new Dimension(GRID_SIZE * 50, GRID_SIZE * 50)); // Adjust the size as needed
   }
@@ -62,7 +63,17 @@ public class Renderer extends JPanel {
           g.drawImage(spriteImage, col * cellWidth, row * cellHeight, cellWidth, cellHeight, this);
         }
 
-        if (domain.getChap().getPosition().equals(new Point(row, col))) {
+        //if player is on an info tile, display a random info message FOR NOW: NEED INFO FROM DOMAIN
+        if (domain.isOnInfo()){
+          String infoMessage = "Move Larry with the arrow keys";
+          g.setColor(Color.WHITE);
+          //draw the message in the top middle of the screen in big size with white font and black outline
+          g.setFont(new Font("TimesRoman", Font.BOLD, 20));
+          //give font outline
+          g.drawString(infoMessage, (getWidth() / 2) - (g.getFontMetrics().stringWidth(infoMessage) / 2), getHeight()/4);
+        }
+
+        if (domain.getChap().getPosition().equals(new Point(col, row))) {
           //determine which sprite to use
           Direction chapDirection = domain.getChap().getDirection();
           Sprite chapSprite = CHAP_SPRITES.get(chapDirection);
@@ -74,5 +85,22 @@ public class Renderer extends JPanel {
 
   public void updateRenderer() {
     repaint();
+  }
+
+  @Override
+  public void handleEvent(EventType eventType, TileType itemType) {
+    switch (eventType) {
+      case UNLOCK_DOOR:
+        sound.playUnlockSound();
+        break;
+      case PICKUP_ITEM:
+        sound.playPickupSound();
+        break;
+      case LOCKED_DOOR:
+        sound.playLockedSound();
+        break;
+      case LEVEL_RESET:
+        break;
+    }
   }
 }
