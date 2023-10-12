@@ -49,6 +49,10 @@ public class Renderer extends JPanel implements DomainObserver {
     TILE_SPRITES.put(TileType.RED_KEY, Sprite.redKey);
     TILE_SPRITES.put(TileType.BLUE_DOOR, Sprite.blueLock);
     TILE_SPRITES.put(TileType.BLUE_KEY, Sprite.blueKey);
+    TILE_SPRITES.put(TileType.GREEN_DOOR, Sprite.greenLock);
+    TILE_SPRITES.put(TileType.GREEN_KEY, Sprite.greenKey);
+    TILE_SPRITES.put(TileType.YELLOW_DOOR, Sprite.yellowLock);
+    TILE_SPRITES.put(TileType.YELLOW_KEY, Sprite.yellowKey);
     TILE_SPRITES.put(TileType.TREASURE, Sprite.treasure);
     TILE_SPRITES.put(TileType.INFO, Sprite.info);
     TILE_SPRITES.put(TileType.EXIT, Sprite.exit);
