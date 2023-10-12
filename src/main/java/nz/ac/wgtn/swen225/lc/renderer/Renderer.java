@@ -88,8 +88,9 @@ public class Renderer extends JPanel implements DomainObserver {
       setBackground(new Color(152, 106, 147, 255));
       int cellWidth = getWidth() / FOCUS_SIZE;
       int cellHeight = (getHeight() - 25) / (FOCUS_SIZE + 1);
-      int focusTopRow = Math.max(0, domain.getChap().getPosition().y - (FOCUS_SIZE / 2));
-      int focusLeftCol = Math.max(0, domain.getChap().getPosition().x - (FOCUS_SIZE / 2));
+      int focusTopRow = Math.max(0, Math.min(domain.getChap().getPosition().y - (FOCUS_SIZE / 2), gridSize - FOCUS_SIZE));
+      int focusLeftCol = Math.max(0, Math.min(domain.getChap().getPosition().x - (FOCUS_SIZE / 2), gridSize - FOCUS_SIZE));
+
 
       drawTiles(g, cellWidth, cellHeight, focusTopRow, focusLeftCol);
       drawCharacters(g, cellWidth, cellHeight, focusTopRow, focusLeftCol);
