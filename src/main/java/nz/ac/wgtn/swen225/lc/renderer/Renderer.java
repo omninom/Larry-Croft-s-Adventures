@@ -39,6 +39,7 @@ public class Renderer extends JPanel implements DomainObserver {
     domain.addObserver(this);
     sound.playBackgroundMusic();
     gridSize = domain.getTiles().length;
+    chapInventory.clear();
     setPreferredSize(new Dimension(FOCUS_SIZE * 50, (FOCUS_SIZE + 1) * 50 + 25));
   }
 
@@ -72,27 +73,31 @@ public class Renderer extends JPanel implements DomainObserver {
   @Override
   protected void paintComponent(Graphics g) {
     super.paintComponent(g);
-    // First check if the game is over
+
+    // First check if the game is over or won
     if (domain.getFailed()) {
       drawGameOverScreen(g, "Game Over");
+      sound.stopBackgroundMusic();
+      sound.playDeathSound();
     } else if (domain.getWon()) {
       drawGameOverScreen(g, "You Won!");
-    }
-    //set background color to the same as the free tile
-    setBackground(new Color(152, 106, 147, 255));
-    int cellWidth = getWidth() / FOCUS_SIZE;
-    // we minus 25 to allow space for the inventory
-    // Increase the number of "rows" to 10 this allows spacing for inventory
-    int cellHeight = (getHeight() - 25) / (FOCUS_SIZE + 1);
-    // Calculate the top-left cell coordinates of the focus area based on the player's position
-    int focusTopRow = Math.max(0, domain.getChap().getPosition().y - (FOCUS_SIZE / 2));
-    int focusLeftCol = Math.max(0, domain.getChap().getPosition().x - (FOCUS_SIZE / 2));
+      sound.stopBackgroundMusic();
+      sound.playUnlockSound();
+    } else {
+      // Draw the game board and characters
+      setBackground(new Color(152, 106, 147, 255));
+      int cellWidth = getWidth() / FOCUS_SIZE;
+      int cellHeight = (getHeight() - 25) / (FOCUS_SIZE + 1);
+      int focusTopRow = Math.max(0, domain.getChap().getPosition().y - (FOCUS_SIZE / 2));
+      int focusLeftCol = Math.max(0, domain.getChap().getPosition().x - (FOCUS_SIZE / 2));
 
-    drawTiles(g, cellWidth, cellHeight, focusTopRow, focusLeftCol);
-    drawCharacters(g, cellWidth, cellHeight, focusTopRow, focusLeftCol);
-    drawInventory(g, cellWidth, cellHeight);
-    if (domain.isOnInfo()) {
-      drawInfoMessage(g);
+      drawTiles(g, cellWidth, cellHeight, focusTopRow, focusLeftCol);
+      drawCharacters(g, cellWidth, cellHeight, focusTopRow, focusLeftCol);
+      drawInventory(g, cellWidth, cellHeight);
+
+      if (domain.isOnInfo()) {
+        drawInfoMessage(g);
+      }
     }
   }
 
