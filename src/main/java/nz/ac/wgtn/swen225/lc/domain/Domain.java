@@ -92,10 +92,10 @@ public class Domain {
     ourChap.setDirection(chap.getDirection());
     ourChap.setAlive(chap.isAlive());
     for (TileType t : chapInventory) {
-      if (!(t == TileType.BLUE_KEY || t == TileType.RED_KEY || t == TileType.GREEN_KEY || t == TileType.YELLOW_KEY)) {
-        throw new IllegalArgumentException("Chap should only be holding keys.");
+      switch (t) {
+        case BLUE_KEY, RED_KEY, GREEN_KEY, YELLOW_KEY -> ourChap.addKey(t);
+        default -> throw new IllegalArgumentException("Chap should only be holding keys.");
       }
-      ourChap.addKey(t);
     }
 
     List<EnemyActor> ourEnemyList = new ArrayList<>();
@@ -272,7 +272,7 @@ public class Domain {
     switch (targetTile) {
       case FREE, INFO -> {
       }
-      case WALL, BLUE_KEY, RED_KEY, YELLOW_KEY, GREEN_KEY, BLUE_DOOR, RED_DOOR, YELLOW_DOOR, GREEN_DOOR, TREASURE, EXIT_LOCK, EXIT -> {
+      case WALL, TREASURE, EXIT_LOCK, EXIT, BLUE_KEY, RED_KEY, YELLOW_KEY, GREEN_KEY, BLUE_DOOR, RED_DOOR, YELLOW_DOOR, GREEN_DOOR -> {
         return;
       }
       default -> throw new IllegalStateException("Unexpected value: " + targetTile);
