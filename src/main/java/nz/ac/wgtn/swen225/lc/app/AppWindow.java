@@ -119,6 +119,24 @@ class AppWindow extends JFrame {
     gameMenu.add(exitNoSave);
 
     menuBar.add(gameMenu);
+
+    JMenu recorderMenu = new JMenu("Recorder");
+
+    JMenuItem manualReplay = new JMenuItem("Manual Replay");
+    manualReplay.addActionListener(event -> {
+      app.getRecorder().manualReplay();
+    });
+
+    JMenuItem autoReplay = new JMenuItem("Auto Replay");
+    autoReplay.addActionListener(event -> {
+      app.getRecorder().autoReplay();
+    });
+
+    recorderMenu.add(manualReplay);
+    recorderMenu.add(autoReplay);
+
+    menuBar.add(recorderMenu);
+
     setJMenuBar(menuBar);
   }
 }

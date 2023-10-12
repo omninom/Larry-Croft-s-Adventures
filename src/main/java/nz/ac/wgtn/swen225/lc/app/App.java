@@ -34,6 +34,15 @@ public class App {
   }
 
   /**
+   * Gets the recorder.
+   *
+   * @return the Recorder object.
+   */
+  public Recorder getRecorder() {
+    return recorder;
+  }
+
+  /**
    * Handles an input.
    *
    * @param inputType the input to handle.
@@ -60,7 +69,7 @@ public class App {
         default:
           break;
       }
-    } catch (IllegalArgumentException e){
+    } catch (IllegalArgumentException | IllegalStateException e) {
       return false;
     }
 
