@@ -1,8 +1,9 @@
 # Larry Croft’s Adventures
 A creative clone of the (first level of the) 1989 Atari game Chips Challenge.
 
-## Simplifications
-- 
+## Playing the Game
+Start the game by running nz.ac.wgtn.swen225.lc.app.Main from Eclipse.
+Use the arrow keys to move Larry/Chap, and use Ctrl-1 and Ctrl-2 to load the two levels.
 
 ## Levels
 Levels are stored under the `src/main/resources/levels/` directory.
