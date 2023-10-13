@@ -84,6 +84,8 @@ class AppWindow extends JFrame {
 
   /**
    * Asks the user for the replay speed.
+   * Used to be in Recorder.java but made more sense to be here.
+   * As App is meant to handle all user input.
    *
    * @author Neeraj Patel (300604056)
    */
@@ -102,6 +104,8 @@ class AppWindow extends JFrame {
 
   /**
    * Asks the user for a recording to load.
+   * Used to be in Recorder.java but made more sense to be here.
+   * As App is meant to handle all user input.
    *
    * @author Neeraj Patel (300604056)
    */
