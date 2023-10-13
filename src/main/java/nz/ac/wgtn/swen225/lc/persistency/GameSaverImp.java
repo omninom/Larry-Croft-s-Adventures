@@ -11,12 +11,19 @@ import nz.ac.wgtn.swen225.lc.domain.Domain;
 import nz.ac.wgtn.swen225.lc.domain.EnemyActor;
 import nz.ac.wgtn.swen225.lc.domain.TileType;
 
-public class GameSaverImp implements GameSaver{
+/**
+ * Implementation for Saving running Games.
+ *
+ * @author Benjamin Park
+ */
+public class GameSaverImp implements GameSaver {
 
   /**
-   * @param domain      the domain to load the level into.
-   * @param levelNumber number of the level to load.
-   * @throws IOException
+   * Save the current state of domain level to file.
+   *
+   * @param domain      the domain to save state of.
+   * @param levelNumber number of the current level.
+   * @throws IOException if saving fails.
    */
   public void saveGame(Domain domain, int levelNumber, File file) throws IOException {
     // Retrieve all the information from the domain.

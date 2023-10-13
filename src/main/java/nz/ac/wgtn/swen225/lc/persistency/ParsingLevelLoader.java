@@ -26,16 +26,14 @@ import nz.ac.wgtn.swen225.lc.domain.TileType;
 public class ParsingLevelLoader implements LevelLoader {
 
   /**
-   * Legacy code, used to produce an example level json file
+   * Legacy code, used to produce an example level json file.
    *
    * @return String for level json
    */
   @Deprecated
   public static String writeDefaultMazeJson() {
     StringBuilder retS = new StringBuilder();
-    retS.append("{\n")
-        .append("  \"levelnum\" : 1,")
-        .append("  \"info\" : \"testInfo\",")
+    retS.append("{\n").append("  \"levelnum\" : 1,").append("  \"info\" : \"testInfo\",")
         .append("  \"tiles\" : [\n");
     TileType[][] maze = new TileType[9][9];
     for (int i = 0; i < 9; i++) {
@@ -62,18 +60,11 @@ public class ParsingLevelLoader implements LevelLoader {
     retS.append(mazeStr.substring(0, mazeStr.length() - 2));
 
 
-    retS.append("],\n")
-        .append("  \"numRows\" : 9,\n")
-        .append("  \"numCols\" : 9,\n")
-        .append("  \"chap\" : {\n")
-        .append("    \"position\" : {\n")
-        .append("      \"x\" : 4,\n")
-        .append("      \"y\" : 4\n")
-        .append("    }")
-        .append("  },\n")
-        .append("  \"entities\" : [],\n")
-        .append("  \"inventory\" : [").append(TileType.GREEN_KEY.ordinal()).append("],\n")
-        .append("  \"isAlive\" : true\n")
+    retS.append("],\n").append("  \"numRows\" : 9,\n").append("  \"numCols\" : 9,\n")
+        .append("  \"chap\" : {\n").append("    \"position\" : {\n").append("      \"x\" : 4,\n")
+        .append("      \"y\" : 4\n").append("    }").append("  },\n")
+        .append("  \"entities\" : [],\n").append("  \"inventory\" : [")
+        .append(TileType.GREEN_KEY.ordinal()).append("],\n").append("  \"isAlive\" : true\n")
         .append("}");
     return retS.toString();
   }
@@ -88,15 +79,15 @@ public class ParsingLevelLoader implements LevelLoader {
    */
   private static final String[] EXPECTED_FIELDS = {
       "levelNum", "info", "tiles", "numRows", "numCols", "chap", "inventory", "isAlive",
-      "entities"};
+      "entities"
+  };
 
   @Override
   public void loadLevel(Domain domain, int levelNumber) throws IOException {
     if (levelNumber <= 0) {
       throw new IllegalArgumentException("Levels must have a positive index.");
     }
-    JsonNode levelJsonRoot =
-        FileHandler.loadLevelJsonNode("levels/level" + levelNumber + ".json");
+    JsonNode levelJsonRoot = FileHandler.loadLevelJsonNode("levels/level" + levelNumber + ".json");
     for (String expectedField : EXPECTED_FIELDS) {
       if (!levelJsonRoot.hasNonNull(expectedField)) {
         throw new JsonParseException("Couldn't find top-level field " + expectedField);
@@ -111,29 +102,28 @@ public class ParsingLevelLoader implements LevelLoader {
     if (levelNumber != levelJsonRoot.get("levelNum").asInt(-1)) {
       throw new JsonParseException(
           String.format("Level numbers don't match: expected %d, got %d", levelNumber,
-              levelJsonRoot.get("levelNum").asInt(-1)
-          ));
+              levelJsonRoot.get("levelNum").asInt(-1)));
     }
 
     //Load Info
-    JsonNode infoNode = levelJsonRoot.get("info");
-    String infoString = parseInfo(infoNode);
+    final JsonNode infoNode = levelJsonRoot.get("info");
+    final String infoString = parseInfo(infoNode);
 
     //Load Tiles
     int rows = parseNumRows(levelJsonRoot.get("numRows"));
     int cols = parseNumCols(levelJsonRoot.get("numCols"));
 
     JsonNode tileGridRoot = levelJsonRoot.get("tiles");
-    TileType[][] mazeTiles = parseTileTypes(tileGridRoot, rows, cols);
+    final TileType[][] mazeTiles = parseTileTypes(tileGridRoot, rows, cols);
 
 
     //load Chap, Keys, and
     JsonNode chapNode = levelJsonRoot.get("chap");
-    Chap chap = parseChap(chapNode);
+    final Chap chap = parseChap(chapNode);
 
     //load keys
     JsonNode inventoryNode = levelJsonRoot.get("inventory");
-    List<TileType> keys = parseKeys(inventoryNode);
+    final List<TileType> keys = parseKeys(inventoryNode);
 
     //load alive status
     JsonNode aliveNode = levelJsonRoot.get("isAlive");
@@ -156,25 +146,24 @@ public class ParsingLevelLoader implements LevelLoader {
       Map<String, Class> enemyNameMap = new HashMap<>();
 
       // Load the jar file for that level
-      URL jarURL =
-          //().getClassLoader().getResource("jar:levels/level" + levelNumber + ".jar!/");
+      URL jarUrl =
           getClass().getClassLoader().getResource("levels/level" + levelNumber + ".jar");
 
       // Load classes from jar
-      URL[] urls = new URL[] {jarURL};
+      URL[] urls = new URL[] {jarUrl};
       try (URLClassLoader classLoader = new URLClassLoader(urls)) {
 
         // Create Instances of Enemy classes
         for (JsonNode child : enemiesRoot) {
-          if(!child.isContainerNode()){
+          if (!child.isContainerNode()) {
             throw new JsonParseException("Expected container nodes in enemy array");
           }
           //Get Type of Entity
-          if(!child.has("class")){
+          if (!child.has("class")) {
             throw new JsonParseException("Expected name field in entity object.");
           }
           JsonNode childClassNode = child.get("class");
-          if(!childClassNode.isTextual()){
+          if (!childClassNode.isTextual()) {
             throw new JsonParseException("Expected string in class field.");
           }
           String n = childClassNode.asText();
@@ -186,22 +175,23 @@ public class ParsingLevelLoader implements LevelLoader {
 
           // Get position of Entity
           JsonNode childPosNode = child.get("position");
-          if(!childPosNode.isContainerNode()){
+          if (!childPosNode.isContainerNode()) {
             throw new JsonParseException("Expected container node inside position");
           }
           Object[] posArgs = {childPosNode.get("x").asInt(), childPosNode.get("y").asInt()};
 
           // Construct Entity (EnemyActor)
-          EnemyActor e = (EnemyActor) enemyNameMap.get(n).getDeclaredConstructor(int.class, int.class).newInstance(posArgs);
+          EnemyActor e =
+              (EnemyActor) enemyNameMap.get(n).getDeclaredConstructor(int.class, int.class)
+                  .newInstance(posArgs);
           enemies.add(e);
         }
-      } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
-               NoSuchMethodException | InvocationTargetException e) {
+      } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+               | NoSuchMethodException | InvocationTargetException e) {
         e.printStackTrace();
         throw new RuntimeException(e);
       }
     }
-
 
 
     domain.buildNewLevel(mazeTiles, chap, enemies, keys, infoString, levelNumber);
@@ -267,17 +257,15 @@ public class ParsingLevelLoader implements LevelLoader {
 
         if (!tileNode.isIntegralNumber()) {
           throw new JsonParseException(
-              "Expected int (to be parsed as enum) for value in \"tiles\" field at "
-                  + "(" + j + "," + i + ")."
-          );
+              "Expected int (to be parsed as enum) for value in \"tiles\" field at " + "(" + j
+                  + "," + i + ").");
         }
 
         int tileVal = tileNode.asInt();
 
         if (tileVal < 0 || tileVal > TILE_TYPES.length) {
-          throw new JsonParseException("Out of bound TileType integer at "
-              + "(" + j + "," + i + ")."
-          );
+          throw new JsonParseException(
+              "Out of bound TileType integer at " + "(" + j + "," + i + ").");
         }
 
         mazeTiles[i][j] = TILE_TYPES[tileVal];
@@ -320,8 +308,7 @@ public class ParsingLevelLoader implements LevelLoader {
       JsonNode keyNode = inventoryNode.get(i);
       if (!keyNode.isIntegralNumber()) {
         throw new JsonParseException(
-            "Expected int (to be parsed as enum) in inventory field at " + "index " + i + "."
-        );
+            "Expected int (to be parsed as enum) in inventory field at " + "index " + i + ".");
       }
       int keyVal = keyNode.asInt();
       if (keyVal < 0 || keyVal > TILE_TYPES.length) {

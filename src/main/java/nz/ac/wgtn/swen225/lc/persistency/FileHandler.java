@@ -8,10 +8,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Scanner;
-import nz.ac.wgtn.swen225.lc.domain.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Scanner;
 
 /**
  * Handles file operations for saving and loading levels.
@@ -29,7 +28,7 @@ public class FileHandler {
     StringBuilder ret = new StringBuilder();
     try {
       File reader = new File(fileName);
-      Scanner scanner = new Scanner(reader);
+      Scanner scanner = new Scanner(reader, "UTF-8");
       while (scanner.hasNextLine()) {
         String line = scanner.nextLine();
         ret.append(line).append('\n');
@@ -51,7 +50,6 @@ public class FileHandler {
     try {
       URI u = FileHandler.class.getClassLoader().getResource(fileName).toURI();
       File reader = new File(u);
-      String jsonString = loadLevelJson(u);
       ObjectMapper mapper = new ObjectMapper();
       ret = mapper.readTree(reader);
     } catch (IOException e) {

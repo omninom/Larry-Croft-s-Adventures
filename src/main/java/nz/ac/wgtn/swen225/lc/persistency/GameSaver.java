@@ -10,10 +10,10 @@ import nz.ac.wgtn.swen225.lc.domain.Domain;
 public interface GameSaver {
 
   /**
-   * Loads a game into the passed domain.
+   * Saves a game into the passed domain.
    *
-   * @param domain the domain to load the level into.
-   * @param levelNumber number of the level to load.
+   * @param domain      the domain to save the level of.
+   * @param levelNumber number of the level to save.
    * @throws IOException if loading fails.
    */
   public void saveGame(Domain domain, int levelNumber, File file) throws IOException;
