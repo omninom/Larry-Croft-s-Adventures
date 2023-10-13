@@ -168,6 +168,7 @@ public class App {
       throw new RuntimeException(e);
     }
 
+    markUpdated();
     return true;
   }
 
@@ -176,6 +177,7 @@ public class App {
    */
   public void endGame() {
     recorder.addToRecording("END"); // Lets recorder know when to stop
+    markUpdated();
   }
 
   /**
@@ -194,8 +196,9 @@ public class App {
    */
   public static void main(String[] args) {
     App app = new App();
-    AppWindow window = new AppWindow(app);
+    app.newGame(1);
 
+    AppWindow window = new AppWindow(app);
     window.setVisible(true);
   }
 }
