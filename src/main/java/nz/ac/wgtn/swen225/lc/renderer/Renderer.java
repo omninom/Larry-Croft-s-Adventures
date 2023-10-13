@@ -78,12 +78,9 @@ public class Renderer extends JPanel implements DomainObserver {
     // First check if the game is over or won
     if (domain.getFailed()) {
       drawGameOverScreen(g, "Game Over");
-      sound.stopBackgroundMusic();
-      sound.playDeathSound();
     } else if (domain.getWon()) {
       drawGameOverScreen(g, "You Won!");
-      sound.stopBackgroundMusic();
-      sound.playUnlockSound();
+
     } else {
       // Draw the game board and characters
       setBackground(new Color(152, 106, 147, 255));
@@ -92,7 +89,6 @@ public class Renderer extends JPanel implements DomainObserver {
       // Calculate the top row and left column of the focus area
       int focusTopRow = Math.max(0, Math.min(domain.getChap().getPosition().y - (FOCUS_SIZE / 2), gridSize - FOCUS_SIZE));
       int focusLeftCol = Math.max(0, Math.min(domain.getChap().getPosition().x - (FOCUS_SIZE / 2), gridSize - FOCUS_SIZE));
-
 
       drawTiles(g, cellWidth, cellHeight, focusTopRow, focusLeftCol);
       drawCharacters(g, cellWidth, cellHeight, focusTopRow, focusLeftCol);
@@ -280,6 +276,10 @@ public class Renderer extends JPanel implements DomainObserver {
       case DEATH:
         sound.stopBackgroundMusic();
         sound.playDeathSound();
+        break;
+      case WIN:
+        sound.stopBackgroundMusic();
+        sound.playUnlockSound();
         break;
       default:
         break;
