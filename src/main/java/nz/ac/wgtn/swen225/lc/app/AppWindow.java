@@ -1,18 +1,13 @@
 package nz.ac.wgtn.swen225.lc.app;
 
+import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.HashMap;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JSeparator;
-import javax.swing.KeyStroke;
+import javax.swing.*;
+
 import nz.ac.wgtn.swen225.lc.recorder.RecordItem;
 import nz.ac.wgtn.swen225.lc.renderer.Renderer;
 
@@ -26,6 +21,11 @@ class AppWindow extends JFrame {
   private final App app;
   private final Renderer renderer;
 
+  //private JLabel timeLabel = null; // NOTE: Need to find a way to make this always update
+  private JLabel currentLevelLabel = null;
+  private JLabel keysCollectedLabel = null;
+  private JLabel treasureLeftLabel = null;
+
   public AppWindow(App app) {
     this.app = app;
     this.renderer = new Renderer(app.getDomain());
@@ -38,8 +38,11 @@ class AppWindow extends JFrame {
 
     // Set up the window contents
     addMenuBar();
+    addStatusBar();
     add(this.renderer);
     pack();
+
+    onUpdateCallback();
   }
 
   /**
@@ -47,6 +50,11 @@ class AppWindow extends JFrame {
    */
   public void onUpdateCallback() {
     renderer.updateRenderer();
+
+    // Not super optimal but
+    this.currentLevelLabel.setText("Level: " + app.getDomain().getLevelNumber());
+    this.keysCollectedLabel.setText("Keys: "  + app.getDomain().getKeysCollected());
+    this.treasureLeftLabel.setText("Treasure: " + app.getDomain().getTreasureRemaining());
   }
 
   private KeyListener createKeyListener() {
@@ -220,5 +228,20 @@ class AppWindow extends JFrame {
     manualReplayNext.setVisible(false);
 
     setJMenuBar(menuBar);
+  }
+
+  private void addStatusBar() {
+    //this.timeLabel = new JLabel("Time:");
+    this.currentLevelLabel = new JLabel("Level:");
+    this.keysCollectedLabel = new JLabel("Keys:");
+    this.treasureLeftLabel = new JLabel("Treasure:");
+
+    JPanel statusBar = new JPanel();
+    statusBar.setLayout(new GridLayout(1, 3));
+    //statusBar.add(timeLabel);
+    statusBar.add(currentLevelLabel);
+    statusBar.add(keysCollectedLabel);
+    statusBar.add(treasureLeftLabel);
+    add(statusBar, BorderLayout.PAGE_START);
   }
 }

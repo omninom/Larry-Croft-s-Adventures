@@ -437,4 +437,13 @@ public class Domain {
     return this.treasureRemaining;
   }
 
+  /**
+   * Getter for the number of keys the player has collected.
+   *
+   * @return the number of keys
+   */
+  public int getKeysCollected() {
+    return getChap().getKeys().size();
+  }
+
 }

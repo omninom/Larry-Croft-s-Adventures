@@ -12,6 +12,7 @@ build:
   stage: build
   tags: [docker]
   script:
+    - apt-get update && apt-get install -y graphviz # Install graphviz for uml docs
     - gradle $GRADLE_OPTS build -x test
   artifacts:
     paths:
