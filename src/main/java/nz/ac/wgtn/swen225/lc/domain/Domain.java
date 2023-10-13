@@ -50,6 +50,8 @@ public class Domain {
    * @param enemies       List of EnemyActor objects for new level
    * @param chapInventory List of keys that Chap starts holding
    * @param infoText      info string for new level.
+   * @param levelNum      number of the current level. Used for saving/loading when determining
+   *                      which jar to get enemies from
    */
   public void buildNewLevel(TileType[][] mazeTiles, Chap chap, List<EnemyActor> enemies,
                             List<TileType> chapInventory, String infoText, int levelNum) {
@@ -274,7 +276,8 @@ public class Domain {
     switch (targetTile) {
       case FREE, INFO -> {
       }
-      case WALL, TREASURE, EXIT_LOCK, EXIT, BLUE_KEY, RED_KEY, YELLOW_KEY, GREEN_KEY, BLUE_DOOR, RED_DOOR, YELLOW_DOOR, GREEN_DOOR -> {
+      case WALL, TREASURE, EXIT_LOCK, EXIT, BLUE_KEY, RED_KEY, YELLOW_KEY, GREEN_KEY, BLUE_DOOR,
+          RED_DOOR, YELLOW_DOOR, GREEN_DOOR -> {
         return;
       }
       default -> throw new IllegalStateException("Unexpected value: " + targetTile);
@@ -296,7 +299,12 @@ public class Domain {
     return false;
   }
 
-  public int getLevelNumber(){
+  /**
+   * Getter for the current levelnum.
+   *
+   * @return current level number.
+   */
+  public int getLevelNumber() {
     return levelNumber;
   }
 

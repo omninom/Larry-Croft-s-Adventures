@@ -45,4 +45,4 @@ jar {
     from javadoc.destinationDir
 }
 
-//jar.dependsOn(javadoc)
+jar.dependsOn(javadoc)
