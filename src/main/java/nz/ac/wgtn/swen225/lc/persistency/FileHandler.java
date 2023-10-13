@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
 import nz.ac.wgtn.swen225.lc.domain.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * Handles file operations for saving and loading levels.
@@ -23,7 +25,7 @@ public class FileHandler {
    * @param fileName index of the level to be loaded.
    * @return String representing the file.
    */
-  public static String loadLevelJson(String fileName) {
+  public static String loadLevelJson(URI fileName) {
     StringBuilder ret = new StringBuilder();
     try {
       File reader = new File(fileName);
@@ -33,7 +35,7 @@ public class FileHandler {
         ret.append(line).append('\n');
       }
     } catch (FileNotFoundException e) {
-      throw new IllegalArgumentException("Can't find json.");
+      throw new IllegalArgumentException(e);
     }
     return ret.toString();
   }
@@ -45,13 +47,16 @@ public class FileHandler {
    * @return JsonNode representing the file.
    */
   public static JsonNode loadLevelJsonNode(String fileName) {
-    File reader = new File(fileName);
-    String jsonString = loadLevelJson(fileName);
-    ObjectMapper mapper = new ObjectMapper();
     JsonNode ret;
     try {
+      URI u = FileHandler.class.getClassLoader().getResource(fileName).toURI();
+      File reader = new File(u);
+      String jsonString = loadLevelJson(u);
+      ObjectMapper mapper = new ObjectMapper();
       ret = mapper.readTree(reader);
     } catch (IOException e) {
+      throw new IllegalArgumentException(e);
+    } catch (URISyntaxException e) {
       throw new IllegalArgumentException(e);
     }
     return ret;

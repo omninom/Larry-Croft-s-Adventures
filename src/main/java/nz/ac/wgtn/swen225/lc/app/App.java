@@ -29,6 +29,11 @@ public class App {
   private final GameSaver gameSaver;
 
 
+  private final LevelLoader levelLoader;
+  private final GameLoader gameLoader;
+  private final GameSaver gameSaver;
+
+
   /**
    * Constructor.
    */

@@ -5,10 +5,18 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import nz.ac.wgtn.swen225.lc.domain.Chap;
 import nz.ac.wgtn.swen225.lc.domain.Domain;
+import nz.ac.wgtn.swen225.lc.domain.EnemyActor;
 import nz.ac.wgtn.swen225.lc.domain.TileType;
 
 /**
@@ -19,6 +27,7 @@ public class ParsingLevelLoader implements LevelLoader {
 
   /**
    * Legacy code, used to produce an example level json file
+   *
    * @return String for level json
    */
   @Deprecated
@@ -78,14 +87,16 @@ public class ParsingLevelLoader implements LevelLoader {
    * Used for converting ordinal values into enum values.
    */
   private static final String[] EXPECTED_FIELDS = {
-      "levelNum","info", "tiles", "numRows", "numCols", "chap", "inventory", "isAlive", "entities"};
+      "levelNum", "info", "tiles", "numRows", "numCols", "chap", "inventory", "isAlive",
+      "entities"};
 
   @Override
-  public void loadLevel(Domain domain, int levelNumber) throws JsonParseException {
+  public void loadLevel(Domain domain, int levelNumber) throws IOException {
     if (levelNumber <= 0) {
       throw new IllegalArgumentException("Levels must have a positive index.");
     }
-    JsonNode levelJsonRoot = FileHandler.loadLevelJsonNode("src/main/resources/levels/level" + levelNumber + ".json");
+    JsonNode levelJsonRoot =
+        FileHandler.loadLevelJsonNode("levels/level" + levelNumber + ".json");
     for (String expectedField : EXPECTED_FIELDS) {
       if (!levelJsonRoot.hasNonNull(expectedField)) {
         throw new JsonParseException("Couldn't find top-level field " + expectedField);
@@ -100,7 +111,7 @@ public class ParsingLevelLoader implements LevelLoader {
     if (levelNumber != levelJsonRoot.get("levelNum").asInt(-1)) {
       throw new JsonParseException(
           String.format("Level numbers don't match: expected %d, got %d", levelNumber,
-                        levelJsonRoot.get("levelNum").asInt(-1)
+              levelJsonRoot.get("levelNum").asInt(-1)
           ));
     }
 
@@ -130,15 +141,74 @@ public class ParsingLevelLoader implements LevelLoader {
       throw new JsonParseException("Expected boolean for field \"isAlive\"");
     }
 
-    //load Entities
+    // load Enemy Entities
     //TODO entities
+    List<EnemyActor> enemies = new ArrayList<>();
+    JsonNode enemiesRoot = levelJsonRoot.get("entities");
+
+    if (!enemiesRoot.isArray()) {
+      throw new JsonParseException("Expected Array for field \"entities\"");
+    }
+    // Check if we need to load any Enemies
+    if (enemiesRoot.size() > 0) {
+
+      //Run through children first to assemble list of names? or
+      Map<String, Class> enemyNameMap = new HashMap<>();
+
+      // Load the jar file for that level
+      URL jarURL =
+          //().getClassLoader().getResource("jar:levels/level" + levelNumber + ".jar!/");
+          getClass().getClassLoader().getResource("levels/level" + levelNumber + ".jar");
+
+      // Load classes from jar
+      URL[] urls = new URL[] {jarURL};
+      try (URLClassLoader classLoader = new URLClassLoader(urls)) {
+
+        // Create Instances of Enemy classes
+        for (JsonNode child : enemiesRoot) {
+          if(!child.isContainerNode()){
+            throw new JsonParseException("Expected container nodes in enemy array");
+          }
+          //Get Type of Entity
+          if(!child.has("class")){
+            throw new JsonParseException("Expected name field in entity object.");
+          }
+          JsonNode childClassNode = child.get("class");
+          if(!childClassNode.isTextual()){
+            throw new JsonParseException("Expected string in class field.");
+          }
+          String n = childClassNode.asText();
+
+          if (!enemyNameMap.containsKey(n)) {
+            Class<?> c = Class.forName("nz.ac.wgtn.swen225.lc.persistency." + n, true, classLoader);
+            enemyNameMap.put(n, c);
+          }
+
+          // Get position of Entity
+          JsonNode childPosNode = child.get("position");
+          if(!childPosNode.isContainerNode()){
+            throw new JsonParseException("Expected container node inside position");
+          }
+          Object[] posArgs = {childPosNode.get("x").asInt(), childPosNode.get("y").asInt()};
+
+          // Construct Entity (EnemyActor)
+          EnemyActor e = (EnemyActor) enemyNameMap.get(n).getDeclaredConstructor(int.class, int.class).newInstance(posArgs);
+          enemies.add(e);
+        }
+      } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
+               NoSuchMethodException | InvocationTargetException e) {
+        e.printStackTrace();
+        throw new RuntimeException(e);
+      }
+    }
 
 
-    domain.buildNewLevel(mazeTiles,chap,List.of(),keys,infoString,levelNumber);
+
+    domain.buildNewLevel(mazeTiles, chap, enemies, keys, infoString, levelNumber);
   }
 
   private String parseInfo(JsonNode infoNode) throws JsonParseException {
-    if(!infoNode.isTextual()){
+    if (!infoNode.isTextual()) {
       throw new JsonParseException("Info field should contain text.");
     }
     return infoNode.asText("ERROR");
@@ -198,7 +268,7 @@ public class ParsingLevelLoader implements LevelLoader {
         if (!tileNode.isIntegralNumber()) {
           throw new JsonParseException(
               "Expected int (to be parsed as enum) for value in \"tiles\" field at "
-              + "(" + j + "," + i + ")."
+                  + "(" + j + "," + i + ")."
           );
         }
 
@@ -206,7 +276,7 @@ public class ParsingLevelLoader implements LevelLoader {
 
         if (tileVal < 0 || tileVal > TILE_TYPES.length) {
           throw new JsonParseException("Out of bound TileType integer at "
-                                       + "(" + j + "," + i + ")."
+              + "(" + j + "," + i + ")."
           );
         }
 
