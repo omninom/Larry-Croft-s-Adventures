@@ -1,6 +1,5 @@
 package nz.ac.wgtn.swen225.lc.recorder;
 
-import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -56,15 +55,13 @@ public class Recorder {
    */
   public void startRecording(String level) {
     // ---- Setup recording ---- //
-    System.out.println("[RECORDER DEBUG] Recorder: Recording has started.");
+    System.out.println("Recording in progress...");
     currentRecording = new HashMap<>();
     currentSequenceNumber = 0;
 
     // ---- Record the initial game ---- //
     RecordItem currentChange = new RecordItem(currentSequenceNumber, "START", level);
     currentRecording.put(currentSequenceNumber, currentChange);
-    System.out.println("[RECORDER DEBUG] Recorder: Level has been added: [ "
-            + currentChange + " ] ");
     currentSequenceNumber++;
   }
 
@@ -94,7 +91,7 @@ public class Recorder {
     // ---- Record Player movement ---- //
     String move = dataArray[1].trim();
     RecordItem newItem = new RecordItem(currentSequenceNumber, actor, move);
-    System.out.println("[RECORDER DEBUG] Recorder: Player has been added: [ " + newItem + " ]");
+    System.out.println("[RECORDER DEBUG] Recorder: Player move added: [ " + newItem + " ]");
     currentRecording.put(currentSequenceNumber, newItem);
     currentSequenceNumber++;
   }
@@ -121,6 +118,7 @@ public class Recorder {
         System.out.println("Error: Saving Json file: " + e.getMessage());
       }
     }
+    System.out.println("Recording ended & saved.");
   }
 
 
@@ -129,10 +127,11 @@ public class Recorder {
    */
   public void manualReplay(HashMap<Integer, RecordItem> toLoadRecording) {
     // ---- Load the game ---- //
-    this.loadedRecording = toLoadRecording;
-    if (loadedRecording.isEmpty()) {
+    if (toLoadRecording.isEmpty()) {
       System.out.println("Error: No recording loaded.");
       return;
+    } else {
+      loadedRecording = toLoadRecording;
     }
 
     // ---- Display the loaded game ---- //

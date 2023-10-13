@@ -102,7 +102,7 @@ class AppWindow extends JFrame {
   }
 
   private HashMap<Integer, RecordItem> getLoadedRecording() {
-    HashMap<Integer, RecordItem> loadedRecording = new HashMap<>();
+    HashMap<Integer, RecordItem> loadedRecording;
 
     System.out.println("[APP WINDOW DEBUG] Loading recording...");
     // ---- Ask user for the file to load ---- //
@@ -148,6 +148,8 @@ class AppWindow extends JFrame {
       fileFinder.setVisible(false);
     }
 
+    app.markUpdated();
+    System.out.println("[APP WINDOW DEBUG] Loaded recording.");
     return loadedRecording;
   }
 
@@ -211,13 +213,17 @@ class AppWindow extends JFrame {
 
     JMenuItem manualReplay = new JMenuItem("Manual Replay");
     manualReplay.addActionListener(event -> {
-      app.getRecorder().manualReplay(getLoadedRecording());
+      HashMap<Integer, RecordItem> loadedRecording = getLoadedRecording();
+      System.out.println("[APP WINDOW DEBUG] Manual replaying...");
+      app.getRecorder().manualReplay(loadedRecording);
     });
 
     JMenuItem autoReplay = new JMenuItem("Auto Replay");
     autoReplay.addActionListener(event -> {
       askReplaySpeed();
-      app.getRecorder().autoReplay(getLoadedRecording());
+      HashMap<Integer, RecordItem> loadedRecording = getLoadedRecording();
+      System.out.println("[APP WINDOW DEBUG] Auto replaying...");
+      app.getRecorder().autoReplay(loadedRecording);
     });
 
     recorderMenu.add(manualReplay);
