@@ -1,16 +1,20 @@
 package nz.ac.wgtn.swen225.lc.persistency;
 
-import nz.ac.wgtn.swen225.lc.domain.Maze;
+import java.io.File;
+import java.io.IOException;
+import nz.ac.wgtn.swen225.lc.domain.Domain;
 
 /**
- * Interface for saving in-progress Games.
+ * Interface for loading Levels as part of new or loaded Game.
  */
 public interface GameSaver {
+
   /**
-   * Saves a game to file.
+   * Loads a game into the passed domain.
    *
-   * @param maze     The game maze instance to be saved.
-   * @param fileName The name of the file from which the game is to be loaded.
+   * @param domain the domain to load the level into.
+   * @param levelNumber number of the level to load.
+   * @throws IOException if loading fails.
    */
-  public void saveGame(Maze maze, String fileName);
+  public void saveGame(Domain domain, int levelNumber, File file) throws IOException;
 }

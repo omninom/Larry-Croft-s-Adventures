@@ -1,15 +1,20 @@
 package nz.ac.wgtn.swen225.lc.persistency;
 
-import nz.ac.wgtn.swen225.lc.domain.Maze;
+import java.io.File;
+import java.io.IOException;
+import nz.ac.wgtn.swen225.lc.domain.Domain;
 
 /**
- * Interface for loading Saved Games.
+ * Interface for loading Levels as part of new or loaded Game.
  */
 public interface GameLoader {
+
   /**
-   * Loads a game from a file.
+   * Loads a Game into the passed domain.
    *
-   * @param fileName The name of the file from which the game is to be loaded.
+   * @param domain the domain to load the level into.
+   * @param levelNumber number of the level to load.
+   * @throws IOException if loading fails.
    */
-  public Maze loadGame(String fileName);
+  public void loadGame(Domain domain, File file) throws IOException;
 }
