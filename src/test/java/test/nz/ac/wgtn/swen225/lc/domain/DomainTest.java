@@ -123,7 +123,8 @@ public class DomainTest {
     maze[0][1] = TileType.TREASURE;
 
     domain.buildNewLevel(maze, domain.getChap(), domain.getEnemyActorList(),
-        domain.getChap().getKeys(), "Y", 0);
+                         domain.getChap().getKeys(), "Y", 0
+    );
     int inittreasure = domain.getTreasureRemaining();
 
     domain.moveChap(Direction.RIGHT);
@@ -139,7 +140,8 @@ public class DomainTest {
     maze[0][1] = TileType.INFO;
     String infoText = Double.toString(Math.random());
     domain.buildNewLevel(maze, domain.getChap(), domain.getEnemyActorList(),
-        domain.getChap().getKeys(), infoText, 0);
+                         domain.getChap().getKeys(), infoText, 0
+    );
 
     domain.moveChap(Direction.RIGHT);
     assertTrue(domain.isOnInfo());
@@ -159,7 +161,8 @@ public class DomainTest {
 
     List<EnemyActor> enemyList = List.of(killer);
     domain.buildNewLevel(maze, newChap, enemyList,
-        domain.getChap().getKeys(), "Y", 0);
+                         domain.getChap().getKeys(), "Y", 0
+    );
     assertEquals(initialTreasure, domain.getTreasureRemaining());
 
     System.out.println(domain.getChap().getPosition());
