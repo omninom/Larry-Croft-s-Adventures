@@ -154,10 +154,6 @@ class AppWindow extends JFrame {
   }
 
   private void addMenuBar() {
-    JMenuBar menuBar = new JMenuBar();
-
-    JMenu gameMenu = new JMenu("Game");
-
     JMenuItem level1 = new JMenuItem("Level 1");
     level1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, InputEvent.CTRL_DOWN_MASK));
     level1.addActionListener(event -> app.newGame(1));
@@ -200,16 +196,13 @@ class AppWindow extends JFrame {
       System.exit(0);
     });
 
+    JMenu gameMenu = new JMenu("Game");
     gameMenu.add(level1);
     gameMenu.add(level2);
     gameMenu.add(new JSeparator());
     gameMenu.add(resume);
     gameMenu.add(exitWithSave);
     gameMenu.add(exitNoSave);
-
-    menuBar.add(gameMenu);
-
-    JMenu recorderMenu = new JMenu("Recorder");
 
     JMenuItem manualReplayNext = new JMenuItem("Next Action Replay");
     manualReplayNext.addActionListener(event -> {
@@ -232,9 +225,12 @@ class AppWindow extends JFrame {
       app.getRecorder().autoReplay(loadedRecording);
     });
 
+    JMenu recorderMenu = new JMenu("Recorder");
     recorderMenu.add(manualReplay);
     recorderMenu.add(autoReplay);
 
+    JMenuBar menuBar = new JMenuBar();
+    menuBar.add(gameMenu);
     menuBar.add(recorderMenu);
     menuBar.add(manualReplayNext);
     manualReplayNext.setVisible(false);
