@@ -1,17 +1,16 @@
 package nz.ac.wgtn.swen225.lc.app;
 
+import java.io.File;
 import java.io.IOException;
 import nz.ac.wgtn.swen225.lc.domain.Direction;
 import nz.ac.wgtn.swen225.lc.domain.Domain;
 import nz.ac.wgtn.swen225.lc.persistency.GameLoader;
-import nz.ac.wgtn.swen225.lc.persistency.GameSaver;
 import nz.ac.wgtn.swen225.lc.persistency.GameLoaderImp;
+import nz.ac.wgtn.swen225.lc.persistency.GameSaver;
 import nz.ac.wgtn.swen225.lc.persistency.GameSaverImp;
 import nz.ac.wgtn.swen225.lc.persistency.LevelLoader;
 import nz.ac.wgtn.swen225.lc.persistency.ParsingLevelLoader;
 import nz.ac.wgtn.swen225.lc.recorder.Recorder;
-
-import java.io.File;
 
 /**
  * The App module.
@@ -85,7 +84,7 @@ public class App {
    * @return whether the input was valid.
    */
   public boolean handleInput(AppInput inputType) {
-    System.out.println("[APP DEBUG] Recieved input '" + inputType + "'");
+    System.out.println("[APP DEBUG] Received input '" + inputType + "'");
 
     // TODO: Translate / Validate input with Domain
     try {
@@ -125,7 +124,7 @@ public class App {
     System.out.println("[APP DEBUG] New game: Level " + level);
     try {
       levelLoader.loadLevel(domain, level);
-    }catch (IOException e){
+    } catch (IOException e) {
       e.printStackTrace();
     }
     // TODO: Move this somewhere else
@@ -142,11 +141,11 @@ public class App {
     System.out.println("[APP DEBUG] Saving game to " + file.getAbsolutePath());
 
     try {
-      if(!file.exists()){
+      if (!file.exists()) {
         file.createNewFile();
       }
       gameSaver.saveGame(domain, domain.getLevelNumber(), file);
-    }catch (IOException e){
+    } catch (IOException e) {
       e.printStackTrace();
       throw new RuntimeException(e);
     }
@@ -162,9 +161,9 @@ public class App {
    */
   public boolean loadGame(File file) {
     System.out.println("[APP DEBUG] Loading game from " + file.getAbsolutePath());
-    try{
+    try {
       gameLoader.loadGame(domain, file);
-    }catch (IOException e){
+    } catch (IOException e) {
       e.printStackTrace();
       throw new RuntimeException(e);
     }
