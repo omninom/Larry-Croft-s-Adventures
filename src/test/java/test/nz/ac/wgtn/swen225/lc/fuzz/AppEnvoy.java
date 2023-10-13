@@ -4,12 +4,9 @@ import nz.ac.wgtn.swen225.lc.app.App;
 import nz.ac.wgtn.swen225.lc.app.AppInput;
 
 /**
- * The real-deal Envoy that deals with App.
-<<<<<<< HEAD
+ * The real-deal Envoy that deals with App. <<<<<<< HEAD
  *
- * @author Jebadiah Dudfield 300629357
-=======
->>>>>>> 521aba9 (Switched in new AppEnvoy class)
+ * @author Jebadiah Dudfield 300629357 ======= >>>>>>> 521aba9 (Switched in new AppEnvoy class)
  */
 public class AppEnvoy implements GameEnvoy {
 
@@ -23,42 +20,42 @@ public class AppEnvoy implements GameEnvoy {
   }
 
   @Override
-   public void reset() {
+  public void reset() {
     app.newGame(level);
   }
 
   @Override
-   public boolean moveUp() {
+  public boolean moveUp() {
     return app.handleInput(AppInput.MOVE_UP);
   }
 
   @Override
-   public boolean moveDown() {
+  public boolean moveDown() {
     return app.handleInput(AppInput.MOVE_DOWN);
   }
 
   @Override
-   public boolean moveLeft() {
+  public boolean moveLeft() {
     return app.handleInput(AppInput.MOVE_LEFT);
   }
 
   @Override
-   public boolean moveRight() {
+  public boolean moveRight() {
     return app.handleInput(AppInput.MOVE_RIGHT);
   }
 
   @Override
-   public void pause() {
+  public void pause() {
     app.handleInput(AppInput.PAUSE);
   }
 
   @Override
-   public void unpause() {
+  public void unpause() {
     app.handleInput(AppInput.UNPAUSE);
   }
 
   @Override
   public boolean isStopped() {
-    return false;
+    return app.isGameOver();
   }
 }

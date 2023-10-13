@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 public class FuzzTest {
 
   //Number of random movement tests to carry out on each level.
-  private static final int iterations = 100;
+  private static final int iterations = 1000;
   //Number of random steps to take on each level.
   private static final int steps = 100;
   //Number of pause/unpause cycles to execute in one wave.
@@ -57,7 +57,7 @@ public class FuzzTest {
         }
         fuzzMovementManager.generateMove();
         if (envoy.isStopped()) {
-          return;
+          break;
         }
       }
     }
