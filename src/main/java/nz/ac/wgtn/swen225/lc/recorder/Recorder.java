@@ -139,7 +139,7 @@ public class Recorder {
   private void endRecording() {
     // ---- Ask user the location and file name ---- //
     JFileChooser fileFinder = new JFileChooser();
-    fileFinder.setDialogTitle("Select file to save recording to:");
+    fileFinder.setDialogTitle("Select file to save replay recording to:");
 
     // ---- Validate the file ---- //
     int userAction = fileFinder.showSaveDialog(null);
