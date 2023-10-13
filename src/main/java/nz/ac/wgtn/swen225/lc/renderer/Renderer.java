@@ -72,6 +72,7 @@ public class Renderer extends JPanel implements DomainObserver {
 
   @Override
   protected void paintComponent(Graphics g) {
+    gridSize = domain.getTiles().length;
     super.paintComponent(g);
 
     // First check if the game is over or won
@@ -88,6 +89,7 @@ public class Renderer extends JPanel implements DomainObserver {
       setBackground(new Color(152, 106, 147, 255));
       int cellWidth = getWidth() / FOCUS_SIZE;
       int cellHeight = (getHeight() - 25) / (FOCUS_SIZE + 1);
+      // Calculate the top row and left column of the focus area
       int focusTopRow = Math.max(0, Math.min(domain.getChap().getPosition().y - (FOCUS_SIZE / 2), gridSize - FOCUS_SIZE));
       int focusLeftCol = Math.max(0, Math.min(domain.getChap().getPosition().x - (FOCUS_SIZE / 2), gridSize - FOCUS_SIZE));
 
