@@ -1,11 +1,14 @@
 package nz.ac.wgtn.swen225.lc.persistency;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Scanner;
 import nz.ac.wgtn.swen225.lc.domain.*;
 
 /**
@@ -15,41 +18,43 @@ import nz.ac.wgtn.swen225.lc.domain.*;
  */
 public class FileHandler {
   /**
-   * Saves the supplied maze.
+   * Reads a file to a String.
    *
-   * @param maze The maze object to be saved.
-   * @param file The file object to save maze to.
-   * @throws IOException
+   * @param fileName index of the level to be loaded.
+   * @return String representing the file.
    */
-  public void save(Maze maze, File file) throws IOException {
-    ObjectMapper mapper = new ObjectMapper();
-    String json = mapper.writeValueAsString(maze);
-    System.out.println(json); // DEBUG: raw json string
-
-    FileWriter fileWriter = new FileWriter(file);
-    fileWriter.write(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(maze));
-
-    fileWriter.close();
-    System.out.println("Save successful");
+  public static String loadLevelJson(String fileName) {
+    StringBuilder ret = new StringBuilder();
+    try {
+      File reader = new File(fileName);
+      Scanner scanner = new Scanner(reader);
+      while (scanner.hasNextLine()) {
+        String line = scanner.nextLine();
+        ret.append(line).append('\n');
+      }
+    } catch (FileNotFoundException e) {
+      throw new IllegalArgumentException("Can't find json.");
+    }
+    return ret.toString();
   }
 
   /**
-   * Loads a maze Level.
+   * Reads a file to a JsonNode.
    *
-   * @param fileName the name of the JSON level file.
-   * @return Maze level
+   * @param fileName index of the level to be loaded.
+   * @return JsonNode representing the file.
    */
-  public Maze loadMaze(String fileName) {
-    Maze maze;
-
-    try (InputStream inputStream = getClass().getResourceAsStream(String.format("/levels/%s", fileName))) {
-      ObjectMapper mapper = new ObjectMapper();
-      mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-      maze = mapper.readValue(inputStream, Maze.class);
+  public static JsonNode loadLevelJsonNode(String fileName) {
+    File reader = new File(fileName);
+    String jsonString = loadLevelJson(fileName);
+    ObjectMapper mapper = new ObjectMapper();
+    JsonNode ret;
+    try {
+      ret = mapper.readTree(reader);
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new IllegalArgumentException(e);
     }
-
-    return maze;
+    return ret;
   }
 }
+
