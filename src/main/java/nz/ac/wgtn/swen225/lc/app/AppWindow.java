@@ -132,11 +132,17 @@ class AppWindow extends JFrame {
   private void addMenuBar() {
     JMenuItem level1 = new JMenuItem("Level 1");
     level1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, InputEvent.CTRL_DOWN_MASK));
-    level1.addActionListener(event -> app.newGame(1));
+    level1.addActionListener(event -> {
+      app.newGame(1);
+      app.markUpdated();
+    });
 
     JMenuItem level2 = new JMenuItem("Level 2");
     level2.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_2, InputEvent.CTRL_DOWN_MASK));
-    level2.addActionListener(event -> app.newGame(2));
+    level2.addActionListener(event -> {
+      app.newGame(2);
+      app.markUpdated();
+    });
 
     JMenuItem resume = new JMenuItem("Resume");
     resume.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK));
