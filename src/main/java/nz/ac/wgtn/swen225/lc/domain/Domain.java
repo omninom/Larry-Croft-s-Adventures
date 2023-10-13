@@ -16,6 +16,7 @@ import java.util.List;
  */
 public class Domain {
 
+  private int levelNumber;
   private Maze maze;
   private Chap chap;
   private int treasureRemaining;
@@ -51,7 +52,7 @@ public class Domain {
    * @param infoText      info string for new level.
    */
   public void buildNewLevel(TileType[][] mazeTiles, Chap chap, List<EnemyActor> enemies,
-                            List<TileType> chapInventory, String infoText) {
+                            List<TileType> chapInventory, String infoText, int levelNum) {
 
     //Validation
     //Validating maze size and gathering treasure count info.
@@ -127,6 +128,7 @@ public class Domain {
     //These are reset on load by default.
     won = false;
     failed = false;
+    levelNumber = levelNum;
     notifyObservers(EventType.LEVEL_RESET, TileType.FREE);
   }
 
@@ -293,6 +295,11 @@ public class Domain {
     }
     return false;
   }
+
+  public int getLevelNumber(){
+    return levelNumber;
+  }
+
 
   private Point getAdjacentPoint(Point original, Direction dir) {
 
