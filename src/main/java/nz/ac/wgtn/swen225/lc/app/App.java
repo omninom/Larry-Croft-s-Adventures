@@ -174,6 +174,15 @@ public class App {
   }
 
   /**
+   * Get whether the current game is over.
+   *
+   * @return whether the game is over.
+   */
+  public boolean isGameOver() {
+    return this.domain.getFailed() || this.domain.getWon();
+  }
+
+  /**
    * Entry Point.
    *
    * @param args command line arguments.
