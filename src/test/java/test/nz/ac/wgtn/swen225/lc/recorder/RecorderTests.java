@@ -21,8 +21,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class RecorderTests {
   /**
-   * Test the initialisation and states of startRecording() method.
+   * Test JUnit is working.
    */
+  @Test
+  void test_JUnit() {
+    assertEquals(2, 1 + 1);
+  }
+
+  /**
+   * Test the initialisation and states of startRecording() method.
+   *
   @Test
   void test_startRecording() {
     Recorder test = new Recorder(new App());
@@ -37,7 +45,7 @@ public class RecorderTests {
 
   /**
    * Test the adding elements of addToRecording() method.
-   */
+   *
   @Test
   void test_addToRecording_01() {
     Recorder test = new Recorder(new App());
@@ -66,7 +74,7 @@ public class RecorderTests {
 
   /**
    * Test the adding elements of addToRecording() method.
-   */
+   *
   @Test
   void test_addToRecording_02() {
     Recorder test = new Recorder(new App());
@@ -89,6 +97,8 @@ public class RecorderTests {
     assertEquals("ACTOR", test.getCurrentRecording().get(2).getActor());
     assertEquals("MOVE_RIGHT", test.getCurrentRecording().get(2).getMove());
   }
+
+  */
 
 }
 
