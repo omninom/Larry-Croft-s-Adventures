@@ -59,7 +59,6 @@ public class Recorder {
    */
   public void startRecording(String level) {
     // ---- Setup recording ---- //
-    System.out.println("Recording in progress...");
     currentRecording = new HashMap<>();
     currentSequenceNumber = 0;
 
@@ -95,7 +94,6 @@ public class Recorder {
     // ---- Record Player movement ---- //
     String move = dataArray[1].trim();
     RecordItem newItem = new RecordItem(currentSequenceNumber, actor, move);
-    System.out.println("[RECORDER DEBUG] Recorder: Player move added: [ " + newItem + " ]");
     currentRecording.put(currentSequenceNumber, newItem);
     currentSequenceNumber++;
   }
@@ -149,8 +147,6 @@ public class Recorder {
       String filePath = fileFinder.getSelectedFile().getAbsolutePath();
 
       // ---- Save the current game in JSON format ---- //
-      System.out.println("[RECORDER DEBUG] Recorder: saved json; c.r. size: "
-              + currentRecording.size());
       try {
         JSONObject gameJson = new JSONObject(currentRecording);
         Files.writeString(Paths.get(filePath), gameJson.toString());
@@ -158,7 +154,6 @@ public class Recorder {
         System.out.println("Error: Saving Json file: " + e.getMessage());
       }
     }
-    System.out.println("Recording ended & saved.");
   }
 
 
