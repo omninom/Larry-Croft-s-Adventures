@@ -22,6 +22,12 @@ public class App {
 
   private final Domain domain;
   private final Recorder recorder;
+  private Runnable updateCallback;
+
+  private final LevelLoader levelLoader;
+  private final GameLoader gameLoader;
+  private final GameSaver gameSaver;
+
 
   private final LevelLoader levelLoader;
   private final GameLoader gameLoader;
@@ -33,7 +39,8 @@ public class App {
    */
   public App() {
     this.domain = new Domain();
-    recorder = new Recorder(this);
+    this.recorder = new Recorder(this);
+    this.updateCallback = null;
     this.levelLoader = new ParsingLevelLoader();
     this.gameLoader = new GameLoaderImp();
     this.gameSaver = new GameSaverImp();
@@ -46,6 +53,34 @@ public class App {
    */
   public Domain getDomain() {
     return domain;
+  }
+
+  /**
+   * Gets the recorder.
+   *
+   * @return the Recorder object.
+   */
+  public Recorder getRecorder() {
+    return recorder;
+  }
+
+  /**
+   * Sets the update callback (internal to the App module).
+   *
+   * @param callback - the callback
+   */
+  public void setUpdateCallback(Runnable callback) {
+    assert this.updateCallback == null;
+    this.updateCallback = callback;
+  }
+
+  /**
+   * Mark the app as being updated since the last render.
+   */
+  public void markUpdated() {
+    if (this.updateCallback != null) {
+      updateCallback.run();
+    }
   }
 
   /**
@@ -75,13 +110,13 @@ public class App {
         default:
           break;
       }
-    } catch (IllegalArgumentException e){
+    } catch (IllegalArgumentException | IllegalStateException e) {
       return false;
     }
 
     recorder.addToRecording("CHAP" + "|" + inputType);
-    // e.g. recorder.addToRecording("CHAP | MOVE_LEFT"); Send [currentPlayer | move]
-
+    markUpdated();
+    System.out.print("");
 
     return true;
   }

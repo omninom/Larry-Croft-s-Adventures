@@ -3,14 +3,14 @@ package nz.ac.wgtn.swen225.lc.recorder;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import nz.ac.wgtn.swen225.lc.app.App;
 import nz.ac.wgtn.swen225.lc.app.AppInput;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -31,9 +31,7 @@ public class Recorder {
 
   private int currentSequenceNumber = 0;
 
-  private JFileChooser fileFinder;
-
-  private boolean isReplaying = false;
+  int manualReplayIndex;
 
   private final App app;
 
@@ -44,13 +42,12 @@ public class Recorder {
    * The constructor for the Recorder class.
    * Set initial values.
    */
-  public Recorder(App app) {
-    isReplaying = false;
+  public Recorder(App inApp) {
     replaySpeed = 5;
-    this.app = app;
+    app = inApp;
+    manualReplayIndex = 0;
 
-
-    // todo: fix until init. does not uses newGame method in app
+    // todo: remove this line below
     currentRecording = new HashMap<>();
   }
 
@@ -65,16 +62,13 @@ public class Recorder {
    */
   public void startRecording(String level) {
     // ---- Setup recording ---- //
-    System.out.println("[RECORDER DEBUG] Recorder: Recording has started.");
+    System.out.println("Recording in progress...");
     currentRecording = new HashMap<>();
     currentSequenceNumber = 0;
-    isReplaying = false;
 
     // ---- Record the initial game ---- //
     RecordItem currentChange = new RecordItem(currentSequenceNumber, "START", level);
     currentRecording.put(currentSequenceNumber, currentChange);
-    System.out.println("[RECORDER DEBUG] Recorder: Level has been added: [ "
-            + currentChange + " ] ");
     currentSequenceNumber++;
   }
 
@@ -85,8 +79,9 @@ public class Recorder {
    * @param data - the data to added to the recording.
    */
   public void addToRecording(String data) {
-    // ---- Check if the game is being replayed ---- //
-    if (isReplaying) {
+    // ---- Check if the game has started ---- //
+    if (currentRecording == null) {
+      System.out.println("Error: No recording has been started.");
       return;
     }
 
@@ -103,7 +98,7 @@ public class Recorder {
     // ---- Record Player movement ---- //
     String move = dataArray[1].trim();
     RecordItem newItem = new RecordItem(currentSequenceNumber, actor, move);
-    System.out.println("[RECORDER DEBUG] Recorder: Player has been added: [ " + newItem + " ]");
+    System.out.println("[RECORDER DEBUG] Recorder: Player move added: [ " + newItem + " ]");
     currentRecording.put(currentSequenceNumber, newItem);
     currentSequenceNumber++;
   }
@@ -112,7 +107,7 @@ public class Recorder {
    * When called this will end the recording and save the recording to a file.*/
   private void endRecording() {
     // ---- Ask user the location and file name ---- //
-    fileFinder = new JFileChooser();
+    JFileChooser fileFinder = new JFileChooser();
     fileFinder.setDialogTitle("Select file to save recording to:");
 
     // ---- Validate the file ---- //
@@ -130,144 +125,94 @@ public class Recorder {
         System.out.println("Error: Saving Json file: " + e.getMessage());
       }
     }
+    System.out.println("Recording ended & saved.");
   }
 
 
   /**
-   * When called will load the game from a json file.
+   * When called this will replay the recording in steps when the user presses a button.
    */
-  private void loadRecording() {
-    System.out.println("[RECORDER DEBUG] Recorder: Loading game.");
-
-    // ---- Ask user for the file to load ---- //
-    fileFinder = new JFileChooser();
-    fileFinder.setDialogTitle("Select file to load recording from:");
-    int userAction = fileFinder.showOpenDialog(null);
-    loadedRecording = new HashMap<>();
-
-    // ---- Validate the file ---- //
-    if (userAction == JFileChooser.APPROVE_OPTION) {
-      try {
-        // ---- Read the json file ---- //
-        String filePath = fileFinder.getSelectedFile().getAbsolutePath();
-        String jsonData = Files.readString(Paths.get(filePath));
-        JSONObject json = new JSONObject(jsonData);
-
-        // -- Break down the json data -- //
-        for (String key : json.keySet()) {
-          int sequenceNumber = Integer.parseInt(key);
-          JSONObject recordData = json.getJSONObject(key);
-          String move = recordData.getString("move");
-          String actor = recordData.getString("actor");
-
-          // -- Check if the game has ended -- //
-          if (actor.equals("END")) {
-            break;
-          }
-
-          // -- Add the data -- //
-          RecordItem newRecordItem = new RecordItem(sequenceNumber, actor, move);
-          loadedRecording.put(sequenceNumber, newRecordItem);
-        }
-      } catch (IOException | JSONException e) {
-        System.out.println("Error: Loading Json file: " + e.getMessage());
-      }
-    }
-
-    // ---- Verify selected file ---- //
+  public void stepUpManualReplay(HashMap<Integer, RecordItem> toLoadRecording) {
+    // ---- Load the game ---- //
+    loadedRecording = toLoadRecording;
     if (loadedRecording.isEmpty()) {
       System.out.println("Error: No recording loaded.");
-      loadRecording();
+      return;
+    }
+
+    // ---- Initialise the level ---- //
+    manualReplayIndex = 0;
+    RecordItem currentRecord = loadedRecording.get(0);
+
+    if (currentRecord.getActor().equals("START")) {
+      app.newGame(Integer.parseInt(currentRecord.getMove()));
+      manualReplayIndex = 1;
+    } else {
+      System.out.println("Error: No level loaded.");
     }
   }
 
   /**
    * When called this will replay the recording in steps when the user presses a button.
    */
-  public void manualReplay() {
-    // ---- Load the game ---- //
-    loadRecording();
-    isReplaying = true;
-
-    // ---- Display the loaded game ---- //
-    int currentSequenceNumber = 0;
-    String level = loadedRecording.get(currentSequenceNumber).getMove();
-    System.out.println("[RECORDER DEBUG] Recorder to App: Level [ " + level + " ] ");
-    app.newGame(Integer.parseInt(level));
-    currentSequenceNumber++;
-
-    // ---- Wait for user input  ---- //
-    try {
-      while (currentSequenceNumber < loadedRecording.size()) {
-        if (loadedRecording.get(currentSequenceNumber).getActor().equals("END")) {
-          app.endGame();
-          System.out.println("[RECORDER DEBUG] Recorder to App: Game has ended.");
-          break;
-        }
-        System.out.println("Press the 'enter' key to step through the replay.");
-        System.in.read();  // Wait for user input
-
-        // -- Do next move when button pressed-- //
-        sendToApp(currentSequenceNumber);
-        currentSequenceNumber++;
-      }
-    } catch (IOException e) {
-      System.out.println("Error: " + e.getMessage());
+  public void manualStepReplay() {
+    // ---- Check there is something to replay ---- //
+    if (loadedRecording == null) {
+      System.out.println("Error: No recording loaded.");
+      return;
     }
-    isReplaying = false;
+
+    // ---- Check if the game has ended ---- //
+    if (manualReplayIndex >= loadedRecording.size()) {
+      System.out.println("Error: End of replay.");
+      return;
+    }
+
+    // ---- Replay the move ---- //
+    sendToApp(loadedRecording.get(manualReplayIndex));
+    manualReplayIndex++;
   }
+
 
   /**
    * When called will replay the recording at the speed set by the user.
-   * If the user has not set a speed, it will default to the slowest speed.
    */
-  public void autoReplay() {
+  public void autoReplay(Map<Integer, RecordItem> toLoadRecording) {
     // ---- Load the game ---- //
-    loadRecording();
-
-    // ---- Ask user for replay speed ---- //
-    askReplaySpeed();
-
-    // ---- Replay the game ---- //
-    int currentSequenceNumber = 0;
-    isReplaying = true;
-
-    while (currentSequenceNumber < loadedRecording.size()) {
-      RecordItem currentRecord = loadedRecording.get(currentSequenceNumber);
-
-      // -- Load the level & Make new game in app -- //
-      if (currentRecord.getActor().equals("START")) {
-        app.newGame(Integer.parseInt(currentRecord.getMove()));
-        System.out.println("[RECORDER DEBUG] Recorder to App: Level [ "
-                + currentRecord.getMove() + " ] ");
-        currentSequenceNumber++;
-      }
-      if (currentRecord.getActor().equals("END")) {
-        app.endGame();
-        System.out.println("[RECORDER DEBUG] Recorder to App: Game has ended.");
-        break;
-      }
-
-      // -- Wait before doing next move -- //
-      try {
-        Thread.sleep(400L * replaySpeed);
-      } catch (InterruptedException e) {
-        System.out.println("Error: " + e.getMessage());
-      }
-
-      // -- Do next move -- //
-      sendToApp(currentSequenceNumber);
-      currentSequenceNumber++;
+    loadedRecording = toLoadRecording;
+    if (loadedRecording.isEmpty()) {
+      System.out.println("Error: No recording loaded.");
+      return;
     }
-    isReplaying = false;
+
+    // ---- Initialise the level ---- //
+    int currentSequenceNumber = 0;
+    RecordItem currentRecord = loadedRecording.get(0);
+
+    if (currentRecord.getActor().equals("START")) {
+      app.newGame(Integer.parseInt(currentRecord.getMove()));
+      currentSequenceNumber++;
+    } else {
+      System.out.println("Error: No level loaded.");
+      return;
+    }
+
+    // ---- Replay actions  ---- //
+    ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+    for (int i = currentSequenceNumber; i < loadedRecording.size(); i++) {
+      int finalI = i;
+      executor.schedule(() -> {
+        sendToApp(loadedRecording.get(finalI));
+        app.markUpdated();
+      }, (long) replaySpeed / 2 * (finalI - currentSequenceNumber), TimeUnit.SECONDS);
+    }
+    executor.shutdown();
   }
 
   /**
    * When called this will send the data to App for which action to take.
    */
-  private void sendToApp(int sequenceNumber) {
-    RecordItem currentRecord = loadedRecording.get(sequenceNumber);
-
+  private void sendToApp(RecordItem currentRecord) {
     // ---- Extract the data ---- //
     String move = currentRecord.getMove().trim();
 
@@ -289,81 +234,18 @@ public class Recorder {
         throw new IllegalArgumentException("Error: Invalid move: " + move);
     }
 
-
-  }
-
-  /**
-   * When called this will ask the user for the replay speed.
-   */
-  private void askReplaySpeed() {
-    String userSpeed = JOptionPane.showInputDialog("Enter replay speed (1 to 10):");
-
-    // Validate the input speed
-    int newSpeed = 5; // Default speed
-    try {
-      newSpeed = Integer.parseInt(userSpeed);
-      if (newSpeed < 1 || newSpeed > 10) {
-        System.out.println("Error: Invalid input select a number from 1 and 10.");
-        askReplaySpeed();
-      }
-    } catch (NumberFormatException e) {
-      System.out.println("Error: Invalid input select a number from 1 and 10.");
-      askReplaySpeed();
-    }
-
-    replaySpeed = newSpeed;
   }
 
 
-  // ----------------------------------- GETTERS ----------------------------------- //
+  // ----------------------------------- SETTERS ----------------------------------- //
 
   /**
-   * Returns the current recording.
+   * Sets the replay speed to the given value.
    *
-   * @return the current recording.
+   * @param replaySpeed - the replay speed to set.
    */
-  public Map<Integer, RecordItem> getCurrentRecording() {
-    return Collections.unmodifiableMap(currentRecording);
+  public void setReplaySpeed(int replaySpeed) {
+    this.replaySpeed = replaySpeed;
   }
-
-
-  public boolean isReplaying() {
-    return isReplaying;
-  }
-
-  // todo: delete at the end ---------------------------- MAIN ---------------------------- //
-
-  /**
-   * The main method for the Recorder program.
-   *
-   * @param args - the arguments for the main method.
-   */
-  public static void main(String[] args) {
-
-    // ---- Create a new instance of the Recorder ---- //
-    Recorder recorder = new Recorder(new App());
-
-
-    // ---- Start recording game ---- //
-    recorder.startRecording("1"); // Send [level number]
-
-    // ---- Record player and actor movements ---- //
-    recorder.addToRecording("PLAYER | MOVE_LEFT");  // Send [currentPlayer | move]
-    recorder.addToRecording("ACTOR | MOVE_RIGHT");
-    recorder.addToRecording("MONSTER | MOVE_UP");
-    recorder.addToRecording("MONSTER | MOVE_DOWN");
-
-    // ---- Stop recording the game and save json file---- //
-    recorder.addToRecording("END");
-
-    // ---- Auto replay game ---- //
-    System.out.println(" \n ---------- Auto Replay ----------");
-    recorder.autoReplay();
-
-    // ---- Manual replay game ---- //
-    System.out.println(" \n ---------- Manual Replay ----------");
-    recorder.manualReplay();
-  }
-
 
 }

@@ -93,10 +93,10 @@ public class Domain {
     ourChap.setDirection(chap.getDirection());
     ourChap.setAlive(chap.isAlive());
     for (TileType t : chapInventory) {
-      if (!(t == TileType.BLUE_KEY || t == TileType.RED_KEY || t == TileType.GREEN_KEY || t == TileType.YELLOW_KEY)) {
-        throw new IllegalArgumentException("Chap should only be holding keys.");
+      switch (t) {
+        case BLUE_KEY, RED_KEY, GREEN_KEY, YELLOW_KEY -> ourChap.addKey(t);
+        default -> throw new IllegalArgumentException("Chap should only be holding keys.");
       }
-      ourChap.addKey(t);
     }
 
     List<EnemyActor> ourEnemyList = new ArrayList<>();
@@ -212,7 +212,7 @@ public class Domain {
         }
       }
       case GREEN_DOOR -> {
-        if(chap.hasKey(TileType.GREEN_KEY)) {
+        if (chap.hasKey(TileType.GREEN_KEY)) {
           notifyObservers(EventType.UNLOCK_DOOR, TileType.GREEN_DOOR);
           maze.setTile(newPos.y, newPos.x, TileType.FREE);
           chap.removeKey(TileType.GREEN_KEY);
@@ -222,7 +222,7 @@ public class Domain {
         }
       }
       case YELLOW_DOOR -> {
-        if(chap.hasKey(TileType.YELLOW_KEY)) {
+        if (chap.hasKey(TileType.YELLOW_KEY)) {
           notifyObservers(EventType.UNLOCK_DOOR, TileType.YELLOW_DOOR);
           maze.setTile(newPos.y, newPos.x, TileType.FREE);
           chap.removeKey(TileType.YELLOW_KEY);
@@ -237,7 +237,7 @@ public class Domain {
         treasureRemaining--;
       }
       case EXIT_LOCK -> {
-        if (treasureRemaining >= 0) {
+        if (treasureRemaining > 0) {
           throw new IllegalArgumentException("Can't unlock this red door.");
         }
         maze.setTile(newPos.y, newPos.x, TileType.FREE);
@@ -274,7 +274,7 @@ public class Domain {
     switch (targetTile) {
       case FREE, INFO -> {
       }
-      case WALL, BLUE_KEY, RED_KEY, YELLOW_KEY, GREEN_KEY, BLUE_DOOR, RED_DOOR, YELLOW_DOOR, GREEN_DOOR, TREASURE, EXIT_LOCK, EXIT -> {
+      case WALL, TREASURE, EXIT_LOCK, EXIT, BLUE_KEY, RED_KEY, YELLOW_KEY, GREEN_KEY, BLUE_DOOR, RED_DOOR, YELLOW_DOOR, GREEN_DOOR -> {
         return;
       }
       default -> throw new IllegalStateException("Unexpected value: " + targetTile);
