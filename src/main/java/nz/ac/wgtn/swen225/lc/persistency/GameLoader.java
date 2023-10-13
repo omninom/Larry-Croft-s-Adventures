@@ -13,7 +13,6 @@ public interface GameLoader {
    * Loads a Game into the passed domain.
    *
    * @param domain the domain to load the level into.
-   * @param levelNumber number of the level to load.
    * @throws IOException if loading fails.
    */
   public void loadGame(Domain domain, File file) throws IOException;
