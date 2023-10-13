@@ -13,6 +13,11 @@ repositories {
     mavenCentral()
 }
 
+configurations {
+    umlDoclet
+}
+
+
 dependencies {
     // Use JUnit Jupiter for testing.
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
@@ -23,6 +28,9 @@ dependencies {
 
     // This dependency is used by the recorder.
     implementation 'org.json:json:20230618'
+
+    //This dependency is used by javadoc.
+    umlDoclet "nl.talsmasoftware:umldoclet:2.1.0"
 }
 
 application {
@@ -46,3 +54,10 @@ jar {
 }
 
 jar.dependsOn(javadoc)
+
+javadoc {
+    source = sourceSets.main.allJava
+    options.docletpath = configurations.umlDoclet.files.asType(List)
+    options.doclet = "nl.talsmasoftware.umldoclet.UMLDoclet"
+    // options.addStringOption "additionalParamName", "additionalParamValue"
+}
