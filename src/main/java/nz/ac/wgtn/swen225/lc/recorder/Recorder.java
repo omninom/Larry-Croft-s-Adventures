@@ -236,19 +236,10 @@ public class Recorder {
         throw new IllegalArgumentException("Error: Invalid move: " + move);
     }
 
-    a
   }
 
   // ----------------------------------- GETTERS ----------------------------------- //
 
-  /**
-   * Returns the current recording.
-   *
-   * @return the current recording.
-   */
-  public Map<Integer, RecordItem> getCurrentRecording() {
-    return Collections.unmodifiableMap(currentRecording);
-  }
 
   // ----------------------------------- SETTERS ----------------------------------- //
 
