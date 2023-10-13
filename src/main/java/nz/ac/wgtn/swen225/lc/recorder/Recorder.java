@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import javax.swing.JFileChooser;
 import nz.ac.wgtn.swen225.lc.app.App;
 import nz.ac.wgtn.swen225.lc.app.AppInput;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -25,9 +25,9 @@ public class Recorder {
   // ----------------------------------- VARIABLES ----------------------------------- //
   private int replaySpeed; // 1 (fastest auto replay speed) to 10 (slowest auto replay speed)
 
-  private Map<Integer, RecordItem> currentRecording;
+  private HashMap<Integer, RecordItem> currentRecording;
 
-  private Map<Integer, RecordItem> loadedRecording;
+  private HashMap<Integer, RecordItem> loadedRecording;
 
   private int currentSequenceNumber = 0;
 
@@ -46,9 +46,6 @@ public class Recorder {
     replaySpeed = 5;
     app = inApp;
     manualReplayIndex = 0;
-
-    // todo: remove this line below
-    currentRecording = new HashMap<>();
   }
 
   // ----------------------------------- METHODS ----------------------------------- //
@@ -104,7 +101,43 @@ public class Recorder {
   }
 
   /**
-   * When called this will end the recording and save the recording to a file.*/
+   * When called this will load the recording from a fileChooser.
+   *
+   * @param fileFinder - the file to load the recording from.
+   */
+  public HashMap<Integer, RecordItem> loadRecordingJson(JFileChooser fileFinder) {
+    HashMap<Integer, RecordItem> loadedRecording = new HashMap<>();
+    try {
+      // ---- Read the json file ---- //
+      String filePath = fileFinder.getSelectedFile().getAbsolutePath();
+      String jsonData = Files.readString(Paths.get(filePath));
+      JSONObject json = new JSONObject(jsonData);
+
+      // -- Break down the json data -- //
+      for (String key : json.keySet()) {
+        int sequenceNumber = Integer.parseInt(key);
+        JSONObject recordData = json.getJSONObject(key);
+        String move = recordData.getString("move");
+        String actor = recordData.getString("actor");
+
+        // -- Check if the game has ended -- //
+        if (actor.equals("END")) {
+          break;
+        }
+
+        // -- Add the data -- //
+        RecordItem newRecordItem = new RecordItem(sequenceNumber, actor, move);
+        loadedRecording.put(sequenceNumber, newRecordItem);
+      }
+    } catch (IOException | JSONException e) {
+      System.out.println("Error: Loading Json file: " + e.getMessage());
+    }
+    return loadedRecording;
+  }
+
+  /**
+   * When called this will end the recording and save the recording to a file.
+   */
   private void endRecording() {
     // ---- Ask user the location and file name ---- //
     JFileChooser fileFinder = new JFileChooser();
@@ -177,7 +210,7 @@ public class Recorder {
   /**
    * When called will replay the recording at the speed set by the user.
    */
-  public void autoReplay(Map<Integer, RecordItem> toLoadRecording) {
+  public void autoReplay(HashMap<Integer, RecordItem> toLoadRecording) {
     // ---- Load the game ---- //
     loadedRecording = toLoadRecording;
     if (loadedRecording.isEmpty()) {

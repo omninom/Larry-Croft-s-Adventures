@@ -4,9 +4,6 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -18,8 +15,7 @@ import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 import nz.ac.wgtn.swen225.lc.recorder.RecordItem;
 import nz.ac.wgtn.swen225.lc.renderer.Renderer;
-import org.json.JSONException;
-import org.json.JSONObject;
+
 
 /**
  * The main window.
@@ -86,11 +82,14 @@ class AppWindow extends JFrame {
     };
   }
 
+  /**
+   * Asks the user for the replay speed.
+   *
+   * @author Neeraj Patel (300604056)
+   */
   private void askReplaySpeed() {
     String userSpeed = JOptionPane.showInputDialog("Enter replay speed (1(fast) to 10(slow)):");
-
-    // Validate the input speed
-    int newSpeed = 5; // Default speed
+    int newSpeed = 0;
     try {
       newSpeed = Integer.parseInt(userSpeed);
     } catch (NumberFormatException e) {
@@ -101,10 +100,13 @@ class AppWindow extends JFrame {
     app.getRecorder().setReplaySpeed(newSpeed);
   }
 
+  /**
+   * Asks the user for a recording to load.
+   *
+   * @author Neeraj Patel (300604056)
+   */
   private HashMap<Integer, RecordItem> getLoadedRecording() {
     HashMap<Integer, RecordItem> loadedRecording;
-
-    System.out.println("[APP WINDOW DEBUG] Loading recording...");
     // ---- Ask user for the file to load ---- //
     JFileChooser fileFinder = new JFileChooser();
     fileFinder.setDialogTitle("Select file to load recording from:");
@@ -113,43 +115,14 @@ class AppWindow extends JFrame {
 
     // ---- Validate the file ---- //
     if (userAction == JFileChooser.APPROVE_OPTION) {
-      try {
-        // ---- Read the json file ---- //
-        String filePath = fileFinder.getSelectedFile().getAbsolutePath();
-        String jsonData = Files.readString(Paths.get(filePath));
-        JSONObject json = new JSONObject(jsonData);
-
-        // -- Break down the json data -- //
-        for (String key : json.keySet()) {
-          int sequenceNumber = Integer.parseInt(key);
-          JSONObject recordData = json.getJSONObject(key);
-          String move = recordData.getString("move");
-          String actor = recordData.getString("actor");
-
-          // -- Check if the game has ended -- //
-          if (actor.equals("END")) {
-            break;
-          }
-
-          // -- Add the data -- //
-          RecordItem newRecordItem = new RecordItem(sequenceNumber, actor, move);
-          loadedRecording.put(sequenceNumber, newRecordItem);
-        }
-      } catch (IOException | JSONException e) {
-        System.out.println("Error: Loading Json file: " + e.getMessage());
-      }
+      loadedRecording = app.getRecorder().loadRecordingJson(fileFinder);
     }
 
     // ---- Verify selected file ---- //
     if (loadedRecording.isEmpty()) {
       System.out.println("Error: No recording loaded.");
       getLoadedRecording();
-    } else {
-      fileFinder.setVisible(false);
     }
-
-    app.markUpdated();
-    System.out.println("[APP WINDOW DEBUG] Loaded recording.");
     return loadedRecording;
   }
 
@@ -205,9 +178,7 @@ class AppWindow extends JFrame {
     gameMenu.add(exitNoSave);
 
     JMenuItem manualReplayNext = new JMenuItem("Next Action Replay");
-    manualReplayNext.addActionListener(event -> {
-      app.getRecorder().manualStepReplay();
-    });
+    manualReplayNext.addActionListener(event -> app.getRecorder().manualStepReplay());
 
     JMenuItem manualReplay = new JMenuItem("Manual Replay");
     manualReplay.addActionListener(event -> {
