@@ -1,9 +1,9 @@
 package nz.ac.wgtn.swen225.lc.recorder;
 
+import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JFileChooser;
@@ -41,6 +41,7 @@ public class Recorder {
   public Recorder(App app) {
     replaySpeed = 5;
     this.app = app;
+    // todo: remove this line below
     currentRecording = new HashMap<>();
   }
 
@@ -141,34 +142,36 @@ public class Recorder {
     currentSequenceNumber++;
 
     // ---- Replay actions  ---- //
-    while (currentSequenceNumber < loadedRecording.size()) {
-      if (loadedRecording.get(currentSequenceNumber).getActor().equals("END")) {
-        app.endGame();
-        break;
-      }
-      System.out.println("Press the 'enter' key to step through the replay.");
+    manualReplayHelper(currentSequenceNumber);
+    app.markUpdated();
+  }
 
-      // -- Wait for user input -- //
-      try {
-        System.in.read();
-      } catch (IOException e) {
-        System.out.println("Error: Waiting for user input: " + e.getMessage());
-      }
-      System.out.println("[RECORDER DEBUG] Recorder: User has pressed the 'enter' key.");
-
-      // -- Do next move when button pressed-- //
-      sendToApp(loadedRecording.get(currentSequenceNumber));
-      currentSequenceNumber++;
+  private void manualReplayHelper(int currentSequenceNumber) {
+    // ---- Check if the game has ended ---- //
+    if (currentSequenceNumber >= loadedRecording.size()) {
+      System.out.println("End of recording.");
+      return;
     }
 
+    // ---- Wait for user action & Replay ---- //
+    System.out.println("Press 'enter' to continue...");
+    try {
+      var input = System.in.read();
+      sendToApp(loadedRecording.get(currentSequenceNumber));
+      app.markUpdated();
+    } catch (IOException e) {
+      System.out.println("Error: Waiting for user input: " + e.getMessage());
+    }
+    manualReplayHelper(currentSequenceNumber + 1);
   }
+
 
   /**
    * When called will replay the recording at the speed set by the user.
    */
   public void autoReplay(Map<Integer, RecordItem> toLoadRecording) {
     // ---- Load the game ---- //
-    this.loadedRecording = toLoadRecording;
+    loadedRecording = toLoadRecording;
     if (loadedRecording.isEmpty()) {
       System.out.println("Error: No recording loaded.");
       return;
@@ -183,19 +186,19 @@ public class Recorder {
       System.out.println("[RECORDER DEBUG] Recorder to App: Level [ "
               + currentRecord.getMove() + " ] ");
       currentSequenceNumber++;
-    }
-    else {
+    } else {
       System.out.println("Error: No level loaded.");
       return;
     }
 
     autoReplayHelper(currentSequenceNumber);
+    app.markUpdated();
   }
 
   private void autoReplayHelper(int currentSequenceNumber) {
     // ---- Check if the game has ended ---- //
     if (currentSequenceNumber >= loadedRecording.size()) {
-      app.endGame();
+      System.out.println("End of recording.");
       return;
     }
 
@@ -203,12 +206,13 @@ public class Recorder {
     RecordItem currentRecord = loadedRecording.get(currentSequenceNumber);
     try {
       Thread.sleep(400L * replaySpeed);
+      app.markUpdated();
     } catch (InterruptedException e) {
       System.out.println("Error: Waiting for user input: " + e.getMessage());
     }
     sendToApp(currentRecord);
     autoReplayHelper(currentSequenceNumber + 1);
-
+    app.markUpdated();
   }
 
   /**
