@@ -84,6 +84,11 @@ public class App {
    * @return whether the input was valid.
    */
   public boolean handleInput(AppInput inputType) {
+    // Check if the game has already been won or failed
+    if (isGameOver()) {
+      return false;
+    }
+
     // TODO: Translate / Validate input with Domain
     try {
       switch (inputType) {

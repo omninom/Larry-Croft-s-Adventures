@@ -27,6 +27,11 @@ public enum EventType {
    * Indicates that the player has picked up an item.
    */
   PICKUP_ITEM,
+
+  /**
+   * Indicates that the player has won.
+   */
+  WIN,
   /**
    * Indicates that the level has been successfully reset.
    */
