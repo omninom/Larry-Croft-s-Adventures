@@ -5,6 +5,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import javax.swing.JFileChooser;
 import nz.ac.wgtn.swen225.lc.app.App;
 import nz.ac.wgtn.swen225.lc.app.AppInput;
@@ -28,6 +31,8 @@ public class Recorder {
 
   private int currentSequenceNumber = 0;
 
+  int manualReplayIndex;
+
   private final App app;
 
 
@@ -37,9 +42,11 @@ public class Recorder {
    * The constructor for the Recorder class.
    * Set initial values.
    */
-  public Recorder(App app) {
+  public Recorder(App inApp) {
     replaySpeed = 5;
-    this.app = app;
+    app = inApp;
+    manualReplayIndex = 0;
+
     // todo: remove this line below
     currentRecording = new HashMap<>();
   }
@@ -125,43 +132,45 @@ public class Recorder {
   /**
    * When called this will replay the recording in steps when the user presses a button.
    */
-  public void manualReplay(HashMap<Integer, RecordItem> toLoadRecording) {
+  public void stepUpManualReplay(HashMap<Integer, RecordItem> toLoadRecording) {
     // ---- Load the game ---- //
-    if (toLoadRecording.isEmpty()) {
+    loadedRecording = toLoadRecording;
+    if (loadedRecording.isEmpty()) {
       System.out.println("Error: No recording loaded.");
       return;
-    } else {
-      loadedRecording = toLoadRecording;
     }
 
-    // ---- Display the loaded game ---- //
-    int currentSequenceNumber = 0;
-    String level = loadedRecording.get(currentSequenceNumber).getMove();
-    app.newGame(Integer.parseInt(level));
-    currentSequenceNumber++;
+    // ---- Initialise the level ---- //
+    manualReplayIndex = 0;
+    RecordItem currentRecord = loadedRecording.get(0);
 
-    // ---- Replay actions  ---- //
-    manualReplayHelper(currentSequenceNumber);
-    app.markUpdated();
+    if (currentRecord.getActor().equals("START")) {
+      app.newGame(Integer.parseInt(currentRecord.getMove()));
+      manualReplayIndex = 1;
+    } else {
+      System.out.println("Error: No level loaded.");
+    }
   }
 
-  private void manualReplayHelper(int currentSequenceNumber) {
-    // ---- Check if the game has ended ---- //
-    if (currentSequenceNumber >= loadedRecording.size()) {
-      System.out.println("End of recording.");
+  /**
+   * When called this will replay the recording in steps when the user presses a button.
+   */
+  public void manualStepReplay() {
+    // ---- Check there is something to replay ---- //
+    if (loadedRecording == null) {
+      System.out.println("Error: No recording loaded.");
       return;
     }
 
-    // ---- Wait for user action & Replay ---- //
-    System.out.println("Press 'enter' to continue...");
-    try {
-      var input = System.in.read();
-      sendToApp(loadedRecording.get(currentSequenceNumber));
-      app.markUpdated();
-    } catch (IOException e) {
-      System.out.println("Error: Waiting for user input: " + e.getMessage());
+    // ---- Check if the game has ended ---- //
+    if (manualReplayIndex >= loadedRecording.size()) {
+      System.out.println("Error: End of replay.");
+      return;
     }
-    manualReplayHelper(currentSequenceNumber + 1);
+
+    // ---- Replay the move ---- //
+    sendToApp(loadedRecording.get(manualReplayIndex));
+    manualReplayIndex++;
   }
 
 
@@ -182,36 +191,22 @@ public class Recorder {
 
     if (currentRecord.getActor().equals("START")) {
       app.newGame(Integer.parseInt(currentRecord.getMove()));
-      System.out.println("[RECORDER DEBUG] Recorder to App: Level [ "
-              + currentRecord.getMove() + " ] ");
       currentSequenceNumber++;
     } else {
       System.out.println("Error: No level loaded.");
       return;
     }
 
-    autoReplayHelper(currentSequenceNumber);
-    app.markUpdated();
-  }
-
-  private void autoReplayHelper(int currentSequenceNumber) {
-    // ---- Check if the game has ended ---- //
-    if (currentSequenceNumber >= loadedRecording.size()) {
-      System.out.println("End of recording.");
-      return;
+    // ---- Replay actions  ---- //
+    ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+    for (int i = currentSequenceNumber; i < loadedRecording.size(); i++) {
+      int finalI = i;
+      executor.schedule(() -> {
+        sendToApp(loadedRecording.get(finalI));
+        app.markUpdated();
+      }, (long) replaySpeed / 2 * (finalI - currentSequenceNumber), TimeUnit.SECONDS);
     }
-
-    // ---- Replay the action ---- //
-    RecordItem currentRecord = loadedRecording.get(currentSequenceNumber);
-    try {
-      Thread.sleep(400L * replaySpeed);
-      app.markUpdated();
-    } catch (InterruptedException e) {
-      System.out.println("Error: Waiting for user input: " + e.getMessage());
-    }
-    sendToApp(currentRecord);
-    autoReplayHelper(currentSequenceNumber + 1);
-    app.markUpdated();
+    executor.shutdown();
   }
 
   /**
@@ -240,8 +235,6 @@ public class Recorder {
     }
 
   }
-
-  // ----------------------------------- GETTERS ----------------------------------- //
 
 
   // ----------------------------------- SETTERS ----------------------------------- //

@@ -211,18 +211,24 @@ class AppWindow extends JFrame {
 
     JMenu recorderMenu = new JMenu("Recorder");
 
+    JMenuItem manualReplayNext = new JMenuItem("Next Action Replay");
+    manualReplayNext.addActionListener(event -> {
+      app.getRecorder().manualStepReplay();
+    });
+
     JMenuItem manualReplay = new JMenuItem("Manual Replay");
     manualReplay.addActionListener(event -> {
       HashMap<Integer, RecordItem> loadedRecording = getLoadedRecording();
-      System.out.println("[APP WINDOW DEBUG] Manual replaying...");
-      app.getRecorder().manualReplay(loadedRecording);
+      app.getRecorder().stepUpManualReplay(loadedRecording);
+      manualReplayNext.setVisible(true);
+      System.out.println("For manual replay, press 'Next Action Replay' in the"
+              + " menu bar to step through the replay.");
     });
 
     JMenuItem autoReplay = new JMenuItem("Auto Replay");
     autoReplay.addActionListener(event -> {
       askReplaySpeed();
       HashMap<Integer, RecordItem> loadedRecording = getLoadedRecording();
-      System.out.println("[APP WINDOW DEBUG] Auto replaying...");
       app.getRecorder().autoReplay(loadedRecording);
     });
 
@@ -230,6 +236,8 @@ class AppWindow extends JFrame {
     recorderMenu.add(autoReplay);
 
     menuBar.add(recorderMenu);
+    menuBar.add(manualReplayNext);
+    manualReplayNext.setVisible(false);
 
     setJMenuBar(menuBar);
   }
