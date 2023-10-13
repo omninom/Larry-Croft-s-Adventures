@@ -172,6 +172,9 @@ public class Domain {
     if (failed) {
       throw new IllegalStateException("Chap has failed.");
     }
+    if (won) {
+      throw new IllegalStateException("Chap has won.");
+    }
     Point newPos = getAdjacentPoint(chap.getPosition(), dir);
     //Regardless of whether Chap is actually supposed to move, his facing should change.
     this.chap.setDirection(dir);
@@ -241,7 +244,10 @@ public class Domain {
         }
         maze.setTile(newPos.y, newPos.x, TileType.FREE);
       }
-      case EXIT -> this.won = true;
+      case EXIT -> {
+        this.won = true;
+        notifyObservers(EventType.WIN, TileType.FREE);
+      }
       default -> throw new IllegalArgumentException("Unhandled TileType in movement");
     }
     this.chap.setPosition(newPos.x, newPos.y);
@@ -254,10 +260,7 @@ public class Domain {
       this.failed = true;
       notifyObservers(EventType.DEATH, TileType.FREE);
     }
-    if (won) {
-      notifyObservers(EventType.WIN, TileType.FREE);
-      throw new IllegalStateException("Chap has won.");
-    }
+
   }
 
   private void moveEnemies() {
