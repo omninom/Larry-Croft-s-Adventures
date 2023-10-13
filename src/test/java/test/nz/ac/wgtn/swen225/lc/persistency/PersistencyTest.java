@@ -40,7 +40,25 @@ public class PersistencyTest {
   }
 
   @Test
-  public void loadLevel() {
+  public void loadLevel1() {
+    Domain dom = new Domain();
+    LevelLoader l = new ParsingLevelLoader();
+    try {
+      l.loadLevel(dom, 1);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Test
+  public void loadLevel2() {
+    Domain dom = new Domain();
+    LevelLoader l = new ParsingLevelLoader();
+    try {
+      l.loadLevel(dom, 2);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
 }
