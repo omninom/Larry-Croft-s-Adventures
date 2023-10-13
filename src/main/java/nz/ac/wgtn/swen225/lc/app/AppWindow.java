@@ -34,6 +34,8 @@ class AppWindow extends JFrame {
     this.app = app;
     this.renderer = new Renderer(app.getDomain());
 
+    this.app.setUpdateCallback(this::onUpdateCallback);
+
     // Set up the window
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.addKeyListener(createKeyListener());
@@ -42,6 +44,13 @@ class AppWindow extends JFrame {
     addMenuBar();
     add(this.renderer);
     pack();
+  }
+
+  /**
+   * Called when the game needs to redraw.
+   */
+  public void onUpdateCallback() {
+    renderer.updateRenderer();
   }
 
   private KeyListener createKeyListener() {
@@ -72,7 +81,7 @@ class AppWindow extends JFrame {
         }
 
         // TODO: Move this
-        renderer.updateRenderer();
+        app.markUpdated();
       }
     };
   }

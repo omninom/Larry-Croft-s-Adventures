@@ -15,13 +15,15 @@ public class App {
 
   private final Domain domain;
   private final Recorder recorder;
+  private Runnable updateCallback;
 
   /**
    * Constructor.
    */
   public App() {
     this.domain = new Domain();
-    recorder = new Recorder(this);
+    this.recorder = new Recorder(this);
+    this.updateCallback = null;
   }
 
   /**
@@ -40,6 +42,25 @@ public class App {
    */
   public Recorder getRecorder() {
     return recorder;
+  }
+
+  /**
+   * Sets the update callback (internal to the App module).
+   *
+   * @param callback - the callback
+   */
+  public void setUpdateCallback(Runnable callback) {
+    assert this.updateCallback == null;
+    this.updateCallback = callback;
+  }
+
+  /**
+   * Mark the app as being updated since the last render.
+   */
+  public void markUpdated() {
+    if (this.updateCallback != null) {
+      updateCallback.run();
+    }
   }
 
   /**
