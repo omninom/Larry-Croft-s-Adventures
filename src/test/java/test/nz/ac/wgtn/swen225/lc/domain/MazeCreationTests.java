@@ -47,7 +47,7 @@ public class MazeCreationTests {
     keys.add(TileType.RED_KEY);
     Assertions.assertEquals(new Point(0, 0), domain.getChap().getPosition());
     Assertions.assertTrue(domain.getEnemyActorList().isEmpty());
-    domain.buildNewLevel(insertionGrid, ourChap, enemies, keys, "Short");
+    domain.buildNewLevel(insertionGrid, ourChap, enemies, keys, "Short", 0);
 
     for (int row = 0; row < insertionGrid.length; row++) {
       for (int col = 0; col < insertionGrid[row].length; col++) {
@@ -86,22 +86,22 @@ public class MazeCreationTests {
     badGrid[2] = new TileType[1];
     badGrid[2][0] = TileType.EXIT;
     Assertions.assertThrows(IllegalArgumentException.class,
-        () -> domain.buildNewLevel(badGrid, ourChap, enemies, keys, "Y"));
+        () -> domain.buildNewLevel(badGrid, ourChap, enemies, keys, "Y", 0));
 
     //Invalid chap position
     Chap badChap = new Chap(99, 99);
     Assertions.assertThrows(IllegalArgumentException.class,
-        () -> domain.buildNewLevel(insertionGrid, badChap, enemies, keys, "Y"));
+        () -> domain.buildNewLevel(insertionGrid, badChap, enemies, keys, "Y", 0));
 
     //Invalid enemy position
     enemies.add(new DomainTestActor(99, 99));
     Assertions.assertThrows(IllegalArgumentException.class,
-        () -> domain.buildNewLevel(insertionGrid, ourChap, enemies, keys, "Y"));
+        () -> domain.buildNewLevel(insertionGrid, ourChap, enemies, keys, "Y", 0));
     enemies.remove(enemies.size() - 1);
 
     //Non-Key passed into keys
     keys.add(TileType.WALL);
     Assertions.assertThrows(IllegalArgumentException.class,
-        () -> domain.buildNewLevel(insertionGrid, ourChap, enemies, keys, "Y"));
+        () -> domain.buildNewLevel(insertionGrid, ourChap, enemies, keys, "Y", 0));
   }
 }
