@@ -1,7 +1,14 @@
 package nz.ac.wgtn.swen225.lc.app;
 
+import java.io.IOException;
 import nz.ac.wgtn.swen225.lc.domain.Direction;
 import nz.ac.wgtn.swen225.lc.domain.Domain;
+import nz.ac.wgtn.swen225.lc.persistency.GameLoader;
+import nz.ac.wgtn.swen225.lc.persistency.GameSaver;
+import nz.ac.wgtn.swen225.lc.persistency.GameLoaderImp;
+import nz.ac.wgtn.swen225.lc.persistency.GameSaverImp;
+import nz.ac.wgtn.swen225.lc.persistency.LevelLoader;
+import nz.ac.wgtn.swen225.lc.persistency.ParsingLevelLoader;
 import nz.ac.wgtn.swen225.lc.recorder.Recorder;
 
 import java.io.File;
@@ -17,6 +24,11 @@ public class App {
   private final Recorder recorder;
   private Runnable updateCallback;
 
+  private final LevelLoader levelLoader;
+  private final GameLoader gameLoader;
+  private final GameSaver gameSaver;
+
+
   /**
    * Constructor.
    */
@@ -24,6 +36,10 @@ public class App {
     this.domain = new Domain();
     this.recorder = new Recorder(this);
     this.updateCallback = null;
+    recorder = new Recorder(this);
+    this.levelLoader = new ParsingLevelLoader();
+    this.gameLoader = new GameLoaderImp();
+    this.gameSaver = new GameSaverImp();
   }
 
   /**
@@ -107,7 +123,11 @@ public class App {
    */
   public void newGame(int level) {
     System.out.println("[APP DEBUG] New game: Level " + level);
-
+    try {
+      levelLoader.loadLevel(domain, level);
+    }catch (IOException e){
+      e.printStackTrace();
+    }
     // TODO: Move this somewhere else
     recorder.startRecording(Integer.toString(level));
   }
@@ -121,7 +141,16 @@ public class App {
   public boolean saveGame(File file) {
     System.out.println("[APP DEBUG] Saving game to " + file.getAbsolutePath());
 
-    // TODO: Call persistency module
+    try {
+      if(!file.exists()){
+        file.createNewFile();
+      }
+      gameSaver.saveGame(domain, domain.getLevelNumber(), file);
+    }catch (IOException e){
+      e.printStackTrace();
+      throw new RuntimeException(e);
+    }
+
     return true;
   }
 
@@ -133,8 +162,13 @@ public class App {
    */
   public boolean loadGame(File file) {
     System.out.println("[APP DEBUG] Loading game from " + file.getAbsolutePath());
+    try{
+      gameLoader.loadGame(domain, file);
+    }catch (IOException e){
+      e.printStackTrace();
+      throw new RuntimeException(e);
+    }
 
-    // TODO: Call persistency module
     return true;
   }
 
