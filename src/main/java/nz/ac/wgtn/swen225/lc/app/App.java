@@ -36,7 +36,6 @@ public class App {
     this.domain = new Domain();
     this.recorder = new Recorder(this);
     this.updateCallback = null;
-    recorder = new Recorder(this);
     this.levelLoader = new ParsingLevelLoader();
     this.gameLoader = new GameLoaderImp();
     this.gameSaver = new GameSaverImp();
