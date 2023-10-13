@@ -75,8 +75,6 @@ public class App {
 
     recorder.addToRecording("CHAP" + "|" + inputType);
     System.out.print("");
-    // e.g. recorder.addToRecording("CHAP | MOVE_LEFT"); Send [currentPlayer | move]
-
 
     return true;
   }

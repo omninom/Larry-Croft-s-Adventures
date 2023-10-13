@@ -236,7 +236,7 @@ public class Recorder {
         throw new IllegalArgumentException("Error: Invalid move: " + move);
     }
 
-    System.out.println("[RECORDER DEBUG] Recorder to App: " + move);
+    a
   }
 
   // ----------------------------------- GETTERS ----------------------------------- //
