@@ -104,7 +104,6 @@ class AppWindow extends JFrame {
   private HashMap<Integer, RecordItem> getLoadedRecording() {
     HashMap<Integer, RecordItem> loadedRecording;
 
-    System.out.println("[APP WINDOW DEBUG] Loading recording...");
     // ---- Ask user for the file to load ---- //
     JFileChooser fileFinder = new JFileChooser();
     fileFinder.setDialogTitle("Select file to load recording from:");
@@ -149,7 +148,6 @@ class AppWindow extends JFrame {
     }
 
     app.markUpdated();
-    System.out.println("[APP WINDOW DEBUG] Loaded recording.");
     return loadedRecording;
   }
 

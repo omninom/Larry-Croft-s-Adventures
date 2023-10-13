@@ -84,8 +84,6 @@ public class App {
    * @return whether the input was valid.
    */
   public boolean handleInput(AppInput inputType) {
-    System.out.println("[APP DEBUG] Received input '" + inputType + "'");
-
     // TODO: Translate / Validate input with Domain
     try {
       switch (inputType) {
@@ -121,7 +119,6 @@ public class App {
    * @param level - the level to start at.
    */
   public void newGame(int level) {
-    System.out.println("[APP DEBUG] New game: Level " + level);
     try {
       levelLoader.loadLevel(domain, level);
     } catch (IOException e) {
@@ -138,8 +135,6 @@ public class App {
    * @return whether saving was successful.
    */
   public boolean saveGame(File file) {
-    System.out.println("[APP DEBUG] Saving game to " + file.getAbsolutePath());
-
     try {
       if (!file.exists()) {
         file.createNewFile();
@@ -175,7 +170,6 @@ public class App {
    * Ends the game.
    */
   public void endGame() {
-    System.out.println("[APP DEBUG] Ending game");
     recorder.addToRecording("END"); // Lets recorder know when to stop
   }
 
