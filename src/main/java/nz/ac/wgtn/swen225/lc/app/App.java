@@ -110,6 +110,7 @@ public class App {
     }
 
     recorder.addToRecording("CHAP" + "|" + inputType);
+    markUpdated();
     System.out.print("");
 
     return true;

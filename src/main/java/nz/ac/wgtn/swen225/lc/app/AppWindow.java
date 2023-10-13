@@ -102,7 +102,7 @@ class AppWindow extends JFrame {
   }
 
   private HashMap<Integer, RecordItem> getLoadedRecording() {
-    HashMap<Integer, RecordItem> loadedRecording = new HashMap<>();
+    HashMap<Integer, RecordItem> loadedRecording;
 
     System.out.println("[APP WINDOW DEBUG] Loading recording...");
     // ---- Ask user for the file to load ---- //
@@ -148,6 +148,8 @@ class AppWindow extends JFrame {
       fileFinder.setVisible(false);
     }
 
+    app.markUpdated();
+    System.out.println("[APP WINDOW DEBUG] Loaded recording.");
     return loadedRecording;
   }
 
@@ -209,21 +211,33 @@ class AppWindow extends JFrame {
 
     JMenu recorderMenu = new JMenu("Recorder");
 
+    JMenuItem manualReplayNext = new JMenuItem("Next Action Replay");
+    manualReplayNext.addActionListener(event -> {
+      app.getRecorder().manualStepReplay();
+    });
+
     JMenuItem manualReplay = new JMenuItem("Manual Replay");
     manualReplay.addActionListener(event -> {
-      app.getRecorder().manualReplay(getLoadedRecording());
+      HashMap<Integer, RecordItem> loadedRecording = getLoadedRecording();
+      app.getRecorder().stepUpManualReplay(loadedRecording);
+      manualReplayNext.setVisible(true);
+      System.out.println("For manual replay, press 'Next Action Replay' in the"
+              + " menu bar to step through the replay.");
     });
 
     JMenuItem autoReplay = new JMenuItem("Auto Replay");
     autoReplay.addActionListener(event -> {
       askReplaySpeed();
-      app.getRecorder().autoReplay(getLoadedRecording());
+      HashMap<Integer, RecordItem> loadedRecording = getLoadedRecording();
+      app.getRecorder().autoReplay(loadedRecording);
     });
 
     recorderMenu.add(manualReplay);
     recorderMenu.add(autoReplay);
 
     menuBar.add(recorderMenu);
+    menuBar.add(manualReplayNext);
+    manualReplayNext.setVisible(false);
 
     setJMenuBar(menuBar);
   }
