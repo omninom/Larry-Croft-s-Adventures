@@ -87,7 +87,7 @@ class AppWindow extends JFrame {
   }
 
   private void askReplaySpeed() {
-    String userSpeed = JOptionPane.showInputDialog("Enter replay speed (1 to 10):");
+    String userSpeed = JOptionPane.showInputDialog("Enter replay speed (1(fast) to 10(slow)):");
 
     // Validate the input speed
     int newSpeed = 5; // Default speed

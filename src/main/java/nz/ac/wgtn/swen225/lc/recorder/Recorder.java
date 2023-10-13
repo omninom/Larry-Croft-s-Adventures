@@ -233,7 +233,6 @@ public class Recorder {
       default:
         throw new IllegalArgumentException("Error: Invalid move: " + move);
     }
-
   }
 
 

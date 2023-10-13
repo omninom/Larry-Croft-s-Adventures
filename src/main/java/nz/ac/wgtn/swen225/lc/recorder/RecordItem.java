@@ -27,15 +27,6 @@ public class RecordItem {
   }
 
   /**
-   * Returns the sequence number of the action.
-   *
-   * @return sequenceNumber - the sequence number of the action.
-   */
-  public int getSequenceNumber() {
-    return sequenceNumber;
-  }
-
-  /**
    * Returns the actor that took the action.
    *
    * @return actor - the actor that took the action.
