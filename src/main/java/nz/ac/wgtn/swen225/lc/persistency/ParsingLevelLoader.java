@@ -21,6 +21,7 @@ public class ParsingLevelLoader implements LevelLoader {
    * Legacy code, used to produce an example level json file
    * @return String for level json
    */
+  @Deprecated
   public static String writeDefaultMazeJson() {
     StringBuilder retS = new StringBuilder();
     retS.append("{\n")
@@ -264,19 +265,6 @@ public class ParsingLevelLoader implements LevelLoader {
       ret.add(keyType);
     }
     return ret;
-  }
-
-  public static void main(String... args){
-    try {
-      File outF = new File("src/main/resources/levels/level1.json");
-      outF.createNewFile();
-      FileWriter out = new FileWriter(outF);
-      out.write(ParsingLevelLoader.writeDefaultMazeJson());
-      out.flush();
-    }catch(IOException e){
-      e.printStackTrace();
-      throw new RuntimeException(e);
-    }
   }
 }
 
