@@ -144,10 +144,15 @@ public class Renderer extends JPanel implements DomainObserver {
    * @param g Graphics
    */
   private void drawInfoMessage(Graphics g) {
+    //draw black outline
+    g.setColor(Color.BLACK);
+    g.setFont(new Font("Dialog", Font.BOLD, 20));
+    g.drawString(domain.getInfo(), (getWidth() / 2)
+        - (g.getFontMetrics().stringWidth(domain.getInfo()) / 2), getHeight() / 2);
     g.setColor(Color.WHITE);
     g.setFont(new Font("Dialog", Font.BOLD, 20));
     g.drawString(domain.getInfo(), (getWidth() / 2)
-        - (g.getFontMetrics().stringWidth(domain.getInfo()) / 2), getHeight() / 4);
+        - (g.getFontMetrics().stringWidth(domain.getInfo()) / 2) - 1, getHeight() / 2 - 1);
   }
 
   /**
@@ -280,6 +285,9 @@ public class Renderer extends JPanel implements DomainObserver {
       case WIN:
         sound.stopBackgroundMusic();
         sound.playUnlockSound();
+        break;
+      case LEVEL_RESET:
+        sound.playBackgroundMusic();
         break;
       default:
         break;

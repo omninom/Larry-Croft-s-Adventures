@@ -29,7 +29,7 @@ class AppWindow extends JFrame {
   public AppWindow(App app) {
     this.app = app;
     this.renderer = new Renderer(app.getDomain());
-
+    app.newGame(1);
     this.app.setUpdateCallback(this::onUpdateCallback);
 
     // Set up the window
